@@ -1,0 +1,76 @@
+// Core domain types for Redmine Clone
+
+export type IssueStatus = 'new' | 'in_progress' | 'resolved' | 'closed' | 'rejected'
+export type IssuePriority = 'low' | 'normal' | 'high' | 'urgent' | 'immediate'
+export type IssueTracker = 'bug' | 'feature' | 'support' | 'task'
+export type ProjectStatus = 'active' | 'archived' | 'closed'
+export type UserRole = 'admin' | 'manager' | 'developer' | 'reporter'
+
+export interface User {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  role: UserRole
+  createdAt: Date
+}
+
+export interface Project {
+  id: string
+  name: string
+  identifier: string // URL-safe identifier
+  description: string
+  status: ProjectStatus
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Issue {
+  id: string
+  projectId: string
+  tracker: IssueTracker
+  subject: string
+  description: string
+  status: IssueStatus
+  priority: IssuePriority
+  assigneeId: string | null
+  authorId: string
+  dueDate: Date | null
+  estimatedHours: number | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface TimeEntry {
+  id: string
+  issueId: string
+  userId: string
+  hours: number
+  comments: string
+  activityType: string
+  spentOn: Date
+  createdAt: Date
+}
+
+// Helper functions
+export function getFullName(user: User): string {
+  return `${user.firstName} ${user.lastName}`.trim()
+}
+
+export function isOverdue(issue: Issue): boolean {
+  if (!issue.dueDate || issue.status === 'closed' || issue.status === 'rejected') {
+    return false
+  }
+  return new Date(issue.dueDate) < new Date()
+}
+
+export function getPriorityOrder(priority: IssuePriority): number {
+  const order: Record<IssuePriority, number> = {
+    immediate: 5,
+    urgent: 4,
+    high: 3,
+    normal: 2,
+    low: 1,
+  }
+  return order[priority]
+}

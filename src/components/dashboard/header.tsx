@@ -1,0 +1,62 @@
+'use client'
+
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { Bell, Moon, Sun } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+export function DashboardHeader() {
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    // Check initial preference
+    const dark = document.documentElement.classList.contains('dark')
+    setIsDark(dark)
+  }, [])
+
+  const toggleTheme = () => {
+    const newDark = !isDark
+    setIsDark(newDark)
+    document.documentElement.classList.toggle('dark', newDark)
+  }
+
+  return (
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+      <SidebarTrigger className="-ml-1" />
+      <Separator orientation="vertical" className="mr-2 h-4" />
+
+      {/* Breadcrumb / Page title */}
+      <div className="flex items-center gap-2">
+        <h1 className="text-sm font-semibold">Dashboard</h1>
+      </div>
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Actions */}
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative size-8"
+          aria-label="Notifications"
+        >
+          <Bell className="size-4" />
+          {/* Notification dot */}
+          <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500" />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+        </Button>
+      </div>
+    </header>
+  )
+}

@@ -1,65 +1,83 @@
-import Image from "next/image";
+import { CircleDot, FolderKanban, Clock, AlertTriangle } from 'lucide-react'
+import { StatCard, IssuesTable, QuickActions } from '@/components/dashboard'
+import { mockIssues, mockProjects } from '@/lib/mock-data'
 
-export default function Home() {
+export default function DashboardPage() {
+  // Calculate stats from mock data
+  const openIssues = mockIssues.filter(
+    (i) => i.status === 'new' || i.status === 'in_progress'
+  ).length
+  const inProgress = mockIssues.filter((i) => i.status === 'in_progress').length
+  const dueSoon = mockIssues.filter((i) => {
+    if (!i.dueDate || i.status === 'closed' || i.status === 'rejected') return false
+    const dueDate = new Date(i.dueDate)
+    const now = new Date()
+    const weekFromNow = new Date()
+    weekFromNow.setDate(weekFromNow.getDate() + 7)
+    return dueDate >= now && dueDate <= weekFromNow
+  }).length
+  const activeProjects = mockProjects.filter((p) => p.status === 'active').length
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="grid-pattern min-h-full">
+      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Overview of your projects and issues
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Stats Grid */}
+        <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            title="Open Issues"
+            value={openIssues}
+            subtitle="Requiring attention"
+            icon={CircleDot}
+            variant="default"
+            delay={1}
+          />
+          <StatCard
+            title="In Progress"
+            value={inProgress}
+            subtitle="Currently being worked on"
+            icon={Clock}
+            variant="success"
+            trend={{ value: 12, isPositive: true }}
+            delay={2}
+          />
+          <StatCard
+            title="Due This Week"
+            value={dueSoon}
+            subtitle="Upcoming deadlines"
+            icon={AlertTriangle}
+            variant={dueSoon > 0 ? 'warning' : 'default'}
+            delay={3}
+          />
+          <StatCard
+            title="Active Projects"
+            value={activeProjects}
+            subtitle="Ongoing work streams"
+            icon={FolderKanban}
+            delay={4}
+          />
         </div>
-      </main>
+
+        {/* Main Content Grid */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Issues Table - takes 2 columns */}
+          <div className="lg:col-span-2">
+            <IssuesTable issues={mockIssues} />
+          </div>
+
+          {/* Quick Actions - takes 1 column */}
+          <div>
+            <QuickActions />
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
