@@ -13,7 +13,6 @@ export interface ProjectStats {
   byTracker: Record<IssueTracker, number>
 }
 
-// Minimal interface for filterable projects (supports both Project and serialized variants)
 interface FilterableProject {
   name: string
   identifier: string
@@ -21,22 +20,16 @@ interface FilterableProject {
   status: string
 }
 
-/**
- * Filter projects by status and search term.
- * Generic to support both domain Project and serialized variants.
- */
 export function filterProjects<T extends FilterableProject>(projects: T[], filters: ProjectFilters): T[] {
   return projects.filter((project) => {
-    // Status filter
     if (filters.status?.length && !filters.status.includes(project.status as ProjectStatus)) {
       return false
     }
 
-    // Search filter (name, description, identifier)
     if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
-      const searchFields = [project.name, project.description, project.identifier]
-      if (!searchFields.some((field) => field.toLowerCase().includes(searchLower))) {
+      const search = filters.search.toLowerCase()
+      const haystack = `${project.name} ${project.description} ${project.identifier}`.toLowerCase()
+      if (!haystack.includes(search)) {
         return false
       }
     }
