@@ -1,4 +1,5 @@
 import type { TimeEntry, ActivityType } from '@/types'
+import { generateId } from './utils'
 
 export interface TimeEntryFormData {
   issueId: string
@@ -47,7 +48,7 @@ export function createTimeEntryFromForm(
   userId: string
 ): TimeEntry {
   return {
-    id: `time-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id: generateId('time'),
     issueId: data.issueId,
     userId,
     hours: data.hours,

@@ -2,6 +2,37 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: generateId() Utility zentralisiert**
+  - Neue Funktion in `src/lib/utils.ts`: `generateId(prefix: string): string`
+  - Pattern: `{prefix}-{timestamp}-{random7chars}`
+  - 4 lokale Duplikate entfernt aus:
+    - `src/lib/issue-form.ts`
+    - `src/lib/user-form.ts`
+    - `src/lib/project-form.ts`
+    - `src/lib/time-entry-form.ts`
+  - ~12 Zeilen Code reduziert (4x inline → 1 zentrale Funktion)
+  - **191 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-12)
+- **Bug Hunt: Umfassende Codebase-Analyse durchgeführt**
+  - **Ergebnis: Keine kritischen Bugs gefunden!**
+  - Geprüfte Kategorien:
+    - ✅ Leere catch-Blöcke (1 Fund - absichtlich für Theme-Script FOUC-Prevention)
+    - ✅ TypeScript Hacks (keine `as any`, `@ts-ignore`)
+    - ✅ XSS-Schwachstellen (react-markdown ist sicher by default)
+    - ✅ Race Conditions (korrekte State-Updates nach Server-Response)
+    - ✅ Unbehandelte Null-Returns (alle Pages mit `notFound()`)
+    - ✅ Input Validierung (alle Server Actions validiert)
+    - ✅ Array Boundaries (alle mit Fallbacks)
+    - ✅ Double Submit Prevention (alle Forms mit `isSubmitting`)
+    - ✅ Date Handling (korrekte ISO-String Konvertierung)
+    - ✅ Filter/Sort-Logik (robuste null-Checks, Array-Support)
+  - **Bekannte Limitation:** Server Actions haben keine Authorization-Checks
+    - Dies ist KEIN Bug, da Auth-System noch nicht implementiert ist
+    - Frontend-only Authorization (UI versteckt Buttons) ist Platzhalter
+  - **191 Tests grün, 98.61% Coverage, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-12)
 - **Bug Fix + DRY: isOverdue() Funktion konsolidiert**
   - **Bug gefunden:** Zentrale `isOverdue()` ignorierte `resolved` Status
     - Ein Issue mit Status `resolved` und vergangenem Due Date wurde fälschlich als "overdue" markiert
@@ -136,13 +167,13 @@
 - **Dark Mode:** System-Präferenz + Persistenz
 - **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
 - README.md projektspezifisch aktualisiert
-- Test Coverage: **98.56%** (weit über Ziel 35%)
+- Test Coverage: **98.61%** (weit über Ziel 35%)
 
 ## PRD-Tasks Status:
-- [x] Test Coverage auf 35% -> **98.56% erreicht!**
+- [x] Test Coverage auf 35% -> **98.61% erreicht!**
 - [x] Dokumentation verbessern -> README.md aktualisiert
 - [x] Code Quality / SortDirection DRY -> vollständig zentralisiert
-- [x] Bug hunt (4 Delete Handlers: fehlende Error-Fallbacks gefixed)
+- [x] Bug hunt (4 Delete Handlers gefixed + umfassende Analyse: keine kritischen Bugs)
 - [x] Lesbarkeit: toggle-Funktionen DRY gemacht
 - [x] Performance-Optimierungen -> useMemo für toIssue() separiert
 - [x] Design optimieren (Dark mode) -> System-Präferenz + Persistenz
@@ -163,6 +194,7 @@
 - [x] DRY: filterProjects generisch gemacht (lokales Duplikat entfernt)
 - [x] Bug Fix: isOverdue() ignorierte 'resolved' Status
 - [x] DRY: isOverdue() konsolidiert (2 lokale Duplikate entfernt)
+- [x] DRY: generateId() zentralisiert (4 lokale Duplikate entfernt)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -183,4 +215,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-12 (isOverdue Bug gefixed + DRY konsolidiert)
+Letzte Aktualisierung: 2026-01-12 (Umfassende Bug Hunt - keine kritischen Bugs gefunden)

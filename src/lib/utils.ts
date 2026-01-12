@@ -43,3 +43,11 @@ export function formatDate(date: string | Date, format: DateFormat = 'medium'): 
   const d = typeof date === 'string' ? new Date(date) : date
   return d.toLocaleDateString('en-US', dateFormatOptions[format])
 }
+
+/**
+ * Generates a unique ID with the given prefix.
+ * Format: `{prefix}-{timestamp}-{random7chars}`
+ */
+export function generateId(prefix: string): string {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+}

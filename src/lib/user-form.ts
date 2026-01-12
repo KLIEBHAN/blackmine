@@ -1,4 +1,5 @@
 import type { User, UserRole } from '@/types'
+import { generateId } from './utils'
 
 export interface UserFormData {
   email: string
@@ -65,7 +66,7 @@ export function validateUserForm(
 
 export function createUserFromForm(data: UserFormData): User {
   return {
-    id: `user-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id: generateId('user'),
     email: data.email.toLowerCase().trim(),
     firstName: data.firstName.trim(),
     lastName: data.lastName.trim(),

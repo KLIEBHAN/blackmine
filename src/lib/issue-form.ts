@@ -1,4 +1,5 @@
 import type { Issue, IssueTracker, IssuePriority } from '@/types'
+import { generateId } from './utils'
 
 export interface IssueFormData {
   projectId: string
@@ -51,7 +52,7 @@ export function validateIssueForm(data: IssueFormData): IssueFormErrors {
 export function createIssueFromForm(data: IssueFormData, authorId: string): Issue {
   const now = new Date()
   return {
-    id: `issue-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id: generateId('issue'),
     projectId: data.projectId,
     tracker: data.tracker,
     subject: data.subject,

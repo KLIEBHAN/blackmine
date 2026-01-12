@@ -1,4 +1,5 @@
 import type { Project, ProjectStatus } from '@/types'
+import { generateId } from './utils'
 
 export interface ProjectFormData {
   name: string
@@ -52,7 +53,7 @@ export function validateProjectForm(data: ProjectFormData): ProjectFormErrors {
 export function createProjectFromForm(data: ProjectFormData): Project {
   const now = new Date()
   return {
-    id: `proj-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    id: generateId('proj'),
     name: data.name,
     identifier: data.identifier,
     description: data.description,
