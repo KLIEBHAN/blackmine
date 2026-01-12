@@ -25,9 +25,6 @@ import {
   Clock,
   Search,
   Plus,
-  ArrowUpDown,
-  ChevronUp,
-  ChevronDown,
   X,
   Calendar,
   User,
@@ -35,6 +32,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { getInitials } from '@/lib/utils'
+import { SortIcon } from '@/components/ui/sort-icon'
 
 // Serialized types for client component
 export type SerializedUser = {
@@ -90,17 +88,6 @@ interface TimeSort {
 
 function getFullName(user: SerializedUser): string {
   return `${user.firstName} ${user.lastName}`
-}
-
-function SortIcon({ field, currentSort }: { field: TimeEntrySortField; currentSort: TimeSort }) {
-  if (currentSort.field !== field) {
-    return <ArrowUpDown className="size-3.5 text-muted-foreground/50" />
-  }
-  return currentSort.direction === 'desc' ? (
-    <ChevronDown className="size-3.5 text-primary" />
-  ) : (
-    <ChevronUp className="size-3.5 text-primary" />
-  )
 }
 
 interface TimeListProps {
@@ -305,7 +292,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
                     >
                       Date
-                      <SortIcon field="spentOn" currentSort={sort} />
+                      <SortIcon field="spentOn" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                   <TableHead className="font-semibold">User</TableHead>
@@ -318,7 +305,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
                     >
                       Hours
-                      <SortIcon field="hours" currentSort={sort} />
+                      <SortIcon field="hours" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                 </TableRow>

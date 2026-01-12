@@ -43,9 +43,6 @@ import {
   Users,
   Search,
   Plus,
-  ArrowUpDown,
-  ChevronUp,
-  ChevronDown,
   X,
   Shield,
   ShieldCheck,
@@ -54,6 +51,7 @@ import {
   Mail,
   Trash2,
 } from 'lucide-react'
+import { SortIcon } from '@/components/ui/sort-icon'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getInitials } from '@/lib/utils'
@@ -98,17 +96,6 @@ function getFullName(user: SerializedUser): string {
 interface UserSort {
   field: UserSortField
   direction: SortDirection
-}
-
-function SortIcon({ field, currentSort }: { field: UserSortField; currentSort: UserSort }) {
-  if (currentSort.field !== field) {
-    return <ArrowUpDown className="size-3.5 text-muted-foreground/50" />
-  }
-  return currentSort.direction === 'desc' ? (
-    <ChevronDown className="size-3.5 text-primary" />
-  ) : (
-    <ChevronUp className="size-3.5 text-primary" />
-  )
 }
 
 interface UsersListProps {
@@ -305,7 +292,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
                   >
                     Name
-                    <SortIcon field="lastName" currentSort={sort} />
+                    <SortIcon field="lastName" currentField={sort.field} direction={sort.direction} />
                   </button>
                 </TableHead>
                 <TableHead className="font-semibold">
@@ -314,7 +301,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
                   >
                     Email
-                    <SortIcon field="email" currentSort={sort} />
+                    <SortIcon field="email" currentField={sort.field} direction={sort.direction} />
                   </button>
                 </TableHead>
                 <TableHead className="font-semibold">
@@ -323,7 +310,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
                   >
                     Role
-                    <SortIcon field="role" currentSort={sort} />
+                    <SortIcon field="role" currentField={sort.field} direction={sort.direction} />
                   </button>
                 </TableHead>
                 <TableHead className="font-semibold">
@@ -332,7 +319,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
                   >
                     Created
-                    <SortIcon field="createdAt" currentSort={sort} />
+                    <SortIcon field="createdAt" currentField={sort.field} direction={sort.direction} />
                   </button>
                 </TableHead>
                 <TableHead className="pr-4 text-right font-semibold">Actions</TableHead>

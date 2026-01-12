@@ -2,12 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: `getInitials()` zentralisiert**
-  - Funktion mit Overloads (name string / firstName+lastName) nach `src/lib/utils.ts` extrahiert
-  - 7 Dateien bereinigt: `issues-list.tsx`, `project-detail.tsx`, `users-list.tsx`, `time-list.tsx`, `issue-detail.tsx`, `comments.tsx`, `issues-table.tsx`
-  - ~50 Zeilen duplizierter Code entfernt
+- **DRY: `SortIcon` Komponente zentralisiert**
+  - Generische `<SortIcon>` Komponente nach `src/components/ui/sort-icon.tsx` extrahiert
+  - 3 Dateien bereinigt: `issues-list.tsx`, `users-list.tsx`, `time-list.tsx`
+  - ~30 Zeilen duplizierter Code entfernt
 
 ## Vorherige Iterationen
+- **DRY: `getInitials()` zentralisiert** (7 Dateien, ~50 Zeilen)
 - **DRY: Label-Konstanten zentralisiert** (statusLabels, trackerLabels, priorityLabels, projectStatusLabels)
 - **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
 - **Performance:** `issues-list.tsx` - `toIssue()` Mapping in separates `useMemo`

@@ -31,13 +31,11 @@ import {
   Search,
   Plus,
   Filter,
-  ArrowUpDown,
-  ChevronUp,
-  ChevronDown,
   X,
   ListFilter,
   SlidersHorizontal,
 } from 'lucide-react'
+import { SortIcon } from '@/components/ui/sort-icon'
 import Link from 'next/link'
 
 // Types for Prisma-returned data (serialized from server)
@@ -75,17 +73,6 @@ type IssueWithRelations = {
 const allStatuses: IssueStatus[] = ['new', 'in_progress', 'resolved', 'closed', 'rejected']
 const allTrackers: IssueTracker[] = ['bug', 'feature', 'support', 'task']
 const allPriorities: IssuePriority[] = ['immediate', 'urgent', 'high', 'normal', 'low']
-
-function SortIcon({ field, currentSort }: { field: IssueSort['field']; currentSort: IssueSort }) {
-  if (currentSort.field !== field) {
-    return <ArrowUpDown className="size-3.5 text-muted-foreground/50" />
-  }
-  return currentSort.direction === 'desc' ? (
-    <ChevronDown className="size-3.5 text-primary" />
-  ) : (
-    <ChevronUp className="size-3.5 text-primary" />
-  )
-}
 
 // Convert serialized Prisma data to Issue type for filter utilities
 function toIssue(issue: IssueWithRelations): Issue {
@@ -321,7 +308,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
                     >
                       Issue
-                      <SortIcon field="subject" currentSort={sort} />
+                      <SortIcon field="subject" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                   <TableHead className="font-semibold">Project</TableHead>
@@ -331,7 +318,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
                     >
                       Status
-                      <SortIcon field="status" currentSort={sort} />
+                      <SortIcon field="status" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                   <TableHead className="font-semibold">
@@ -340,7 +327,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
                     >
                       Priority
-                      <SortIcon field="priority" currentSort={sort} />
+                      <SortIcon field="priority" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                   <TableHead className="font-semibold">Assignee</TableHead>
@@ -350,7 +337,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                       className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
                     >
                       Due
-                      <SortIcon field="dueDate" currentSort={sort} />
+                      <SortIcon field="dueDate" currentField={sort.field} direction={sort.direction} />
                     </button>
                   </TableHead>
                 </TableRow>
