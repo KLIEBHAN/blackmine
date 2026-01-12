@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { cn, getInitials } from '@/lib/utils'
+import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -471,10 +471,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                                   overdue && 'font-medium text-red-600'
                                 )}
                               >
-                                {new Date(issue.dueDate).toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  day: 'numeric',
-                                })}
+                                {formatDate(issue.dueDate, 'short')}
                               </span>
                             </div>
                           ) : (

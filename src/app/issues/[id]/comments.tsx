@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import { createComment, deleteComment } from '@/app/actions/comments'
 import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Markdown } from '@/components/ui/markdown'
-import { getInitials } from '@/lib/utils'
+import { getInitials, formatDate } from '@/lib/utils'
 
 export type SerializedComment = {
   id: string
@@ -29,16 +29,6 @@ interface CommentsProps {
   currentUserId: string
 }
 
-function formatDateTime(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
 function timeAgo(date: string): string {
   const now = new Date()
   const then = new Date(date)
@@ -51,7 +41,7 @@ function timeAgo(date: string): string {
   if (hours < 24) return `${hours}h ago`
   const days = Math.floor(hours / 24)
   if (days < 7) return `${days}d ago`
-  return formatDateTime(date)
+  return formatDate(date, 'datetime')
 }
 
 export function Comments({ issueId, comments: initialComments, currentUserId }: CommentsProps) {

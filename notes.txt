@@ -2,17 +2,21 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: TrackerIcon Komponente zentralisiert**
-  - Neue Komponente: `src/components/ui/tracker-icon.tsx`
-  - 2 Dateien bereinigt: `projects-list.tsx`, `project-detail.tsx`
-  - Duplikate `trackerIcons` Record entfernt (~12 Zeilen)
-  - Komponente akzeptiert `tracker` und optionalen `className` prop
-
-- **Bug fix: SortDirection Import**
-  - `users-list.tsx` importierte `SortDirection` aus `@/lib/users` statt `@/types`
-  - War durch vorherige DRY-Iteration verwaist
+- **DRY: formatDate() Utility zentralisiert**
+  - Neue Funktion in `src/lib/utils.ts`: `formatDate(date, format)`
+  - 4 Format-Typen: `'short'`, `'medium'`, `'long'`, `'datetime'`
+  - 7 Dateien bereinigt:
+    - `issue-detail.tsx` (3 Aufrufe, 2 lokale Funktionen entfernt)
+    - `comments.tsx` (1 Aufruf, 1 lokale Funktion entfernt)
+    - `issues-list.tsx` (1 Aufruf)
+    - `issues-table.tsx` (1 Aufruf)
+    - `users-list.tsx` (1 Aufruf)
+    - `time-list.tsx` (1 Aufruf)
+    - `project-detail.tsx` (3 Aufrufe)
+  - ~40 Zeilen duplizierten Code entfernt
 
 ## Vorherige Iterationen
+- **DRY: TrackerIcon Komponente zentralisiert** (2 Dateien)
 - **DRY: Ungenutzte SortDirection Re-Exports entfernt** (4 lib Dateien)
 - **DRY: SortDirection in time-list.tsx** (lokale Definition entfernt)
 - **DRY: Enum-Arrays zentralisiert** (`allIssueStatuses`, etc. in types/index.ts)
@@ -38,6 +42,7 @@
 - [x] Kommentare löschbar
 - [x] DRY: getInitials() zentralisiert
 - [x] DRY: TrackerIcon zentralisiert
+- [x] DRY: formatDate() zentralisiert
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -45,13 +50,12 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
-- Date Formatting: 11+ Stellen mit `.toLocaleDateString()` -> zentrale Utility
 - Server Action Error Handler: 13+ identische catch-Blöcke
 - Server Action revalidatePath: Wiederholende Calls
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich
 
 ## Nächste Schritte
-- Date Formatting Utility zentralisieren
+- Server Action Error Handler DRY machen
 - Auth vollständig implementieren
 - UX verbessern
 - Administration (Settings) Implementieren

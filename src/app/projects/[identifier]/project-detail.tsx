@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { cn, getInitials } from '@/lib/utils'
+import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -355,10 +355,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                           {/* Updated */}
                           <TableCell className="pr-4 text-right">
                             <span className="font-mono text-xs text-muted-foreground">
-                              {new Date(issue.updatedAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                              })}
+                              {formatDate(issue.updatedAt, 'short')}
                             </span>
                           </TableCell>
                         </TableRow>
@@ -404,21 +401,13 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Created</span>
                     <span className="font-mono">
-                      {new Date(project.createdAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+                      {formatDate(project.createdAt, 'medium')}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Updated</span>
                     <span className="font-mono">
-                      {new Date(project.updatedAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+                      {formatDate(project.updatedAt, 'medium')}
                     </span>
                   </div>
                 </div>

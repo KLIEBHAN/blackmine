@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { cn, getInitials } from '@/lib/utils'
+import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -29,24 +29,6 @@ import {
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, priorityLabels } from '@/types'
-
-function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-function formatDateTime(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
 
 function isOverdue(dueDate: string | null, status: string): boolean {
   if (!dueDate) return false
@@ -338,7 +320,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                           overdue && 'font-medium text-red-600'
                         )}
                       >
-                        {formatDate(issue.dueDate)}
+                        {formatDate(issue.dueDate, 'long')}
                       </span>
                     </div>
                   ) : (
@@ -371,13 +353,13 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Created</span>
                   <span className="font-mono text-xs text-muted-foreground">
-                    {formatDateTime(issue.createdAt)}
+                    {formatDate(issue.createdAt, 'datetime')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Updated</span>
                   <span className="font-mono text-xs text-muted-foreground">
-                    {formatDateTime(issue.updatedAt)}
+                    {formatDate(issue.updatedAt, 'datetime')}
                   </span>
                 </div>
               </CardContent>

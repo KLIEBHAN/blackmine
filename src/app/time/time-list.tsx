@@ -31,7 +31,7 @@ import {
   Activity,
 } from 'lucide-react'
 import Link from 'next/link'
-import { getInitials } from '@/lib/utils'
+import { getInitials, formatDate } from '@/lib/utils'
 import { SortIcon } from '@/components/ui/sort-icon'
 import { type SortDirection } from '@/types'
 
@@ -335,10 +335,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       {/* Date */}
                       <TableCell className="pl-4">
                         <span className="font-mono text-sm">
-                          {new Date(entry.spentOn).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                          {formatDate(entry.spentOn, 'short')}
                         </span>
                       </TableCell>
 

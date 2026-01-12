@@ -53,7 +53,7 @@ import {
 import { SortIcon } from '@/components/ui/sort-icon'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getInitials } from '@/lib/utils'
+import { getInitials, formatDate } from '@/lib/utils'
 
 // Serialized type for client-side (dates as strings)
 export type SerializedUser = {
@@ -394,11 +394,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                       {/* Created */}
                       <TableCell>
                         <span className="font-mono text-sm text-muted-foreground">
-                          {new Date(user.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                          {formatDate(user.createdAt, 'medium')}
                         </span>
                       </TableCell>
 

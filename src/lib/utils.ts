@@ -22,3 +22,24 @@ export function getInitials(firstOrFull: string, lastName?: string): string {
     .toUpperCase()
     .slice(0, 2)
 }
+
+export type DateFormat = 'short' | 'medium' | 'long' | 'datetime'
+
+const dateFormatOptions: Record<DateFormat, Intl.DateTimeFormatOptions> = {
+  short: { month: 'short', day: 'numeric' },
+  medium: { year: 'numeric', month: 'short', day: 'numeric' },
+  long: { year: 'numeric', month: 'long', day: 'numeric' },
+  datetime: { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' },
+}
+
+/**
+ * Formats a date string using predefined formats.
+ * - 'short': Jan 12 (for tables/lists)
+ * - 'medium': Jan 12, 2026 (for metadata)
+ * - 'long': January 12, 2026 (for detail views)
+ * - 'datetime': Jan 12, 2026, 10:30 AM (for timestamps)
+ */
+export function formatDate(date: string | Date, format: DateFormat = 'medium'): string {
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleDateString('en-US', dateFormatOptions[format])
+}

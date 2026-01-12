@@ -1,6 +1,6 @@
 'use client'
 
-import { cn, getInitials } from '@/lib/utils'
+import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -187,10 +187,7 @@ export function IssuesTable({
                             overdue && 'font-medium text-red-600'
                           )}
                         >
-                          {new Date(issue.dueDate).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                          {formatDate(issue.dueDate, 'short')}
                         </span>
                       </div>
                     ) : (
