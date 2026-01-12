@@ -5,6 +5,7 @@ export type IssuePriority = 'low' | 'normal' | 'high' | 'urgent' | 'immediate'
 export type IssueTracker = 'bug' | 'feature' | 'support' | 'task'
 export type ProjectStatus = 'active' | 'archived' | 'closed'
 export type UserRole = 'admin' | 'manager' | 'developer' | 'reporter'
+export type ActivityType = 'development' | 'design' | 'review' | 'testing' | 'documentation' | 'support' | 'meeting' | 'other'
 
 // Shared utility types
 export type SortDirection = 'asc' | 'desc'
@@ -39,16 +40,29 @@ export const projectStatusLabels: Record<ProjectStatus, string> = {
   closed: 'Closed',
 }
 
+export const activityTypeLabels: Record<ActivityType, string> = {
+  development: 'Development',
+  design: 'Design',
+  review: 'Code Review',
+  testing: 'Testing',
+  documentation: 'Documentation',
+  support: 'Support',
+  meeting: 'Meeting',
+  other: 'Other',
+}
+
 // All values arrays - derived from label keys for type-safety
 export const allIssueStatuses = Object.keys(statusLabels) as IssueStatus[]
 export const allIssueTrackers = Object.keys(trackerLabels) as IssueTracker[]
 export const allIssuePriorities = Object.keys(priorityLabels) as IssuePriority[]
 export const allProjectStatuses = Object.keys(projectStatusLabels) as ProjectStatus[]
+export const allActivityTypes = Object.keys(activityTypeLabels) as ActivityType[]
 
 // Form select options - derived from labels for single source of truth
 export const trackerOptions = allIssueTrackers.map(value => ({ value, label: trackerLabels[value] }))
 export const priorityOptions = allIssuePriorities.map(value => ({ value, label: priorityLabels[value] }))
 export const projectStatusOptions = allProjectStatuses.map(value => ({ value, label: projectStatusLabels[value] }))
+export const activityTypeOptions = allActivityTypes.map(value => ({ value, label: activityTypeLabels[value] }))
 
 export interface User {
   id: string
@@ -91,7 +105,7 @@ export interface TimeEntry {
   userId: string
   hours: number
   comments: string
-  activityType: string
+  activityType: ActivityType
   spentOn: Date
   createdAt: Date
 }

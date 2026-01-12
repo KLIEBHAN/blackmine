@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/db'
+import { EMAIL_REGEX } from '@/lib/user-form'
 import { revalidatePath } from 'next/cache'
 import { handleActionError } from './utils'
 
@@ -44,7 +45,7 @@ function validateUserForm(data: UserFormData): UserFormErrors {
   }
   if (!data.email || data.email.trim().length === 0) {
     errors.email = 'Email is required'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+  } else if (!EMAIL_REGEX.test(data.email)) {
     errors.email = 'Invalid email format'
   }
 
@@ -116,7 +117,7 @@ export async function updateUser(id: string, data: Partial<UserFormData>) {
   }
   
   if (data.email !== undefined) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    if (!EMAIL_REGEX.test(data.email)) {
       return { success: false, errors: { email: 'Invalid email format' } }
     }
     const taken = await isEmailTaken(data.email, id)

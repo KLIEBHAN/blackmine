@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select'
 import type { UserRole } from '@/types'
 import { useFormField } from '@/hooks'
+import { EMAIL_REGEX } from '@/lib/user-form'
 import { createUser, isEmailTaken } from '@/app/actions/users'
 import { FormFieldError } from '@/components/ui/form-field-error'
 import { ArrowLeft, Save, Loader2, UserPlus, Shield, Briefcase, Code, FileText } from 'lucide-react'
@@ -70,7 +71,7 @@ export function UserForm() {
     }
     if (!formData.email.trim()) {
       validationErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!EMAIL_REGEX.test(formData.email)) {
       validationErrors.email = 'Invalid email format'
     }
 

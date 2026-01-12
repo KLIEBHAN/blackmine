@@ -1,6 +1,7 @@
 import { getTimeEntries } from '@/app/actions/time-entries'
 import { getUsers } from '@/app/actions/users'
 import { TimeList, SerializedTimeEntry, SerializedUser } from './time-list'
+import type { ActivityType } from '@/types'
 
 export default async function TimePage() {
   const [timeEntries, users] = await Promise.all([
@@ -9,12 +10,12 @@ export default async function TimePage() {
   ])
 
   // Serialize for client component
-  const serializedEntries: SerializedTimeEntry[] = timeEntries.map((entry) => ({
+  const serializedEntries = timeEntries.map((entry): SerializedTimeEntry => ({
     id: entry.id,
     issueId: entry.issueId,
     userId: entry.userId,
     hours: entry.hours,
-    activityType: entry.activityType,
+    activityType: entry.activityType as ActivityType,
     spentOn: entry.spentOn.toISOString(),
     comments: entry.comments,
     createdAt: entry.createdAt.toISOString(),

@@ -14,7 +14,8 @@ export interface UserFormErrors {
   role?: string
 }
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+/** Simple email format validation regex */
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function validateUserForm(
   data: UserFormData,

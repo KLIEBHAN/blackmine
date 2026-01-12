@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { createProject, isIdentifierTaken } from '@/app/actions/projects'
-import { FormFieldError } from '@/components/ui/form-field-error'
+import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
 import { ArrowLeft, Save, AlertCircle, Loader2, FolderPlus } from 'lucide-react'
 import { type ProjectStatus, projectStatusOptions } from '@/types'
 
@@ -183,12 +183,7 @@ export function ProjectForm() {
         </div>
 
         {/* General Error */}
-        {errors.general && (
-          <div className="mb-4 flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-            <AlertCircle className="size-4" />
-            {errors.general}
-          </div>
-        )}
+        <GeneralFormError error={errors.general} className="mb-4 rounded-lg border border-destructive/50" />
 
         {/* Form */}
         <form onSubmit={handleSubmit}>

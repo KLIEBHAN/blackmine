@@ -33,7 +33,7 @@ import {
 import Link from 'next/link'
 import { getInitials, formatDate } from '@/lib/utils'
 import { SortIcon } from '@/components/ui/sort-icon'
-import { type SortDirection, getFullName } from '@/types'
+import { type SortDirection, type ActivityType, getFullName, activityTypeLabels, allActivityTypes } from '@/types'
 
 // Serialized types for client component
 export type SerializedUser = {
@@ -59,7 +59,7 @@ export type SerializedTimeEntry = {
   issueId: string
   userId: string
   hours: number
-  activityType: string
+  activityType: ActivityType
   spentOn: string
   comments: string
   createdAt: string
@@ -67,17 +67,6 @@ export type SerializedTimeEntry = {
   user: SerializedUser
 }
 
-const activityLabels: Record<string, string> = {
-  development: 'Development',
-  review: 'Code Review',
-  design: 'Design',
-  testing: 'Testing',
-  documentation: 'Documentation',
-  meeting: 'Meeting',
-  support: 'Support',
-}
-
-const allActivities = ['development', 'review', 'design', 'testing', 'documentation', 'meeting', 'support']
 
 type TimeEntrySortField = 'spentOn' | 'hours'
 
@@ -232,9 +221,9 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="__all__">All Activities</SelectItem>
-                  {allActivities.map((activity) => (
+                  {allActivityTypes.map((activity) => (
                     <SelectItem key={activity} value={activity}>
-                      {activityLabels[activity] || activity}
+                      {activityTypeLabels[activity] || activity}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -368,7 +357,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       {/* Activity */}
                       <TableCell>
                         <Badge variant="secondary" className="rounded px-2 py-0.5 text-xs">
-                          {activityLabels[entry.activityType] || entry.activityType}
+                          {activityTypeLabels[entry.activityType] || entry.activityType}
                         </Badge>
                       </TableCell>
 

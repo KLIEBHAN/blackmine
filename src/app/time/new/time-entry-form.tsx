@@ -19,19 +19,9 @@ import {
 } from '@/components/ui/select'
 import { createTimeEntry, type TimeEntryFormErrors } from '@/app/actions/time-entries'
 import { useFormField } from '@/hooks'
-import { FormFieldError } from '@/components/ui/form-field-error'
-import { ArrowLeft, Save, AlertCircle, Loader2, Clock } from 'lucide-react'
-
-const activityTypes = [
-  'development',
-  'design',
-  'review',
-  'testing',
-  'documentation',
-  'support',
-  'meeting',
-  'other',
-]
+import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
+import { ArrowLeft, Save, Loader2, Clock } from 'lucide-react'
+import { activityTypeOptions } from '@/types'
 
 type SerializedIssue = {
   id: string
@@ -147,12 +137,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* General Error */}
-              {errors.general && (
-                <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                  <AlertCircle className="size-4" />
-                  {errors.general}
-                </div>
-              )}
+              <GeneralFormError error={errors.general} />
 
               {/* Issue Selection */}
               <div className="space-y-2">
@@ -228,9 +213,9 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {activityTypes.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          <span className="capitalize">{type}</span>
+                      {activityTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

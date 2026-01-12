@@ -19,8 +19,8 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
-import { FormFieldError } from '@/components/ui/form-field-error'
-import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
+import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
+import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
@@ -148,12 +148,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* General Error */}
-              {errors.general && (
-                <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive flex items-center gap-2">
-                  <AlertCircle className="size-4" />
-                  {errors.general}
-                </div>
-              )}
+              <GeneralFormError error={errors.general} />
 
               {/* Project & Tracker Row */}
               <div className="grid gap-4 sm:grid-cols-2">

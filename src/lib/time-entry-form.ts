@@ -1,9 +1,9 @@
-import type { TimeEntry } from '@/types'
+import type { TimeEntry, ActivityType } from '@/types'
 
 export interface TimeEntryFormData {
   issueId: string
   hours: number
-  activityType: string
+  activityType: ActivityType
   spentOn: Date
   comments: string
 }
