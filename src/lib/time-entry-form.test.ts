@@ -4,12 +4,13 @@ import {
   createTimeEntryFromForm,
   type TimeEntryFormData,
 } from './time-entry-form'
+import type { ActivityType } from '@/types'
 
 describe('validateTimeEntryForm', () => {
   const validForm: TimeEntryFormData = {
     issueId: 'issue-1',
     hours: 2.5,
-    activityType: 'Development',
+    activityType: 'development',
     spentOn: new Date('2024-01-15'),
     comments: 'Worked on feature',
   }
@@ -40,7 +41,7 @@ describe('validateTimeEntryForm', () => {
   })
 
   it('requires activityType', () => {
-    const errors = validateTimeEntryForm({ ...validForm, activityType: '' })
+    const errors = validateTimeEntryForm({ ...validForm, activityType: '' as ActivityType })
     expect(errors.activityType).toBe('Activity type is required')
   })
 
@@ -58,7 +59,7 @@ describe('validateTimeEntryForm', () => {
     const errors = validateTimeEntryForm({
       issueId: '',
       hours: 0,
-      activityType: '',
+      activityType: '' as ActivityType,
       spentOn: null as unknown as Date,
       comments: '',
     })
@@ -70,7 +71,7 @@ describe('createTimeEntryFromForm', () => {
   const formData: TimeEntryFormData = {
     issueId: 'issue-1',
     hours: 3.5,
-    activityType: 'Development',
+    activityType: 'development',
     spentOn: new Date('2024-01-15'),
     comments: 'Implemented feature',
   }
@@ -80,7 +81,7 @@ describe('createTimeEntryFromForm', () => {
     expect(entry.issueId).toBe('issue-1')
     expect(entry.userId).toBe('user-1')
     expect(entry.hours).toBe(3.5)
-    expect(entry.activityType).toBe('Development')
+    expect(entry.activityType).toBe('development')
     expect(entry.comments).toBe('Implemented feature')
   })
 
