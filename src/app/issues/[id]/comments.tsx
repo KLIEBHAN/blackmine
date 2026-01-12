@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { createComment } from '@/app/actions/comments'
 import { MessageSquare, Send } from 'lucide-react'
+import { Markdown } from '@/components/ui/markdown'
 
 export type SerializedComment = {
   id: string
@@ -133,9 +134,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
                         {timeAgo(comment.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm whitespace-pre-wrap break-words">
-                      {comment.content}
-                    </p>
+                    <Markdown>{comment.content}</Markdown>
                   </div>
                 </div>
               </div>

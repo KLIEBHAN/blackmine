@@ -2,30 +2,20 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **Performance:** `issues-list.tsx` optimiert
-  - `toIssue()` Mapping in separates `useMemo` extrahiert
-  - Conversion nur bei issues-Prop-Änderung, nicht bei Filter/Sort
-  
-## Vorherige Iteration
-- **Dark Mode:** System-Präferenz und Persistenz implementiert
-  - Inline script im `<head>` für Flash-freies SSR
-  - Respektiert `prefers-color-scheme` als Default
-  - Persistiert User-Wahl in localStorage
-  - Toggle im Header aktualisiert
-
-## Vorherige Iteration
-- **Lesbarkeit/DRY:** `issues-list.tsx` refactored
-  - Drei identische `toggleStatus/Tracker/Priority` Funktionen zu einer generischen `toggle<T>()` Funktion konsolidiert
-  - Reduziert Codezeilen um ~15 und eliminiert Duplikation
+- **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
+  - `react-markdown` + `remark-gfm` installiert
+  - Neue `<Markdown>` Komponente in `src/components/ui/markdown.tsx`
+  - Eigene `prose` CSS-Styles in globals.css (Tailwind v4 kompatibel)
+  - Angewandt auf: `issue-detail.tsx` (Beschreibung) und `comments.tsx` (Kommentare)
 
 ## Vorherige Iterationen
-- `isOverdue()` Typsignatur präzisiert (Pick<Issue, 'status' | 'dueDate'>)
+- **Performance:** `issues-list.tsx` - `toIssue()` Mapping in separates `useMemo`
+- **Dark Mode:** System-Präferenz + Persistenz
+- **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
+- `isOverdue()` Typsignatur präzisiert
 - SortDirection vollständig zentralisiert
-- README.md von Next.js-Boilerplate zu projektspezifischer Dokumentation ersetzt
-- Coverage-Dependency `@vitest/coverage-v8` installiert
+- README.md projektspezifisch aktualisiert
 - Test Coverage: **98.51%** (weit über Ziel 35%)
-- ESLint: coverage/ Ordner zu globalIgnores hinzugefügt
-
 
 ## PRD-Tasks Status:
 - [x] Test Coverage auf 35% → **98.51% erreicht!**
@@ -34,10 +24,8 @@
 - [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
 - [x] Lesbarkeit: toggle-Funktionen DRY gemacht
 - [x] Performance-Optimierungen → useMemo für toIssue() separiert
-- [ ] Weitere Lesbarkeit (FilterDropdown-Komponente extrahieren?)
-- [ ] Komplexität reduzieren
 - [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
--  weiteres siehe prd
+- [x] Markdown in Issues rendern ✅
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -45,8 +33,9 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Nächste Schritte
-- Komplexität: Weitere List-Komponenten (time-list.tsx, projects-list.tsx, users-list.tsx) analog optimieren
-- Filter-Dropdowns: Extraktion lohnt nicht (unterschiedliches Rendering pro Filter)
+- Kommentare löschbar machen (PRD: "Kommentare zu Issues sollten löschbar sein")
+- Auth vollständig implementieren
+- UX verbessern
 
 ---
 Letzte Aktualisierung: 2026-01-12

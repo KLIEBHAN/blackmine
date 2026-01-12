@@ -27,6 +27,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
+import { Markdown } from '@/components/ui/markdown'
 
 const statusLabels = {
   new: 'New',
@@ -241,9 +242,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
               </CardHeader>
               <CardContent>
                 {issue.description ? (
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {issue.description}
-                  </p>
+                  <Markdown>{issue.description}</Markdown>
                 ) : (
                   <p className="text-sm text-muted-foreground italic">
                     No description provided.

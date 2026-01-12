@@ -56,7 +56,20 @@
 
 ### UX verbessern
 
-### Markdown Code in Issues Beschreibung korrekt rendern
+### Kommentare zu Issues sollten löschbar sein
+
+### Administration (Settings) Implementieren
+
+---
+
+## Erledigt
+
+### Markdown in Issues Beschreibung korrekt rendern ✅ (2026-01-12)
+
+- `react-markdown` + `remark-gfm` installiert
+- Wiederverwendbare `<Markdown>` Komponente in `src/components/ui/markdown.tsx`
+- Issue-Beschreibungen und Kommentare rendern jetzt Markdown (Code, Listen, Links, Tabellen etc.)
+- Eigene `prose` CSS-Styles in globals.css (Tailwind v4 kompatibel)
 
 ---
 
