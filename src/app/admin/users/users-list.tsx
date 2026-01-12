@@ -30,7 +30,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { type UserRole, type SortDirection, getFullName } from '@/types'
+import { type UserRole, type SortDirection, getFullName, roleColors } from '@/types'
 import {
   filterUsers,
   sortUsers,
@@ -77,13 +77,6 @@ const roleIcons: Record<UserRole, typeof Shield> = {
   manager: Shield,
   developer: Code,
   reporter: FileText,
-}
-
-const roleColors: Record<UserRole, string> = {
-  admin: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  manager: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-  developer: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-  reporter: 'bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-400',
 }
 
 const allRoles: UserRole[] = ['admin', 'manager', 'developer', 'reporter']

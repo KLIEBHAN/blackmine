@@ -64,6 +64,20 @@ export const priorityOptions = allIssuePriorities.map(value => ({ value, label: 
 export const projectStatusOptions = allProjectStatuses.map(value => ({ value, label: projectStatusLabels[value] }))
 export const activityTypeOptions = allActivityTypes.map(value => ({ value, label: activityTypeLabels[value] }))
 
+// Badge color classes for status/role badges (Tailwind)
+export const projectStatusColors: Record<ProjectStatus, string> = {
+  active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
+  archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
+  closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
+}
+
+export const roleColors: Record<UserRole, string> = {
+  admin: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  manager: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+  developer: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  reporter: 'bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-400',
+}
+
 export interface User {
   id: string
   email: string

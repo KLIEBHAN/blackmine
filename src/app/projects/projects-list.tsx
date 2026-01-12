@@ -15,7 +15,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
 import type { ProjectStatus, IssueTracker } from '@/types'
-import { projectStatusLabels, allProjectStatuses } from '@/types'
+import { projectStatusLabels, allProjectStatuses, projectStatusColors } from '@/types'
 import { filterProjects } from '@/lib/projects'
 import { Search, Plus, ListFilter, X, FolderKanban } from 'lucide-react'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
@@ -47,12 +47,6 @@ type Props = {
   projects: SerializedProject[]
   issues: SerializedIssueForStats[]
   totalCount: number
-}
-
-const statusColors: Record<ProjectStatus, string> = {
-  active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
-  archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
-  closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
 }
 
 // Calculate project stats from issues
@@ -155,7 +149,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                     >
                       <Badge
                         variant="outline"
-                        className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', statusColors[status])}
+                        className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', projectStatusColors[status])}
                       >
                         {projectStatusLabels[status]}
                       </Badge>
@@ -221,7 +215,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                       </div>
                       <Badge
                         variant="outline"
-                        className={cn('shrink-0 rounded-sm px-1.5 py-0 text-[10px]', statusColors[project.status as ProjectStatus])}
+                        className={cn('shrink-0 rounded-sm px-1.5 py-0 text-[10px]', projectStatusColors[project.status as ProjectStatus])}
                       >
                         {projectStatusLabels[project.status as ProjectStatus]}
                       </Badge>

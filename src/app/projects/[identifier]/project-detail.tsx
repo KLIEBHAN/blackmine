@@ -37,13 +37,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
-import { statusLabels, trackerLabels, projectStatusLabels, type IssueTracker, getFullName } from '@/types'
-
-const projectStatusColors = {
-  active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
-  archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
-  closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
-} as const
+import { statusLabels, trackerLabels, projectStatusLabels, projectStatusColors, type IssueTracker, getFullName } from '@/types'
 
 // Serialized types for client component
 export type SerializedProject = {

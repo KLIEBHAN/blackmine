@@ -2,6 +2,19 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: Badge Color Constants zentralisiert**
+  - Neue Exports in `src/types/index.ts`:
+    - `projectStatusColors: Record<ProjectStatus, string>` (Tailwind-Klassen für active/archived/closed)
+    - `roleColors: Record<UserRole, string>` (Tailwind-Klassen für admin/manager/developer/reporter)
+  - 2 lokale Duplikate entfernt:
+    - `src/app/projects/projects-list.tsx` (statusColors → projectStatusColors)
+    - `src/app/projects/[identifier]/project-detail.tsx` (projectStatusColors entfernt)
+  - 1 weiteres Duplikat entfernt:
+    - `src/app/admin/users/users-list.tsx` (roleColors)
+  - ~18 Zeilen duplizierter Code entfernt
+  - **191 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: generateId() Utility zentralisiert**
   - Neue Funktion in `src/lib/utils.ts`: `generateId(prefix: string): string`
   - Pattern: `{prefix}-{timestamp}-{random7chars}`
@@ -195,6 +208,7 @@
 - [x] Bug Fix: isOverdue() ignorierte 'resolved' Status
 - [x] DRY: isOverdue() konsolidiert (2 lokale Duplikate entfernt)
 - [x] DRY: generateId() zentralisiert (4 lokale Duplikate entfernt)
+- [x] DRY: Badge Color Constants zentralisiert (projectStatusColors, roleColors)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
