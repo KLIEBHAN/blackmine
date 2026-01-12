@@ -86,7 +86,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
         description: `"${issue.subject}" has been permanently deleted.`,
       })
       router.push('/issues')
-    } else {
+    } else if ('error' in result) {
       toast.error(result.error || 'Failed to delete issue')
       setIsDeleting(false)
     }

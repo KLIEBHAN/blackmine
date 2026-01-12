@@ -2,20 +2,20 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: formatDate() Utility zentralisiert**
-  - Neue Funktion in `src/lib/utils.ts`: `formatDate(date, format)`
-  - 4 Format-Typen: `'short'`, `'medium'`, `'long'`, `'datetime'`
-  - 7 Dateien bereinigt:
-    - `issue-detail.tsx` (3 Aufrufe, 2 lokale Funktionen entfernt)
-    - `comments.tsx` (1 Aufruf, 1 lokale Funktion entfernt)
-    - `issues-list.tsx` (1 Aufruf)
-    - `issues-table.tsx` (1 Aufruf)
-    - `users-list.tsx` (1 Aufruf)
-    - `time-list.tsx` (1 Aufruf)
-    - `project-detail.tsx` (3 Aufrufe)
-  - ~40 Zeilen duplizierten Code entfernt
+- **DRY: Server Action Error Handler zentralisiert**
+  - Neue Utility in `src/app/actions/utils.ts`: `handleActionError(error, operation, useErrorsFormat?)`
+  - Zwei Overloads: `{ errors: { general } }` für CRUD-Ops, `{ error }` für Delete-Ops
+  - 14 catch-Blöcke in 5 Server-Action-Dateien refaktoriert:
+    - `issues.ts` (3 catch-Blöcke)
+    - `projects.ts` (3 catch-Blöcke)
+    - `users.ts` (3 catch-Blöcke)
+    - `time-entries.ts` (2 catch-Blöcke)
+    - `comments.ts` (3 catch-Blöcke)
+  - ~70 Zeilen duplizierten Code auf ~25 Zeilen reduziert
+  - Type-Safety in UI-Komponenten verbessert (mit Type-Guards für Error-Response-Handling)
 
 ## Vorherige Iterationen
+- **DRY: formatDate() Utility zentralisiert** (7 Dateien, ~40 Zeilen)
 - **DRY: TrackerIcon Komponente zentralisiert** (2 Dateien)
 - **DRY: Ungenutzte SortDirection Re-Exports entfernt** (4 lib Dateien)
 - **DRY: SortDirection in time-list.tsx** (lokale Definition entfernt)
@@ -28,10 +28,10 @@
 - **Dark Mode:** System-Präferenz + Persistenz
 - **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
 - README.md projektspezifisch aktualisiert
-- Test Coverage: **98.51%** (weit über Ziel 35%)
+- Test Coverage: **98.56%** (weit über Ziel 35%)
 
 ## PRD-Tasks Status:
-- [x] Test Coverage auf 35% -> **98.51% erreicht!**
+- [x] Test Coverage auf 35% -> **98.56% erreicht!**
 - [x] Dokumentation verbessern -> README.md aktualisiert
 - [x] Code Quality / SortDirection DRY -> vollständig zentralisiert
 - [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
@@ -43,6 +43,7 @@
 - [x] DRY: getInitials() zentralisiert
 - [x] DRY: TrackerIcon zentralisiert
 - [x] DRY: formatDate() zentralisiert
+- [x] DRY: Server Action Error Handler zentralisiert
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -50,12 +51,10 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
-- Server Action Error Handler: 13+ identische catch-Blöcke
-- Server Action revalidatePath: Wiederholende Calls
-- Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich
+- Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
+- Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
 
 ## Nächste Schritte
-- Server Action Error Handler DRY machen
 - Auth vollständig implementieren
 - UX verbessern
 - Administration (Settings) Implementieren

@@ -130,10 +130,11 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     })
 
     if (!result.success) {
-      setErrors(result.errors || {})
+      const errors = (result.errors || {}) as IssueFormErrors
+      setErrors(errors)
       setIsSubmitting(false)
       toast.error('Failed to update issue', {
-        description: result.errors?.general || 'Please check the form for errors.',
+        description: errors.general || 'Please check the form for errors.',
       })
       return
     }

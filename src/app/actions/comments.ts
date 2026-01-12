@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { handleActionError } from './utils'
 
 export type CommentFormData = {
   content: string
@@ -74,11 +75,7 @@ export async function createComment(
 
     return { success: true, comment }
   } catch (error) {
-    console.error('Failed to create comment:', error)
-    return {
-      success: false,
-      errors: { general: 'Failed to add comment. Please try again.' },
-    }
+    return handleActionError(error, 'add comment', true)
   }
 }
 
@@ -104,11 +101,7 @@ export async function updateComment(id: string, data: CommentFormData) {
 
     return { success: true, comment }
   } catch (error) {
-    console.error('Failed to update comment:', error)
-    return {
-      success: false,
-      errors: { general: 'Failed to update comment. Please try again.' },
-    }
+    return handleActionError(error, 'update comment', true)
   }
 }
 
@@ -123,10 +116,6 @@ export async function deleteComment(id: string) {
 
     return { success: true }
   } catch (error) {
-    console.error('Failed to delete comment:', error)
-    return {
-      success: false,
-      error: 'Failed to delete comment. Please try again.',
-    }
+    return handleActionError(error, 'delete comment')
   }
 }

@@ -161,7 +161,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
       setUsers(users.filter(u => u.id !== userToDelete.id))
       setUserToDelete(null)
       router.refresh()
-    } else {
+    } else if ('error' in result) {
       toast.error(result.error || 'Failed to delete user')
     }
     

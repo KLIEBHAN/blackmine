@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { handleActionError } from './utils'
 
 export type UserFormData = {
   email: string
@@ -92,11 +93,7 @@ export async function createUser(data: UserFormData) {
     
     return { success: true, user }
   } catch (error) {
-    console.error('Failed to create user:', error)
-    return { 
-      success: false, 
-      errors: { general: 'Failed to create user. Please try again.' } 
-    }
+    return handleActionError(error, 'create user', true)
   }
 }
 
@@ -146,11 +143,7 @@ export async function updateUser(id: string, data: Partial<UserFormData>) {
     
     return { success: true, user }
   } catch (error) {
-    console.error('Failed to update user:', error)
-    return { 
-      success: false, 
-      errors: { general: 'Failed to update user. Please try again.' } 
-    }
+    return handleActionError(error, 'update user', true)
   }
 }
 
@@ -200,10 +193,6 @@ export async function deleteUser(id: string) {
     
     return { success: true }
   } catch (error) {
-    console.error('Failed to delete user:', error)
-    return { 
-      success: false, 
-      error: 'Failed to delete user. Please try again.' 
-    }
+    return handleActionError(error, 'delete user')
   }
 }

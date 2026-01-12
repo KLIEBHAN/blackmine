@@ -76,7 +76,8 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
       setComments([...comments, serializedComment])
       setNewComment('')
     } else if (result.errors) {
-      setError(result.errors.content || result.errors.general || 'Failed to add comment')
+      const errors = result.errors as { content?: string; general?: string }
+      setError(errors.content || errors.general || 'Failed to add comment')
     }
 
     setIsSubmitting(false)
@@ -90,7 +91,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
 
     if (result.success) {
       setComments(comments.filter(c => c.id !== commentId))
-    } else {
+    } else if ('error' in result) {
       setError(result.error || 'Failed to delete comment')
     }
 

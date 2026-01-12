@@ -120,10 +120,11 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
     )
 
     if (!result.success) {
-      setErrors(result.errors || {})
+      const errors = (result.errors || {}) as IssueFormErrors
+      setErrors(errors)
       setIsSubmitting(false)
       toast.error('Failed to create issue', {
-        description: result.errors?.general || 'Please check the form for errors.',
+        description: errors.general || 'Please check the form for errors.',
       })
       return
     }

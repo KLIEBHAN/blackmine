@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { handleActionError } from './utils'
 
 export type TimeEntryFormData = {
   issueId: string
@@ -103,11 +104,7 @@ export async function createTimeEntry(data: TimeEntryFormData, userId: string) {
     
     return { success: true, timeEntry }
   } catch (error) {
-    console.error('Failed to create time entry:', error)
-    return { 
-      success: false, 
-      errors: { general: 'Failed to create time entry. Please try again.' } 
-    }
+    return handleActionError(error, 'create time entry', true)
   }
 }
 
@@ -123,10 +120,6 @@ export async function deleteTimeEntry(id: string) {
     
     return { success: true }
   } catch (error) {
-    console.error('Failed to delete time entry:', error)
-    return { 
-      success: false, 
-      error: 'Failed to delete time entry. Please try again.' 
-    }
+    return handleActionError(error, 'delete time entry')
   }
 }

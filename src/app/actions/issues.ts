@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { handleActionError } from './utils'
 
 export type IssueFormData = {
   projectId: string
@@ -111,11 +112,7 @@ export async function createIssue(data: IssueFormData, authorId: string) {
     
     return { success: true, issue }
   } catch (error) {
-    console.error('Failed to create issue:', error)
-    return { 
-      success: false, 
-      errors: { general: 'Failed to create issue. Please try again.' } 
-    }
+    return handleActionError(error, 'create issue', true)
   }
 }
 
@@ -164,11 +161,7 @@ export async function updateIssue(id: string, data: Partial<IssueFormData> & { s
     
     return { success: true, issue }
   } catch (error) {
-    console.error('Failed to update issue:', error)
-    return { 
-      success: false, 
-      errors: { general: 'Failed to update issue. Please try again.' } 
-    }
+    return handleActionError(error, 'update issue', true)
   }
 }
 
@@ -185,10 +178,6 @@ export async function deleteIssue(id: string) {
     
     return { success: true }
   } catch (error) {
-    console.error('Failed to delete issue:', error)
-    return { 
-      success: false, 
-      error: 'Failed to delete issue. Please try again.' 
-    }
+    return handleActionError(error, 'delete issue')
   }
 }
