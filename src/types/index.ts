@@ -9,6 +9,36 @@ export type UserRole = 'admin' | 'manager' | 'developer' | 'reporter'
 // Shared utility types
 export type SortDirection = 'asc' | 'desc'
 
+// Display labels for enum types
+export const statusLabels: Record<IssueStatus, string> = {
+  new: 'New',
+  in_progress: 'In Progress',
+  resolved: 'Resolved',
+  closed: 'Closed',
+  rejected: 'Rejected',
+}
+
+export const trackerLabels: Record<IssueTracker, string> = {
+  bug: 'Bug',
+  feature: 'Feature',
+  support: 'Support',
+  task: 'Task',
+}
+
+export const priorityLabels: Record<IssuePriority, string> = {
+  low: 'Low',
+  normal: 'Normal',
+  high: 'High',
+  urgent: 'Urgent',
+  immediate: 'Immediate',
+}
+
+export const projectStatusLabels: Record<ProjectStatus, string> = {
+  active: 'Active',
+  archived: 'Archived',
+  closed: 'Closed',
+}
+
 export interface User {
   id: string
   email: string

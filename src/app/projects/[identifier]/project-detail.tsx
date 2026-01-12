@@ -39,27 +39,7 @@ import {
   BarChart3,
   Trash2,
 } from 'lucide-react'
-
-const statusLabels = {
-  new: 'New',
-  in_progress: 'In Progress',
-  resolved: 'Resolved',
-  closed: 'Closed',
-  rejected: 'Rejected',
-} as const
-
-const trackerLabels = {
-  bug: 'Bug',
-  feature: 'Feature',
-  support: 'Support',
-  task: 'Task',
-} as const
-
-const projectStatusLabels = {
-  active: 'Active',
-  archived: 'Archived',
-  closed: 'Closed',
-} as const
+import { statusLabels, trackerLabels, projectStatusLabels } from '@/types'
 
 const projectStatusColors = {
   active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',

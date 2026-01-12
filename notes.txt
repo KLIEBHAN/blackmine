@@ -2,11 +2,10 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **Kommentare löschbar:** Delete-Button für Kommentare hinzugefügt
-  - Nur für Autor des Kommentars sichtbar (author.id === currentUserId)
-  - Nutzt bestehende `deleteComment` Server-Action
-  - UI-State-Updates: `deletingId` für Loading-State
-  - Fehlerbehandlung integriert
+- **DRY: Label-Konstanten zentralisiert**
+  - `statusLabels`, `trackerLabels`, `priorityLabels`, `projectStatusLabels` nach `src/types/index.ts` extrahiert
+  - 4 Dateien bereinigt: `issues-list.tsx`, `issue-detail.tsx`, `project-detail.tsx`, `issues-table.tsx`
+  - ~80 Zeilen duplizierter Code entfernt
 
 ## Vorherige Iterationen
 - **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown

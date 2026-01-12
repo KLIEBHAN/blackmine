@@ -28,29 +28,7 @@ import {
 } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
-
-const statusLabels = {
-  new: 'New',
-  in_progress: 'In Progress',
-  resolved: 'Resolved',
-  closed: 'Closed',
-  rejected: 'Rejected',
-} as const
-
-const trackerLabels = {
-  bug: 'Bug',
-  feature: 'Feature',
-  support: 'Support',
-  task: 'Task',
-} as const
-
-const priorityLabels = {
-  low: 'Low',
-  normal: 'Normal',
-  high: 'High',
-  urgent: 'Urgent',
-  immediate: 'Immediate',
-} as const
+import { statusLabels, trackerLabels, priorityLabels } from '@/types'
 
 function getInitials(firstName: string, lastName: string): string {
   return `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase()

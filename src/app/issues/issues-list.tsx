@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
-import { isOverdue } from '@/types'
+import { isOverdue, statusLabels, trackerLabels, priorityLabels } from '@/types'
 import { filterIssues, sortIssues, type IssueSort, type IssueFilters } from '@/lib/issues'
 import {
   AlertCircle,
@@ -70,29 +70,6 @@ type IssueWithRelations = {
     firstName: string
     lastName: string
   } | null
-}
-
-const statusLabels: Record<IssueStatus, string> = {
-  new: 'New',
-  in_progress: 'In Progress',
-  resolved: 'Resolved',
-  closed: 'Closed',
-  rejected: 'Rejected',
-}
-
-const trackerLabels: Record<IssueTracker, string> = {
-  bug: 'Bug',
-  feature: 'Feature',
-  support: 'Support',
-  task: 'Task',
-}
-
-const priorityLabels: Record<IssuePriority, string> = {
-  low: 'Low',
-  normal: 'Normal',
-  high: 'High',
-  urgent: 'Urgent',
-  immediate: 'Immediate',
 }
 
 const allStatuses: IssueStatus[] = ['new', 'in_progress', 'resolved', 'closed', 'rejected']

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority } from '@/types'
+import { statusLabels, trackerLabels, priorityLabels } from '@/types'
 import { AlertCircle, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -26,29 +27,6 @@ export type SerializedIssue = {
   dueDate: string | null
   project: { id: string; name: string; identifier: string }
   assignee: { id: string; firstName: string; lastName: string } | null
-}
-
-const statusLabels: Record<IssueStatus, string> = {
-  new: 'New',
-  in_progress: 'In Progress',
-  resolved: 'Resolved',
-  closed: 'Closed',
-  rejected: 'Rejected',
-}
-
-const trackerLabels: Record<IssueTracker, string> = {
-  bug: 'Bug',
-  feature: 'Feature',
-  support: 'Support',
-  task: 'Task',
-}
-
-const priorityLabels: Record<IssuePriority, string> = {
-  low: 'Low',
-  normal: 'Normal',
-  high: 'High',
-  urgent: 'Urgent',
-  immediate: 'Immediate',
 }
 
 function getInitials(name: string): string {
