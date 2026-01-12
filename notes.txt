@@ -2,6 +2,19 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: useFormField() Custom Hook erstellt**
+  - Neuer Hook in `src/hooks/useFormField.ts` - kapselt das Pattern "Update Field + Clear Error"
+  - 5 Form-Komponenten refaktoriert:
+    - `src/app/admin/users/new/user-form.tsx`
+    - `src/app/admin/users/[id]/edit/user-edit-form.tsx`
+    - `src/app/issues/new/issue-form.tsx`
+    - `src/app/issues/[id]/edit/issue-edit-form.tsx`
+    - `src/app/time/new/time-entry-form.tsx`
+  - 2 Projekt-Forms bewusst ausgelassen (haben spezielle Logik: Auto-Generate Identifier)
+  - ~60 Zeilen duplizierter Code entfernt
+  - TypeScript Generics für Type Safety
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: getFullName() konsistent genutzt**
   - 7 Stellen mit direkter `{firstName} {lastName}` Konkatenation durch `getFullName()` ersetzt
   - Dateien:
@@ -84,9 +97,10 @@
 ## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
 - Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
-- `updateField` Hook: 7 Form-Komponenten mit identischem Pattern (könnte als Custom Hook extrahiert werden)
+- ~~`updateField` Hook: 7 Form-Komponenten~~ → ✅ Erledigt! `useFormField()` Hook erstellt
 - `roleOptions` mit Icons: 2 Dateien (user-form, user-edit-form) - Icons sind UI-spezifisch, daher nicht in types/
 - `SerializedUser/Project/Issue` Types: Viele ähnliche Definitionen (je ~3-8 Felder unterschiedlich pro Kontext)
+- `<FormFieldError>` Komponente: Error-Rendering Pattern (~50 Stellen) - könnte extrahiert werden
 
 ## Nächste Schritte
 - Auth vollständig implementieren

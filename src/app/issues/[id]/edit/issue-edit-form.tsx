@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
+import { useFormField } from '@/hooks'
 
 type FormData = {
   projectId: string
@@ -82,19 +83,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     estimatedHours: issue.estimatedHours,
   })
 
-  const updateField = useCallback(<K extends keyof FormData>(
-    field: K,
-    value: FormData[K]
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field as keyof IssueFormErrors]) {
-      setErrors((prev) => {
-        const next = { ...prev }
-        delete next[field as keyof IssueFormErrors]
-        return next
-      })
-    }
-  }, [errors])
+  const updateField = useFormField(setFormData, errors, setErrors)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

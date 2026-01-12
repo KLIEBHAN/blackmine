@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { createTimeEntry, type TimeEntryFormErrors } from '@/app/actions/time-entries'
+import { useFormField } from '@/hooks'
 import { ArrowLeft, Save, AlertCircle, Loader2, Clock } from 'lucide-react'
 
 const activityTypes = [
@@ -62,19 +63,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
     comments: '',
   })
 
-  const updateField = useCallback(<K extends keyof typeof formData>(
-    field: K,
-    value: (typeof formData)[K]
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field as keyof TimeEntryFormErrors]) {
-      setErrors((prev) => {
-        const next = { ...prev }
-        delete next[field as keyof TimeEntryFormErrors]
-        return next
-      })
-    }
-  }, [errors])
+  const updateField = useFormField(setFormData, errors, setErrors)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

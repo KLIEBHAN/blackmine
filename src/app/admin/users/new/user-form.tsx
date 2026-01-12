@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { UserRole } from '@/types'
+import { useFormField } from '@/hooks'
 import { createUser, isEmailTaken } from '@/app/actions/users'
 import { ArrowLeft, Save, AlertCircle, Loader2, UserPlus, Shield, Briefcase, Code, FileText } from 'lucide-react'
 
@@ -53,19 +54,7 @@ export function UserForm() {
     role: 'developer',
   })
 
-  const updateField = useCallback(
-    <K extends keyof UserFormData>(field: K, value: UserFormData[K]) => {
-      setFormData((prev) => ({ ...prev, [field]: value }))
-      if (errors[field]) {
-        setErrors((prev) => {
-          const next = { ...prev }
-          delete next[field]
-          return next
-        })
-      }
-    },
-    [errors]
-  )
+  const updateField = useFormField(setFormData, errors, setErrors)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
