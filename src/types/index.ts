@@ -101,7 +101,7 @@ export interface Comment {
 }
 
 // Helper functions
-export function getFullName(user: User): string {
+export function getFullName(user: { firstName: string; lastName: string }): string {
   return `${user.firstName} ${user.lastName}`.trim()
 }
 

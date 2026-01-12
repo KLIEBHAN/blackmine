@@ -30,7 +30,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { type UserRole, type SortDirection } from '@/types'
+import { type UserRole, type SortDirection, getFullName } from '@/types'
 import {
   filterUsers,
   sortUsers,
@@ -87,10 +87,6 @@ const roleColors: Record<UserRole, string> = {
 }
 
 const allRoles: UserRole[] = ['admin', 'manager', 'developer', 'reporter']
-
-function getFullName(user: SerializedUser): string {
-  return `${user.firstName} ${user.lastName}`
-}
 
 interface UserSort {
   field: UserSortField

@@ -2,19 +2,22 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: getFullName() generisch gemacht**
+  - Zentrale Funktion in `src/types/index.ts` nun mit `{ firstName: string; lastName: string }` statt `User`
+  - 3 lokale Duplikate entfernt aus:
+    - `src/app/time/time-list.tsx`
+    - `src/app/admin/users/users-list.tsx`
+    - `src/components/dashboard/issues-table.tsx`
+  - ~12 Zeilen Code entfernt, TypeScript Structural Typing ermöglicht Kompatibilität
+
+## Vorherige Iteration (2026-01-12)
 - **UX-Bugs behoben:**
   - Reports-Link aus Quick Actions entfernt (führte zu 404 - `/reports` existiert nicht)
   - "New Issue" Button in Sidebar verlinkt (war zuvor nicht klickbar)
   - Hardcoded "Recent Projects" aus Sidebar entfernt (zeigte fake Projekte die nicht existieren)
 
-## Vorherige Iteration (2026-01-12)
-- **DRY: Server Action Error Handler zentralisiert**
-  - Neue Utility in `src/app/actions/utils.ts`: `handleActionError(error, operation, useErrorsFormat?)`
-  - Zwei Overloads: `{ errors: { general } }` für CRUD-Ops, `{ error }` für Delete-Ops
-  - 14 catch-Blöcke in 5 Server-Action-Dateien refaktoriert
-  - ~70 Zeilen duplizierten Code auf ~25 Zeilen reduziert
-
 ## Vorherige Iterationen
+- **DRY: Server Action Error Handler zentralisiert** (14 catch-Blöcke, ~70 -> ~25 Zeilen)
 - **DRY: formatDate() Utility zentralisiert** (7 Dateien, ~40 Zeilen)
 - **DRY: TrackerIcon Komponente zentralisiert** (2 Dateien)
 - **DRY: Ungenutzte SortDirection Re-Exports entfernt** (4 lib Dateien)
@@ -45,6 +48,7 @@
 - [x] DRY: formatDate() zentralisiert
 - [x] DRY: Server Action Error Handler zentralisiert
 - [x] UX: Broken Links und nicht-funktionale Buttons behoben
+- [x] DRY: getFullName() generisch gemacht
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -54,6 +58,8 @@
 ## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
 - Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
+- `updateField` Hook: 7 Form-Komponenten mit identischem Pattern (könnte als Custom Hook extrahiert werden)
+- Options Arrays (trackerOptions, priorityOptions): 2 Dateien pro Array (unter 3er-Schwelle)
 
 ## Nächste Schritte
 - Auth vollständig implementieren

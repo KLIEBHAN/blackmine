@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority } from '@/types'
-import { statusLabels, trackerLabels, priorityLabels } from '@/types'
+import { statusLabels, trackerLabels, priorityLabels, getFullName } from '@/types'
 import { AlertCircle, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -27,10 +27,6 @@ export type SerializedIssue = {
   dueDate: string | null
   project: { id: string; name: string; identifier: string }
   assignee: { id: string; firstName: string; lastName: string } | null
-}
-
-function getFullName(user: { firstName: string; lastName: string }): string {
-  return `${user.firstName} ${user.lastName}`
 }
 
 function isOverdue(issue: SerializedIssue): boolean {

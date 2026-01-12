@@ -33,7 +33,7 @@ import {
 import Link from 'next/link'
 import { getInitials, formatDate } from '@/lib/utils'
 import { SortIcon } from '@/components/ui/sort-icon'
-import { type SortDirection } from '@/types'
+import { type SortDirection, getFullName } from '@/types'
 
 // Serialized types for client component
 export type SerializedUser = {
@@ -84,10 +84,6 @@ type TimeEntrySortField = 'spentOn' | 'hours'
 interface TimeSort {
   field: TimeEntrySortField
   direction: SortDirection
-}
-
-function getFullName(user: SerializedUser): string {
-  return `${user.firstName} ${user.lastName}`
 }
 
 interface TimeListProps {
