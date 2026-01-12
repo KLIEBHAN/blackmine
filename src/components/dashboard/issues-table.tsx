@@ -76,6 +76,7 @@ export function IssuesTable({
           <TableBody>
             {issues.map((issue) => {
               const overdue = isOverdue(issue)
+              const assigneeName = issue.assignee ? getFullName(issue.assignee) : null
 
               return (
                 <TableRow key={issue.id} className="group">
@@ -156,14 +157,14 @@ export function IssuesTable({
 
                   {/* Assignee */}
                   <TableCell>
-                    {issue.assignee ? (
+                    {assigneeName ? (
                       <div className="flex items-center gap-2">
                         <Avatar className="size-6">
                           <AvatarFallback className="bg-muted text-[10px] font-medium">
-                            {getInitials(getFullName(issue.assignee))}
+                            {getInitials(assigneeName)}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm">{getFullName(issue.assignee)}</span>
+                        <span className="text-sm">{assigneeName}</span>
                       </div>
                     ) : (
                       <span className="text-sm text-muted-foreground">Unassigned</span>
