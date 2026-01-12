@@ -30,13 +30,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { type UserRole } from '@/types'
+import { type UserRole, type SortDirection } from '@/types'
 import {
   filterUsers,
   sortUsers,
   type UserFilters,
   type UserSortField,
-  type SortDirection,
 } from '@/lib/users'
 import { deleteUser } from '@/app/actions/users'
 import {

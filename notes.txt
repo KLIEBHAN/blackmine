@@ -2,51 +2,56 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: Ungenutzte SortDirection Re-Exports entfernt**
-  - 4 Dateien: `comments.ts`, `issues.ts`, `time-entries.ts`, `users.ts`
-  - Re-Exports waren nie genutzt, alle Consumer importieren direkt aus `@/types`
-  
-- **DRY: SortDirection in time-list.tsx**
-  - Lokale `type SortDirection` Definition entfernt
-  - Nutzt jetzt zentrale Definition aus `types/index.ts`
-  
-## Vorherige Iteration
-- **DRY: Enum-Arrays zentralisiert**
-  - `allIssueStatuses`, `allIssueTrackers`, `allIssuePriorities`, `allProjectStatuses` in `types/index.ts`
-  - Abgeleitet aus Label-Objekten (type-safe)
-  - `issues-list.tsx` und `projects-list.tsx` bereinigt (~8 Zeilen)
+- **DRY: TrackerIcon Komponente zentralisiert**
+  - Neue Komponente: `src/components/ui/tracker-icon.tsx`
+  - 2 Dateien bereinigt: `projects-list.tsx`, `project-detail.tsx`
+  - Duplikate `trackerIcons` Record entfernt (~12 Zeilen)
+  - Komponente akzeptiert `tracker` und optionalen `className` prop
+
+- **Bug fix: SortDirection Import**
+  - `users-list.tsx` importierte `SortDirection` aus `@/lib/users` statt `@/types`
+  - War durch vorherige DRY-Iteration verwaist
 
 ## Vorherige Iterationen
+- **DRY: Ungenutzte SortDirection Re-Exports entfernt** (4 lib Dateien)
+- **DRY: SortDirection in time-list.tsx** (lokale Definition entfernt)
+- **DRY: Enum-Arrays zentralisiert** (`allIssueStatuses`, etc. in types/index.ts)
 - **DRY: `SortIcon` Komponente zentralisiert** (3 Dateien, ~30 Zeilen)
 - **DRY: `getInitials()` zentralisiert** (7 Dateien, ~50 Zeilen)
-- **DRY: Label-Konstanten zentralisiert** (statusLabels, trackerLabels, priorityLabels, projectStatusLabels)
-- **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
+- **DRY: Label-Konstanten zentralisiert** (statusLabels, trackerLabels, etc.)
+- **Markdown Rendering:** Issue-Beschreibungen und Kommentare
 - **Performance:** `issues-list.tsx` - `toIssue()` Mapping in separates `useMemo`
 - **Dark Mode:** System-Präferenz + Persistenz
 - **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
-- `isOverdue()` Typsignatur präzisiert
-- SortDirection vollständig zentralisiert
 - README.md projektspezifisch aktualisiert
 - Test Coverage: **98.51%** (weit über Ziel 35%)
 
 ## PRD-Tasks Status:
-- [x] Test Coverage auf 35% → **98.51% erreicht!**
-- [x] Dokumentation verbessern → README.md aktualisiert
-- [x] Code Quality / SortDirection DRY → vollständig zentralisiert
+- [x] Test Coverage auf 35% -> **98.51% erreicht!**
+- [x] Dokumentation verbessern -> README.md aktualisiert
+- [x] Code Quality / SortDirection DRY -> vollständig zentralisiert
 - [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
 - [x] Lesbarkeit: toggle-Funktionen DRY gemacht
-- [x] Performance-Optimierungen → useMemo für toIssue() separiert
-- [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
-- [x] Markdown in Issues rendern ✅
-- [x] Kommentare löschbar ✅
-- [x] DRY: getInitials() zentralisiert ✅
+- [x] Performance-Optimierungen -> useMemo für toIssue() separiert
+- [x] Design optimieren (Dark mode) -> System-Präferenz + Persistenz
+- [x] Markdown in Issues rendern
+- [x] Kommentare löschbar
+- [x] DRY: getInitials() zentralisiert
+- [x] DRY: TrackerIcon zentralisiert
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
 - `src/app/issues/new/issue-form.tsx:119` - Get from auth context
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
+## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
+- Date Formatting: 11+ Stellen mit `.toLocaleDateString()` -> zentrale Utility
+- Server Action Error Handler: 13+ identische catch-Blöcke
+- Server Action revalidatePath: Wiederholende Calls
+- Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich
+
 ## Nächste Schritte
+- Date Formatting Utility zentralisieren
 - Auth vollständig implementieren
 - UX verbessern
 - Administration (Settings) Implementieren

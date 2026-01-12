@@ -14,19 +14,10 @@ import {
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
-import type { ProjectStatus } from '@/types'
+import type { ProjectStatus, IssueTracker } from '@/types'
 import { projectStatusLabels, allProjectStatuses } from '@/types'
-import {
-  Search,
-  Plus,
-  ListFilter,
-  X,
-  FolderKanban,
-  Bug,
-  Sparkles,
-  HelpCircle,
-  CheckSquare,
-} from 'lucide-react'
+import { Search, Plus, ListFilter, X, FolderKanban } from 'lucide-react'
+import { TrackerIcon } from '@/components/ui/tracker-icon'
 import Link from 'next/link'
 
 // Serialized project type from server
@@ -61,13 +52,6 @@ const statusColors: Record<ProjectStatus, string> = {
   active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
   archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
   closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
-}
-
-const trackerIcons: Record<string, React.ReactNode> = {
-  bug: <Bug className="size-3.5" />,
-  feature: <Sparkles className="size-3.5" />,
-  support: <HelpCircle className="size-3.5" />,
-  task: <CheckSquare className="size-3.5" />,
 }
 
 // Calculate project stats from issues
@@ -311,7 +295,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                               className="flex items-center gap-0.5 text-xs text-muted-foreground"
                               title={`${count} ${tracker}${count !== 1 ? 's' : ''}`}
                             >
-                              {trackerIcons[tracker]}
+                              <TrackerIcon tracker={tracker as IssueTracker} className="size-3.5" />
                               <span className="font-mono">{count}</span>
                             </div>
                           )

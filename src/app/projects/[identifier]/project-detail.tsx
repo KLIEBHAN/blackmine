@@ -30,29 +30,20 @@ import {
   ArrowLeft,
   Plus,
   Settings,
-  Bug,
-  Sparkles,
-  HelpCircle,
   CheckSquare,
   AlertCircle,
   Calendar,
   BarChart3,
   Trash2,
 } from 'lucide-react'
-import { statusLabels, trackerLabels, projectStatusLabels } from '@/types'
+import { TrackerIcon } from '@/components/ui/tracker-icon'
+import { statusLabels, trackerLabels, projectStatusLabels, type IssueTracker } from '@/types'
 
 const projectStatusColors = {
   active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
   archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
   closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
 } as const
-
-const trackerIcons: Record<string, React.ReactNode> = {
-  bug: <Bug className="size-4" />,
-  feature: <Sparkles className="size-4" />,
-  support: <HelpCircle className="size-4" />,
-  task: <CheckSquare className="size-4" />,
-}
 
 // Serialized types for client component
 export type SerializedProject = {
@@ -393,7 +384,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                     <div key={tracker} className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm">
                         <div className={cn('p-1 rounded', `tracker-${tracker}`)}>
-                          {trackerIcons[tracker]}
+                          <TrackerIcon tracker={tracker as IssueTracker} />
                         </div>
                         <span className="capitalize">{tracker}</span>
                       </div>
