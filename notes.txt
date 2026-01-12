@@ -2,6 +2,11 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **Performance:** `issues-list.tsx` optimiert
+  - `toIssue()` Mapping in separates `useMemo` extrahiert
+  - Conversion nur bei issues-Prop-Änderung, nicht bei Filter/Sort
+  
+## Vorherige Iteration
 - **Dark Mode:** System-Präferenz und Persistenz implementiert
   - Inline script im `<head>` für Flash-freies SSR
   - Respektiert `prefers-color-scheme` als Default
@@ -28,7 +33,7 @@
 - [x] Code Quality / SortDirection DRY → vollständig zentralisiert
 - [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
 - [x] Lesbarkeit: toggle-Funktionen DRY gemacht
-- [ ] Performance-Optimierungen
+- [x] Performance-Optimierungen → useMemo für toIssue() separiert
 - [ ] Weitere Lesbarkeit (FilterDropdown-Komponente extrahieren?)
 - [ ] Komplexität reduzieren
 - [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
@@ -40,8 +45,8 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Nächste Schritte
+- Komplexität: Weitere List-Komponenten (time-list.tsx, projects-list.tsx, users-list.tsx) analog optimieren
 - Filter-Dropdowns: Extraktion lohnt nicht (unterschiedliches Rendering pro Filter)
-- Performance: React.memo, useMemo für teure Berechnungen prüfen
 
 ---
 Letzte Aktualisierung: 2026-01-12
