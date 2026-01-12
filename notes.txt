@@ -1,7 +1,16 @@
 # Redmine Clone - Status Notes
 
 
-## Letzte Iteration (2026-01-12)
+## Letzte Iteration (2026-01-13)
+- **Lint Cleanup: 3 Unused Import/Variable Warnings behoben**
+  - `src/app/issues/[id]/issue-detail.tsx`:
+    - Entfernt: `getFullName`, `priorityLabels` (ungenutzte Imports)
+    - Entfernt: `priority` Variable (nicht verwendet)
+  - `src/app/issues/[id]/issue-sidebar.tsx`:
+    - Entfernt: `formatShortId` (ungenutzter Import)
+  - **191 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: Badge Color Constants zentralisiert**
   - Neue Exports in `src/types/index.ts`:
     - `projectStatusColors: Record<ProjectStatus, string>` (Tailwind-Klassen für active/archived/closed)
