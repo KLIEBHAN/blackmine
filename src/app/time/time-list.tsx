@@ -223,7 +223,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                   <SelectItem value="__all__">All Activities</SelectItem>
                   {allActivityTypes.map((activity) => (
                     <SelectItem key={activity} value={activity}>
-                      {activityTypeLabels[activity] || activity}
+                      {activityTypeLabels[activity]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -357,7 +357,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       {/* Activity */}
                       <TableCell>
                         <Badge variant="secondary" className="rounded px-2 py-0.5 text-xs">
-                          {activityTypeLabels[entry.activityType] || entry.activityType}
+                          {activityTypeLabels[entry.activityType]}
                         </Badge>
                       </TableCell>
 
