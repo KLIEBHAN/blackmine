@@ -50,6 +50,9 @@
 ### Design optimieren
 
 - Kannst Du prüfen ob wir das Design noch optisch schöner gestalten können?
+- Dark mode als Standard setzen bzw Systemeinstellungen übernehmen
+
+### Auth vollständig Implementieren
 
 ---
 

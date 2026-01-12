@@ -421,7 +421,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     const overdue = isOverdue({
                       status: issue.status as IssueStatus,
                       dueDate: issue.dueDate ? new Date(issue.dueDate) : null,
-                    } as Issue)
+                    })
 
                     return (
                       <TableRow

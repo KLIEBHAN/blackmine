@@ -2,11 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **Code Quality:** `SortDirection` Type aus `issues.ts` und `users.ts` nach `types/index.ts` zentralisiert
-- DRY-Verletzung behoben: Typ war doppelt definiert
-- Re-Export aus lib-Modulen für Abwärtskompatibilität
+- **Bug Hunt/Code Quality:** `isOverdue()` Typsignatur präzisiert
+  - Von `Issue` auf `Pick<Issue, 'status' | 'dueDate'>` geändert
+  - Unsicherer `as Issue` Cast in `issues-list.tsx` entfernt
+  - Funktion akzeptiert jetzt nur die Felder, die sie tatsächlich nutzt
 
 ## Vorherige Iterationen
+- SortDirection vollständig zentralisiert
 - README.md von Next.js-Boilerplate zu projektspezifischer Dokumentation ersetzt
 - Coverage-Dependency `@vitest/coverage-v8` installiert
 - Test Coverage: **98.51%** (weit über Ziel 35%)
@@ -16,15 +18,22 @@
 ## PRD-Tasks Status:
 - [x] Test Coverage auf 35% → **98.51% erreicht!**
 - [x] Dokumentation verbessern → README.md aktualisiert
-- [~] Code Quality / Code smells → SortDirection zentralisiert
+- [x] Code Quality / SortDirection DRY → vollständig zentralisiert
+- [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
 - [ ] Performance-Optimierungen
-- [ ] Bug hunt
 - [ ] Lesbarkeit des Codes
 - [ ] Komplexität reduzieren
+- [ ] Design optimieren
+
+## Bekannte TODOs im Code
+- `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
+- `src/app/issues/new/issue-form.tsx:119` - Get from auth context
+(Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Nächste Schritte
-- Weitere Code Smells suchen (z.B. duplizierte Filter-Logik)
+- Weitere Code Smells suchen (große Dateien: issues-list.tsx, project-detail.tsx)
 - Performance-Optimierungen analysieren
+- Lesbarkeit verbessern
 
 ---
 Letzte Aktualisierung: 2026-01-12

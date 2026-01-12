@@ -69,7 +69,7 @@ export function getFullName(user: User): string {
   return `${user.firstName} ${user.lastName}`.trim()
 }
 
-export function isOverdue(issue: Issue): boolean {
+export function isOverdue(issue: Pick<Issue, 'status' | 'dueDate'>): boolean {
   if (!issue.dueDate || issue.status === 'closed' || issue.status === 'rejected') {
     return false
   }
