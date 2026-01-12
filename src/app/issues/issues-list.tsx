@@ -169,22 +169,9 @@ export function IssuesList({ issues, totalCount }: Props) {
 
   const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length
 
-  const toggleStatus = (status: IssueStatus) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
-    )
-  }
-
-  const toggleTracker = (tracker: IssueTracker) => {
-    setSelectedTrackers((prev) =>
-      prev.includes(tracker) ? prev.filter((t) => t !== tracker) : [...prev, tracker]
-    )
-  }
-
-  const togglePriority = (priority: IssuePriority) => {
-    setSelectedPriorities((prev) =>
-      prev.includes(priority) ? prev.filter((p) => p !== priority) : [...prev, priority]
-    )
+  // Generic toggle for multi-select filters
+  const toggle = <T,>(value: T, setter: React.Dispatch<React.SetStateAction<T[]>>) => {
+    setter((prev) => prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value])
   }
 
   const clearFilters = () => {
@@ -256,7 +243,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <DropdownMenuCheckboxItem
                       key={status}
                       checked={selectedStatuses.includes(status)}
-                      onCheckedChange={() => toggleStatus(status)}
+                      onCheckedChange={() => toggle(status, setSelectedStatuses)}
                     >
                       <Badge
                         variant="secondary"
@@ -289,7 +276,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <DropdownMenuCheckboxItem
                       key={tracker}
                       checked={selectedTrackers.includes(tracker)}
-                      onCheckedChange={() => toggleTracker(tracker)}
+                      onCheckedChange={() => toggle(tracker, setSelectedTrackers)}
                     >
                       <Badge
                         variant="secondary"
@@ -322,7 +309,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <DropdownMenuCheckboxItem
                       key={priority}
                       checked={selectedPriorities.includes(priority)}
-                      onCheckedChange={() => togglePriority(priority)}
+                      onCheckedChange={() => toggle(priority, setSelectedPriorities)}
                     >
                       <div className="flex items-center gap-2">
                         <div
