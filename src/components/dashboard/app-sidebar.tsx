@@ -42,10 +42,6 @@ const mainNavItems = [
   { title: 'Time Tracking', icon: Clock, href: '/time' },
 ]
 
-const adminNavItems = [
-  { title: 'Administration', icon: Settings, href: '/admin' },
-]
-
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
@@ -84,9 +80,12 @@ export function AppSidebar() {
             <Button
               size="sm"
               className="w-full justify-start gap-2 bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+              asChild
             >
-              <Plus className="size-4" />
-              New Issue
+              <Link href="/issues/new">
+                <Plus className="size-4" />
+                New Issue
+              </Link>
             </Button>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -116,43 +115,6 @@ export function AppSidebar() {
 
         <SidebarSeparator />
 
-        {/* Recent Projects */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
-            Recent Projects
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Website Redesign">
-                  <Link href="/projects/website-redesign">
-                    <div className="size-2 rounded-full bg-emerald-400" />
-                    <span>Website Redesign</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Mobile App">
-                  <Link href="/projects/mobile-app">
-                    <div className="size-2 rounded-full bg-amber-400" />
-                    <span>Mobile App</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="API Integration">
-                  <Link href="/projects/api-integration">
-                    <div className="size-2 rounded-full bg-blue-400" />
-                    <span>API Integration</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
         {/* Admin */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
@@ -160,16 +122,14 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {adminNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Users">
+                  <Link href="/admin/users">
+                    <Settings className="size-4" />
+                    <span>Users</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -2,17 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **UX-Bugs behoben:**
+  - Reports-Link aus Quick Actions entfernt (führte zu 404 - `/reports` existiert nicht)
+  - "New Issue" Button in Sidebar verlinkt (war zuvor nicht klickbar)
+  - Hardcoded "Recent Projects" aus Sidebar entfernt (zeigte fake Projekte die nicht existieren)
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: Server Action Error Handler zentralisiert**
   - Neue Utility in `src/app/actions/utils.ts`: `handleActionError(error, operation, useErrorsFormat?)`
   - Zwei Overloads: `{ errors: { general } }` für CRUD-Ops, `{ error }` für Delete-Ops
-  - 14 catch-Blöcke in 5 Server-Action-Dateien refaktoriert:
-    - `issues.ts` (3 catch-Blöcke)
-    - `projects.ts` (3 catch-Blöcke)
-    - `users.ts` (3 catch-Blöcke)
-    - `time-entries.ts` (2 catch-Blöcke)
-    - `comments.ts` (3 catch-Blöcke)
+  - 14 catch-Blöcke in 5 Server-Action-Dateien refaktoriert
   - ~70 Zeilen duplizierten Code auf ~25 Zeilen reduziert
-  - Type-Safety in UI-Komponenten verbessert (mit Type-Guards für Error-Response-Handling)
 
 ## Vorherige Iterationen
 - **DRY: formatDate() Utility zentralisiert** (7 Dateien, ~40 Zeilen)
@@ -44,6 +44,7 @@
 - [x] DRY: TrackerIcon zentralisiert
 - [x] DRY: formatDate() zentralisiert
 - [x] DRY: Server Action Error Handler zentralisiert
+- [x] UX: Broken Links und nicht-funktionale Buttons behoben
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context

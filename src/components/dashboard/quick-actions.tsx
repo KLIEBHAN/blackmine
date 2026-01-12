@@ -5,7 +5,6 @@ import {
   CirclePlus,
   FolderPlus,
   Clock,
-  BarChart3,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -29,13 +28,6 @@ const actions = [
     description: 'Track time spent on tasks',
     icon: Clock,
     href: '/time/new',
-    variant: 'secondary' as const,
-  },
-  {
-    title: 'Reports',
-    description: 'View project analytics',
-    icon: BarChart3,
-    href: '/reports',
     variant: 'secondary' as const,
   },
 ]
