@@ -1,30 +1,30 @@
 # Redmine Clone - Status Notes
 
-## Status: ✅ COMPLETE
 
 ## Letzte Iteration (2026-01-12)
+- **Code Quality:** `SortDirection` Type aus `issues.ts` und `users.ts` nach `types/index.ts` zentralisiert
+- DRY-Verletzung behoben: Typ war doppelt definiert
+- Re-Export aus lib-Modulen für Abwärtskompatibilität
+
+## Vorherige Iterationen
+- README.md von Next.js-Boilerplate zu projektspezifischer Dokumentation ersetzt
 - Coverage-Dependency `@vitest/coverage-v8` installiert
-- Test Coverage geprüft: **98.51%** (weit über Ziel 35%)
+- Test Coverage: **98.51%** (weit über Ziel 35%)
 - ESLint: coverage/ Ordner zu globalIgnores hinzugefügt
 
-## Quality Gates: ✅ ALL GREEN
-- ✅ `npm run lint` - Keine Warnings/Errors
-- ✅ `npm test` - 189 Tests grün
-- ✅ `npm test -- --coverage` - 98.51% Statement Coverage
-- ✅ `npm run build` - Build erfolgreich
 
 ## PRD-Tasks Status:
 - [x] Test Coverage auf 35% → **98.51% erreicht!**
-- [ ] Performance-Optimierungen (kein Bedarf identifiziert)
-- [ ] Code Quality / Code smells (Code ist sauber)
-- [ ] Bug hunt (keine kritischen Bugs gefunden)
-- [ ] Dokumentation verbessern
+- [x] Dokumentation verbessern → README.md aktualisiert
+- [~] Code Quality / Code smells → SortDirection zentralisiert
+- [ ] Performance-Optimierungen
+- [ ] Bug hunt
 - [ ] Lesbarkeit des Codes
 - [ ] Komplexität reduzieren
 
-## Fazit:
-Das Projekt ist funktional vollständig. Coverage weit über Ziel.
-Verbleibende PRD-Tasks sind optionale Verbesserungen ohne dringende Notwendigkeit.
+## Nächste Schritte
+- Weitere Code Smells suchen (z.B. duplizierte Filter-Logik)
+- Performance-Optimierungen analysieren
 
 ---
 Letzte Aktualisierung: 2026-01-12

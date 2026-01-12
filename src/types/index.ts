@@ -6,6 +6,9 @@ export type IssueTracker = 'bug' | 'feature' | 'support' | 'task'
 export type ProjectStatus = 'active' | 'archived' | 'closed'
 export type UserRole = 'admin' | 'manager' | 'developer' | 'reporter'
 
+// Shared utility types
+export type SortDirection = 'asc' | 'desc'
+
 export interface User {
   id: string
   email: string

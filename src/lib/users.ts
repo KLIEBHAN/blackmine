@@ -1,4 +1,4 @@
-import type { User, UserRole } from '@/types'
+import type { User, UserRole, SortDirection } from '@/types'
 
 export interface UserFilters {
   role?: UserRole
@@ -6,7 +6,7 @@ export interface UserFilters {
 }
 
 export type UserSortField = 'firstName' | 'lastName' | 'email' | 'role' | 'createdAt'
-export type SortDirection = 'asc' | 'desc'
+export type { SortDirection } from '@/types'
 
 export function filterUsers(users: User[], filters: UserFilters): User[] {
   return users.filter(user => {

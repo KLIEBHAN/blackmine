@@ -1,6 +1,6 @@
 // Issue utility functions for filtering, sorting, and searching
 
-import type { Issue, IssueStatus, IssuePriority, IssueTracker } from '@/types'
+import type { Issue, IssueStatus, IssuePriority, IssueTracker, SortDirection } from '@/types'
 import { getPriorityOrder } from '@/types'
 
 export interface IssueFilters {
@@ -13,7 +13,7 @@ export interface IssueFilters {
 }
 
 export type IssueSortField = 'priority' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate' | 'subject'
-export type SortDirection = 'asc' | 'desc'
+export type { SortDirection } from '@/types'
 
 export interface IssueSort {
   field: IssueSortField
