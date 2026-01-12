@@ -2,6 +2,11 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: SortDirection in time-list.tsx**
+  - Lokale `type SortDirection` Definition entfernt
+  - Nutzt jetzt zentrale Definition aus `types/index.ts`
+  
+## Vorherige Iteration
 - **DRY: Enum-Arrays zentralisiert**
   - `allIssueStatuses`, `allIssueTrackers`, `allIssuePriorities`, `allProjectStatuses` in `types/index.ts`
   - Abgeleitet aus Label-Objekten (type-safe)

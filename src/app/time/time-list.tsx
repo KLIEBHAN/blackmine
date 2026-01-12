@@ -33,6 +33,7 @@ import {
 import Link from 'next/link'
 import { getInitials } from '@/lib/utils'
 import { SortIcon } from '@/components/ui/sort-icon'
+import { type SortDirection } from '@/types'
 
 // Serialized types for client component
 export type SerializedUser = {
@@ -79,7 +80,6 @@ const activityLabels: Record<string, string> = {
 const allActivities = ['development', 'review', 'design', 'testing', 'documentation', 'meeting', 'support']
 
 type TimeEntrySortField = 'spentOn' | 'hours'
-type SortDirection = 'asc' | 'desc'
 
 interface TimeSort {
   field: TimeEntrySortField
