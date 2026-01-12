@@ -6,14 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-} from '@/components/ui/dropdown-menu'
+import { FilterDropdown } from '@/components/ui/filter-dropdown'
 import type { ProjectStatus, IssueTracker } from '@/types'
 import { projectStatusLabels, allProjectStatuses, projectStatusColors } from '@/types'
 import { filterProjects } from '@/lib/projects'
@@ -126,37 +119,22 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
               </div>
 
               {/* Status Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <ListFilter className="size-4" />
-                    Status
-                    {selectedStatuses.length > 0 && (
-                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
-                        {selectedStatuses.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {allProjectStatuses.map((status) => (
-                    <DropdownMenuCheckboxItem
-                      key={status}
-                      checked={selectedStatuses.includes(status)}
-                      onCheckedChange={() => toggleStatus(status)}
-                    >
-                      <Badge
-                        variant="outline"
-                        className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', projectStatusColors[status])}
-                      >
-                        {projectStatusLabels[status]}
-                      </Badge>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FilterDropdown<ProjectStatus>
+                label="Status"
+                menuLabel="Filter by Status"
+                icon={ListFilter}
+                options={allProjectStatuses.map((s) => ({
+                  value: s,
+                  label: projectStatusLabels[s],
+                  render: (
+                    <Badge variant="outline" className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', projectStatusColors[s])}>
+                      {projectStatusLabels[s]}
+                    </Badge>
+                  ),
+                }))}
+                selected={selectedStatuses}
+                onToggle={toggleStatus}
+              />
 
               {/* Clear Filters */}
               {(activeFilterCount > 0 || search) && (

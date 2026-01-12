@@ -2,6 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **DRY: FilterDropdown Komponente erstellt**
+  - Neue wiederverwendbare Komponente: `src/components/ui/filter-dropdown.tsx`
+  - Generisch typisiert für verschiedene Filter-Typen (Status, Tracker, Priority, etc.)
+  - Props: label, menuLabel, icon, options, selected, onToggle, width
+  - 4 identische Dropdown-Strukturen konsolidiert:
+    - `src/app/issues/issues-list.tsx` (3 Dropdowns: Status, Tracker, Priority)
+    - `src/app/projects/projects-list.tsx` (1 Dropdown: Status)
+  - **~71 Zeilen netto entfernt** (141 entfernt, 70 hinzugefügt)
+  - **191 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-13)
 - **Lint Cleanup: 3 Unused Import/Variable Warnings behoben**
   - `src/app/issues/[id]/issue-detail.tsx`:
     - Entfernt: `getFullName`, `priorityLabels` (ungenutzte Imports)

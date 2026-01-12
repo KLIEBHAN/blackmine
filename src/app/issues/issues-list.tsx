@@ -14,14 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-} from '@/components/ui/dropdown-menu'
+import { FilterDropdown } from '@/components/ui/filter-dropdown'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
 import { isOverdue, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
@@ -30,9 +23,9 @@ import {
   AlertCircle,
   Search,
   Plus,
-  Filter,
   X,
   ListFilter,
+  Filter,
   SlidersHorizontal,
 } from 'lucide-react'
 import { SortIcon } from '@/components/ui/sort-icon'
@@ -180,103 +173,61 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
               </div>
 
               {/* Status Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <ListFilter className="size-4" />
-                    Status
-                    {selectedStatuses.length > 0 && (
-                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
-                        {selectedStatuses.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {allIssueStatuses.map((status) => (
-                    <DropdownMenuCheckboxItem
-                      key={status}
-                      checked={selectedStatuses.includes(status)}
-                      onCheckedChange={() => toggle(status, setSelectedStatuses)}
-                    >
-                      <Badge
-                        variant="secondary"
-                        className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', `status-${status}`)}
-                      >
-                        {statusLabels[status]}
-                      </Badge>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FilterDropdown<IssueStatus>
+                label="Status"
+                menuLabel="Filter by Status"
+                icon={ListFilter}
+                options={allIssueStatuses.map((s) => ({
+                  value: s,
+                  label: statusLabels[s],
+                  render: (
+                    <Badge variant="secondary" className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', `status-${s}`)}>
+                      {statusLabels[s]}
+                    </Badge>
+                  ),
+                }))}
+                selected={selectedStatuses}
+                onToggle={(s) => toggle(s, setSelectedStatuses)}
+              />
 
               {/* Tracker Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <Filter className="size-4" />
-                    Tracker
-                    {selectedTrackers.length > 0 && (
-                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
-                        {selectedTrackers.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44">
-                  <DropdownMenuLabel>Filter by Tracker</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {allIssueTrackers.map((tracker) => (
-                    <DropdownMenuCheckboxItem
-                      key={tracker}
-                      checked={selectedTrackers.includes(tracker)}
-                      onCheckedChange={() => toggle(tracker, setSelectedTrackers)}
-                    >
-                      <Badge
-                        variant="secondary"
-                        className={cn('mr-2 rounded px-1.5 py-0 text-[10px]', `tracker-${tracker}`)}
-                      >
-                        {trackerLabels[tracker]}
-                      </Badge>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FilterDropdown<IssueTracker>
+                label="Tracker"
+                menuLabel="Filter by Tracker"
+                icon={Filter}
+                options={allIssueTrackers.map((t) => ({
+                  value: t,
+                  label: trackerLabels[t],
+                  render: (
+                    <Badge variant="secondary" className={cn('mr-2 rounded px-1.5 py-0 text-[10px]', `tracker-${t}`)}>
+                      {trackerLabels[t]}
+                    </Badge>
+                  ),
+                }))}
+                selected={selectedTrackers}
+                onToggle={(t) => toggle(t, setSelectedTrackers)}
+                width="w-44"
+              />
 
               {/* Priority Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <SlidersHorizontal className="size-4" />
-                    Priority
-                    {selectedPriorities.length > 0 && (
-                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
-                        {selectedPriorities.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44">
-                  <DropdownMenuLabel>Filter by Priority</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {allIssuePriorities.map((priority) => (
-                    <DropdownMenuCheckboxItem
-                      key={priority}
-                      checked={selectedPriorities.includes(priority)}
-                      onCheckedChange={() => toggle(priority, setSelectedPriorities)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={cn('priority-indicator h-4', `priority-${priority}`)}
-                        />
-                        <span>{priorityLabels[priority]}</span>
-                      </div>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FilterDropdown<IssuePriority>
+                label="Priority"
+                menuLabel="Filter by Priority"
+                icon={SlidersHorizontal}
+                options={allIssuePriorities.map((p) => ({
+                  value: p,
+                  label: priorityLabels[p],
+                  render: (
+                    <div className="flex items-center gap-2">
+                      <div className={cn('priority-indicator h-4', `priority-${p}`)} />
+                      <span>{priorityLabels[p]}</span>
+                    </div>
+                  ),
+                }))}
+                selected={selectedPriorities}
+                onToggle={(p) => toggle(p, setSelectedPriorities)}
+                width="w-44"
+              />
 
               {/* Clear Filters */}
               {activeFilterCount > 0 && (
