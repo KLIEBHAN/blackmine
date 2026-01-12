@@ -1,4 +1,4 @@
-import type { TimeEntry } from '@/types'
+import type { TimeEntry, SortDirection } from '@/types'
 
 export interface TimeEntryFilters {
   issueId?: string
@@ -10,7 +10,7 @@ export interface TimeEntryFilters {
 }
 
 export type TimeEntrySortField = 'spentOn' | 'hours' | 'createdAt'
-export type SortDirection = 'asc' | 'desc'
+export type { SortDirection } from '@/types'
 
 export function filterTimeEntries(
   entries: TimeEntry[],

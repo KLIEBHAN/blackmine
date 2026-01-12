@@ -47,6 +47,10 @@
 - Bitte suche nach unnötiger Komplexität und Redundanz. Erkläre mir dann bitte genau, wie dies zustande kommt und was die wahrscheinlichsten Ursachen sind.
 - Versuche es dann besser zu lösen und zu vereinheitlichen.
 
+### Design optimieren
+
+- Kannst Du prüfen ob wir das Design noch optisch schöner gestalten können?
+
 ---
 
 ## Routine-Checks
