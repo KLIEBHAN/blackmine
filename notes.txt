@@ -2,12 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: Label-Konstanten zentralisiert**
-  - `statusLabels`, `trackerLabels`, `priorityLabels`, `projectStatusLabels` nach `src/types/index.ts` extrahiert
-  - 4 Dateien bereinigt: `issues-list.tsx`, `issue-detail.tsx`, `project-detail.tsx`, `issues-table.tsx`
-  - ~80 Zeilen duplizierter Code entfernt
+- **DRY: `getInitials()` zentralisiert**
+  - Funktion mit Overloads (name string / firstName+lastName) nach `src/lib/utils.ts` extrahiert
+  - 7 Dateien bereinigt: `issues-list.tsx`, `project-detail.tsx`, `users-list.tsx`, `time-list.tsx`, `issue-detail.tsx`, `comments.tsx`, `issues-table.tsx`
+  - ~50 Zeilen duplizierter Code entfernt
 
 ## Vorherige Iterationen
+- **DRY: Label-Konstanten zentralisiert** (statusLabels, trackerLabels, priorityLabels, projectStatusLabels)
 - **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
 - **Performance:** `issues-list.tsx` - `toIssue()` Mapping in separates `useMemo`
 - **Dark Mode:** System-Präferenz + Persistenz
@@ -27,6 +28,7 @@
 - [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
 - [x] Markdown in Issues rendern ✅
 - [x] Kommentare löschbar ✅
+- [x] DRY: getInitials() zentralisiert ✅
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context

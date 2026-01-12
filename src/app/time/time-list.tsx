@@ -34,6 +34,7 @@ import {
   Activity,
 } from 'lucide-react'
 import Link from 'next/link'
+import { getInitials } from '@/lib/utils'
 
 // Serialized types for client component
 export type SerializedUser = {
@@ -89,15 +90,6 @@ interface TimeSort {
 
 function getFullName(user: SerializedUser): string {
   return `${user.firstName} ${user.lastName}`
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
 }
 
 function SortIcon({ field, currentSort }: { field: TimeEntrySortField; currentSort: TimeSort }) {

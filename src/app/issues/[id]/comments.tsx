@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import { createComment, deleteComment } from '@/app/actions/comments'
 import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Markdown } from '@/components/ui/markdown'
+import { getInitials } from '@/lib/utils'
 
 export type SerializedComment = {
   id: string
@@ -26,10 +27,6 @@ interface CommentsProps {
   issueId: string
   comments: SerializedComment[]
   currentUserId: string
-}
-
-function getInitials(firstName: string, lastName: string): string {
-  return `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase()
 }
 
 function formatDateTime(date: string): string {

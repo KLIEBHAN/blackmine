@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { cn } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -75,15 +75,6 @@ type IssueWithRelations = {
 const allStatuses: IssueStatus[] = ['new', 'in_progress', 'resolved', 'closed', 'rejected']
 const allTrackers: IssueTracker[] = ['bug', 'feature', 'support', 'task']
 const allPriorities: IssuePriority[] = ['immediate', 'urgent', 'high', 'normal', 'low']
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
-}
 
 function SortIcon({ field, currentSort }: { field: IssueSort['field']; currentSort: IssueSort }) {
   if (currentSort.field !== field) {

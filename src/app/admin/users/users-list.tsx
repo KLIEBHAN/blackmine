@@ -56,6 +56,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { getInitials } from '@/lib/utils'
 
 // Serialized type for client-side (dates as strings)
 export type SerializedUser = {
@@ -92,15 +93,6 @@ const allRoles: UserRole[] = ['admin', 'manager', 'developer', 'reporter']
 
 function getFullName(user: SerializedUser): string {
   return `${user.firstName} ${user.lastName}`
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
 }
 
 interface UserSort {

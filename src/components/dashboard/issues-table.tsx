@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -27,15 +27,6 @@ export type SerializedIssue = {
   dueDate: string | null
   project: { id: string; name: string; identifier: string }
   assignee: { id: string; firstName: string; lastName: string } | null
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
 }
 
 function getFullName(user: { firstName: string; lastName: string }): string {

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -52,10 +52,6 @@ const trackerIcons: Record<string, React.ReactNode> = {
   feature: <Sparkles className="size-4" />,
   support: <HelpCircle className="size-4" />,
   task: <CheckSquare className="size-4" />,
-}
-
-function getInitials(firstName: string, lastName: string): string {
-  return `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase()
 }
 
 // Serialized types for client component

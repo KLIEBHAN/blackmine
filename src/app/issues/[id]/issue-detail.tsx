@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -29,10 +29,6 @@ import {
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, priorityLabels } from '@/types'
-
-function getInitials(firstName: string, lastName: string): string {
-  return `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase()
-}
 
 function formatDate(date: string): string {
   return new Date(date).toLocaleDateString('en-US', {
