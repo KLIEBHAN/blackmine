@@ -1,0 +1,61 @@
+# Redmine Clone - Bug Scan Notes
+
+## Status: ✅ BUG FIXES APPLIED
+
+## Bugs gefunden und behoben:
+
+### P0 - User Deletion FK-Constraint Bug (FIXED)
+**Datei:** `src/app/actions/users.ts` (Zeile 157-205)
+**Symptom:** User-Deletion schlägt mit Prisma FK-Constraint-Error fehl wenn User Issues, TimeEntries oder Comments hat
+**Root Cause:** `deleteUser()` prüfte nicht auf referenzierte Daten vor dem Löschen
+**Fix:** Vor dem Löschen wird jetzt geprüft ob der User noch referenziert wird (authoredIssues, assignedIssues, timeEntries, comments). Bei Referenzen wird eine detaillierte Fehlermeldung zurückgegeben.
+**Test:** Build grün, manuelle Verifikation empfohlen
+
+### P1 - Error Messages nicht angezeigt (FIXED)
+**Dateien:** 
+- `src/app/admin/users/users-list.tsx` (Zeile 187)
+- `src/app/projects/[identifier]/project-detail.tsx` (Zeile 149)
+- `src/app/issues/[id]/issue-detail.tsx` (Zeile 133)
+**Symptom:** Bei Delete-Errors wurde generische Meldung "Failed to delete X" angezeigt statt der tatsächlichen Fehlermeldung
+**Root Cause:** `toast.error()` verwendete hardcoded String statt `result.error`
+**Fix:** `toast.error(result.error || 'Failed to delete X')` für alle Delete-Handler
+
+## Nicht-Bugs (False Positives):
+
+### Non-null Assertions (`!.`)
+**Dateien:** project-form.tsx:162, project-edit-form.tsx:144
+**Analyse:** Diese sind sicher - wenn `result.success === true`, ist `result.project` garantiert vorhanden (Server Action Logik)
+
+### TODOs für Auth
+**Dateien:** issue-form.tsx:119, time-entry-form.tsx:106
+**Analyse:** Kein Bug - dokumentierte Platzhalter für Auth-Integration. Hardcoded `user-1` ist für Dev-Phase OK.
+
+### Date-Parsing
+**Analyse:** Alle `new Date(data.X)` Aufrufe sind sicher - Daten kommen von validiertem HTML `<input type="date">`
+
+## Verifikation:
+- ✅ 189 Unit Tests grün
+- ✅ Build grün (Next.js 16.1.1)
+- ✅ TypeScript Compilation OK
+- ✅ Keine leeren catch-Blöcke
+- ✅ Keine dangerouslySetInnerHTML
+- ✅ Keine unbehandelten Promise-Rejections
+- ✅ Alle Delete-Funktionen haben Error-Handling
+- ✅ Alle Forms haben Validierung
+- ✅ Prisma Cascade-Deletes korrekt (Project→Issues, Issue→TimeEntries/Comments)
+
+## Nächste Schritte:
+- E2E Tests für User-Deletion mit referenzierten Daten
+- Auth-Integration (ersetzt hardcoded user-1)
+
+---
+Letzte Aktualisierung: Bug Scan Iteration 2 - Verifiziert
+
+## Iteration 2 - Verifikation durchgeführt:
+- ✅ Alle Fixes aus Iteration 1 sind implementiert
+- ✅ 189 Unit Tests grün
+- ✅ Build grün (Next.js 16.1.1)
+- ✅ Kein neuer Bug gefunden
+- ✅ Vollständiger Scan: Server Actions, UI Components, Error Handling, Delete Handlers
+
+**Scan abgeschlossen - keine weiteren Bugs gefunden.**

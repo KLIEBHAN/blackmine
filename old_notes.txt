@@ -1,0 +1,454 @@
+# Redmine Clone - Development Notes
+
+## Status: ✅ FEATURE-COMPLETE
+
+### Was wurde gemacht:
+
+1. **Projekt-Setup**
+   - Next.js 16 mit App Router, TypeScript
+   - shadcn/ui Komponenten installiert (sidebar, card, table, badge, select, textarea, etc.)
+   - Vitest für TDD eingerichtet
+   - Custom Industrial-Theme mit OKLCH Farben
+
+2. **Datenmodell** (`src/types/index.ts`)
+   - User, Project, Issue, TimeEntry Typen
+   - Helper-Funktionen: getFullName, isOverdue, getPriorityOrder
+   - 9 Tests alle grün
+
+3. **Dashboard UI** (`src/app/page.tsx`)
+   - Sidebar mit Navigation (Dashboard, Projects, Issues, Time, Admin)
+   - Stat Cards mit animiertem Einstieg
+   - Issues-Tabelle mit Status-Badges
+   - Quick Actions Panel
+   - Dark Mode Toggle
+
+4. **Mock-Daten** (`src/lib/mock-data.ts`)
+   - 3 Beispiel-User, 3 Projekte, 5 Issues
+   - 5 Time Entries mit verschiedenen Activity Types
+
+5. **Issues Utilities** (`src/lib/issues.ts`)
+   - filterIssues() - Multi-Filter Support (status, priority, tracker, projectId, assignee, search)
+   - sortIssues() - Sortierung nach priority, status, dueDate, createdAt, subject
+   - getOpenIssues(), getClosedIssues() helper
+   - getIssueById() - Findet einzelnes Issue
+   - deleteIssue() - Löscht Issue aus Array
+   - 27 Tests alle grün
+
+6. **Issues Liste** (`src/app/issues/page.tsx`)
+   - Vollständige Issues-Liste mit Filtering
+   - Filter-Dropdowns für Status, Tracker, Priority
+   - Suchfeld mit Live-Filterung
+   - Sortierbare Spalten (klickbare Header)
+   - Animierte Tabellenzeilen
+   - Empty-State bei keine Ergebnisse
+   - Link zu "New Issue" und Issue Detail
+
+7. **Issue Form Validation** (`src/lib/issue-form.ts`)
+   - validateIssueForm() - Validierung für alle Formularfelder
+   - createIssueFromForm() - Erstellt Issue aus Formulardaten
+   - updateIssueFromForm() - Aktualisiert Issue mit Formulardaten
+   - 21 Tests alle grün
+
+8. **New Issue Page** (`src/app/issues/new/page.tsx`)
+   - Vollständiges Formular für neue Issues
+   - Projekt- und Tracker-Auswahl
+   - Subject, Description, Priority, Assignee
+   - Due Date und Estimated Hours
+   - Client-side Validierung mit Fehleranzeige
+   - Submit speichert (temporär) in Mock-Daten
+   - Animierte UI passend zum Design
+
+9. **Issue Detail Page** (`src/app/issues/[id]/page.tsx`)
+   - Dynamic Route mit Next.js App Router
+   - Issue Header mit Tracker-Badge, ID, Subject
+   - Project-Link in Header
+   - Description Card mit Whitespace-Preserving
+   - Activity Card (Placeholder für spätere Kommentare)
+   - Sidebar mit Status, Priority, Assignee, Author, Due Date, Estimated Hours
+   - Timestamps Card (Created, Updated)
+   - Edit/Delete Buttons (UI ready)
+   - 404 Handler für nicht-existierende Issues
+   - Animierte Cards mit Stagger-Effect
+
+10. **Issue Edit Page** (`src/app/issues/[id]/edit/page.tsx`)
+    - Pre-filled Formular mit bestehenden Issue-Daten
+    - Gleiche Validierung wie New Issue
+    - Save aktualisiert Issue in Mock-Daten
+    - Navigate zurück zu Issue Detail nach Save
+    - 404 Handler für nicht-existierende Issues
+
+11. **Delete Issue Funktionalität** (`src/app/issues/[id]/page.tsx`)
+    - `deleteIssue()` Utility-Funktion mit TDD (4 Tests)
+    - Confirmation Modal mit Radix UI Dialog
+    - Zeigt Issue-Details vor Löschen (Subject, Tracker, Status)
+    - Cancel/Delete Buttons mit Loading-State
+    - Redirect zu Issues-Liste nach erfolgreichem Löschen
+
+12. **Projects Utilities** (`src/lib/projects.ts`)
+    - filterProjects() - Filtert nach status, search (Name, Description, Identifier)
+    - getProjectStats() - Berechnet totalIssues, openIssues, closedIssues, progress, byTracker
+    - getProjectByIdentifier() - Findet Projekt nach URL-Identifier
+    - getProjectById() - Findet Projekt nach ID
+    - 19 Tests alle grün
+
+13. **Projects Liste** (`src/app/projects/page.tsx`)
+    - Vollständige Projects-Liste mit Card-Grid Layout
+    - Filter-Dropdown für Status (default: active)
+    - Suchfeld für Name/Description/Identifier
+    - Projekt-Cards mit:
+      - Name, Identifier, Status-Badge
+      - Description (2-Zeilen-Clamp)
+      - Progress Bar mit Prozent-Anzeige
+      - Open/Closed Issue Count
+      - Issue Breakdown nach Tracker (Bug/Feature/Support/Task Icons)
+    - Empty-State bei keine Ergebnisse
+    - Animierte Cards mit Stagger-Effect
+
+14. **Project Detail Page** (`src/app/projects/[identifier]/page.tsx`)
+     - Dynamic Route mit URL-Identifier
+     - Project Header mit Name, Status-Badge, Description
+     - 4 Stat Cards: Total Issues, Open, Closed, Progress
+     - Recent Issues Table (letzte 5, sortiert nach updatedAt)
+     - Issue Breakdown Sidebar (nach Tracker-Typ)
+     - Project Info (Created, Updated Dates)
+     - Links zu Issues-Liste für dieses Projekt
+     - "New Issue" Button mit project Parameter
+     - 404 Handler für nicht-existierende Projekte
+
+15. **Project Form Validation** (`src/lib/project-form.ts`)
+     - validateProjectForm() - Validierung für Name, Identifier, Status
+     - Identifier: lowercase, alphanumeric + hyphens, must start with letter
+     - createProjectFromForm() - Erstellt Project aus Formulardaten
+     - updateProjectFromForm() - Aktualisiert Project mit Formulardaten
+     - 19 Tests alle grün
+
+16. **New Project Page** (`src/app/projects/new/page.tsx`)
+     - Vollständiges Formular für neue Projekte
+     - Name-Feld mit Auto-Focus
+     - Identifier-Feld mit Auto-Generierung aus Name
+     - Manual Override für Identifier möglich
+     - Live-Validierung gegen bestehende Identifier
+     - Description Textarea
+     - Status-Dropdown mit farbigen Badges
+     - Verwendet project-form.ts Validierung
+     - Redirect zu neuem Projekt nach Erstellen
+
+17. **Edit Project Page** (`src/app/projects/[identifier]/edit/page.tsx`)
+     - Pre-filled Formular mit bestehenden Projekt-Daten
+     - Name, Identifier, Description, Status editierbar
+     - Identifier-Validierung (keine Duplikate, außer eigenes Projekt)
+     - Live-Warnung bei Identifier-Konflikten
+     - Gleiche Validierung wie New Project (project-form.ts)
+     - Settings-Button auf Project Detail verlinkt zu Edit
+     - Redirect zu (ggf. neuem) Identifier nach Save
+
+18. **Delete Project Funktionalität**
+     - `deleteProject()` und `deleteProjectByIdentifier()` Utility-Funktionen
+     - 4 neue Tests in projects.test.ts (alle grün)
+     - Confirmation Modal auf Project Detail Page
+     - Zeigt Projekt-Details vor Löschen (Name, Identifier, Issue-Count)
+     - Cancel/Delete Buttons mit Loading-State
+     - Redirect zu Projects-Liste nach erfolgreichem Löschen
+
+19. **Time Tracking Utilities** (`src/lib/time-entries.ts`)
+     - filterTimeEntries() - Filtert nach issueId, userId, activityType, from/to Datum, search
+     - sortTimeEntries() - Sortierung nach spentOn, hours, createdAt
+     - getTimeEntryById() - Findet einzelnen Eintrag
+     - deleteTimeEntry() - Löscht Eintrag aus Array
+     - getTotalHours() - Summiert Stunden
+     - getTimeEntriesByIssue() - Gruppiert nach Issue
+     - getTimeEntriesByUser() - Gruppiert nach User
+     - 24 Tests alle grün
+
+20. **Time Tracking List Page** (`src/app/time/page.tsx`)
+     - Vollständige Time Entries Liste mit Tabelle
+     - Filter: User, Activity Type, Date Range (from/to), Search (Comments)
+     - Sortierung nach Date und Hours (klickbare Header)
+     - Zeigt: Date, User (Avatar), Issue + Project, Activity Badge, Comments, Hours
+     - Total-Zusammenfassung am unteren Rand
+     - Empty-State bei keine Ergebnisse
+     - Animierte Zeilen mit Stagger-Effect
+     - "Log Time" Button verlinkt zu /time/new
+
+21. **Time Entry Form Validation** (`src/lib/time-entry-form.ts`) - NEU
+     - validateTimeEntryForm() - Validierung für issueId, hours, activityType, spentOn
+     - Hours-Validierung: required, > 0, <= 24
+     - createTimeEntryFromForm() - Erstellt TimeEntry aus Formulardaten
+     - 13 Tests alle grün
+
+22. **Time Entry New Page** (`src/app/time/new/page.tsx`)
+     - Vollständiges Formular zum Zeit loggen
+     - Issue-Auswahl gruppiert nach Projekt
+     - Hours-Input mit 0.25h Steps
+     - Activity Type Dropdown (development, design, review, etc.)
+     - Date Picker (default: heute)
+     - Comments Textarea
+     - Client-side Validierung mit Fehleranzeige
+     - Preselect Issue via URL-Parameter (?issue=issue-1)
+     - Suspense-Wrapper für useSearchParams (Next.js 16 requirement)
+     - Redirect zu /time nach erfolgreichem Speichern
+
+23. **User Utilities** (`src/lib/users.ts`) - NEU
+     - filterUsers() - Filtert nach role, search (Name, Email)
+     - sortUsers() - Sortierung nach firstName, lastName, email, role, createdAt
+     - getUserById() - Findet einzelnen User
+     - deleteUser() - Löscht User aus Array
+     - getUsersByRole() - Gruppiert nach Role
+     - 20 Tests alle grün
+
+24. **Admin User Management** (`src/app/admin/users/page.tsx`)
+     - Vollständige User-Liste mit Tabelle
+     - Filter: Role, Search (Name/Email)
+     - Sortierbare Spalten (Name, Email, Role, Created)
+     - User-Avatar mit Initialen
+     - Role-Badges mit farbigen Icons (Admin=rot, Manager=lila, Dev=blau)
+     - Email-Links (mailto:)
+     - Breadcrumb Navigation
+     - Edit-Button pro User (hover reveal)
+     - Summary mit Role-Counts
+     - Animierte Zeilen mit Stagger-Effect
+
+25. **User Form Validation** (`src/lib/user-form.ts`) - NEU
+     - validateUserForm() - Email, Name, Role Validierung
+     - Email-Format-Validierung mit Regex
+     - Duplikat-Email-Check (case-insensitive)
+     - createUserFromForm() - Erstellt User aus Formulardaten
+     - updateUserFromForm() - Aktualisiert User mit Formulardaten
+     - 25 Tests alle grün
+
+26. **New User Page** (`src/app/admin/users/new/page.tsx`) - NEU
+     - Formular mit First Name, Last Name, Email, Role
+     - First/Last Name nebeneinander (responsive Grid)
+     - Role-Dropdown mit farbigen Icons
+     - Live-Validierung mit Fehleranzeige
+     - Email-Duplikat-Check
+     - Redirect zu /admin/users nach Erstellen
+
+27. **Edit User Page** (`src/app/admin/users/[id]/edit/page.tsx`) - NEU
+     - Pre-filled Formular mit bestehenden User-Daten
+     - Gleiche Validierung wie New User
+     - Email-Duplikat-Check (eigene Email ausgeschlossen)
+     - Save aktualisiert User in Mock-Daten
+     - 404 Handler für nicht-existierende User
+     - Redirect zu /admin/users nach Save
+
+28. **Delete User Funktionalität** (`src/app/admin/users/page.tsx`) - NEU
+      - Confirmation Modal mit User-Details (Name, Email, Role)
+      - Delete Button in Tabelle (hover reveal, Trash2 Icon)
+      - Lokaler State für User-Liste (reaktive UI nach Delete)
+      - Loading-State während Löschvorgang
+      - Verwendet deleteUser() aus users.ts
+
+29. **Prisma/SQLite Datenbank** - NEU
+      - Prisma 7.x mit LibSQL-Adapter für SQLite
+      - Schema: User, Project, Issue, TimeEntry mit Relations
+      - Cascade Delete für Issues → TimeEntries, Projects → Issues
+      - Indizes für häufige Queries (status, projectId, assigneeId)
+      - Seed-Script mit 3 Users, 3 Projects, 5 Issues, 5 TimeEntries
+      - `src/lib/db.ts` - Singleton PrismaClient für Next.js
+
+30. **Server Actions erstellt** (`src/app/actions/`) - NEU
+      - `issues.ts` - getIssues, getIssueById, getIssuesByProject, createIssue, updateIssue, deleteIssue
+      - `projects.ts` - getProjects, getProjectByIdentifier, getProjectById, createProject, updateProject, deleteProject, isIdentifierTaken
+      - `users.ts` - getUsers, getUserById, createUser, updateUser, deleteUser, isEmailTaken
+      - `time-entries.ts` - getTimeEntries, getTimeEntriesByIssue, getTimeEntriesByUser, createTimeEntry, deleteTimeEntry
+      - Alle mit Validierung, Error-Handling, revalidatePath für Cache-Invalidierung
+      - TypeScript Types für FormData und FormErrors
+
+31. **Issues Liste auf Prisma umgestellt**
+       - Server Component `src/app/issues/page.tsx` lädt Daten via `getIssues()`
+       - Client Component `src/app/issues/issues-list.tsx` für Filtering/Sorting
+       - Serialisierung von Date → string für Client-Übertragung
+       - Build erfolgreich
+
+32. **Issue Detail Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/issues/[id]/page.tsx` lädt via `getIssueById()`
+       - Client Component `src/app/issues/[id]/issue-detail.tsx` für Delete-Dialog
+       - Serialisierte Typen für Client-Übertragung (SerializedIssue)
+       - Delete nutzt Server Action `deleteIssue()`
+       - Build erfolgreich
+
+33. **Issue New Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/issues/new/page.tsx` lädt Users + Projects
+       - Client Component `src/app/issues/new/issue-form.tsx` für Formular
+       - Nutzt Server Action `createIssue()` statt Mock-Daten
+       - URL-Parameter `?project=id` für Default-Projekt
+       - Build erfolgreich
+
+34. **Issue Edit Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/issues/[id]/edit/page.tsx` lädt Issue, Users, Projects
+       - Client Component `src/app/issues/[id]/edit/issue-edit-form.tsx` für Formular
+       - Nutzt Server Action `updateIssue()` statt Mock-Daten
+       - Serialisierung von Date → string für Client-Übertragung
+       - Build erfolgreich
+
+35. **Projects Liste auf Prisma umgestellt** - NEU
+       - Server Component `src/app/projects/page.tsx` lädt via `getProjects()`
+       - Client Component `src/app/projects/projects-list.tsx` für Filtering/Sorting
+       - Lädt auch alle Issues für Stats-Berechnung (progress, tracker breakdown)
+       - Serialisierung von Date → string für Client-Übertragung
+       - Build erfolgreich
+
+36. **Project Detail Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/projects/[identifier]/page.tsx` lädt via `getProjectByIdentifier()`
+       - Client Component `src/app/projects/[identifier]/project-detail.tsx` für Delete-Dialog
+       - Serialisierte Typen für Client-Übertragung (SerializedProject, SerializedIssue)
+       - Delete nutzt Server Action `deleteProject()`
+       - Stats (total, open, closed, progress, byTracker) berechnet auf Client aus Issues
+       - Build erfolgreich
+
+37. **Project New Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/projects/new/page.tsx` (nur Wrapper)
+       - Client Component `src/app/projects/new/project-form.tsx` für Formular
+       - Nutzt Server Action `createProject()` + `isIdentifierTaken()`
+       - Live-Check für Identifier-Verfügbarkeit
+       - Build erfolgreich
+
+38. **Project Edit Page auf Prisma umgestellt** - NEU
+       - Server Component `src/app/projects/[identifier]/edit/page.tsx` lädt Projekt
+       - Client Component `src/app/projects/[identifier]/edit/project-edit-form.tsx`
+       - Nutzt Server Action `updateProject()` + `isIdentifierTaken()`
+       - Serialisierung von Date → string für Client-Übertragung
+       - Build erfolgreich
+
+39. **Time Liste auf Prisma umgestellt** - NEU
+       - Server Component `src/app/time/page.tsx` lädt via `getTimeEntries()` + `getUsers()`
+       - Client Component `src/app/time/time-list.tsx` für Filtering/Sorting
+       - Serialisierte Typen für Client-Übertragung (SerializedTimeEntry, SerializedUser)
+       - Build erfolgreich
+
+40. **Time New Page auf Prisma umgestellt**
+       - Server Component `src/app/time/new/page.tsx` lädt Issues + Projects
+       - Client Component `src/app/time/new/time-entry-form.tsx` für Formular
+       - Nutzt Server Action `createTimeEntry()` statt Mock-Daten
+       - URL-Parameter `?issue=id` für Issue-Vorauswahl
+       - Build erfolgreich
+
+41. **Admin Users auf Prisma umgestellt** - NEU
+       - Server Component `src/app/admin/users/page.tsx` lädt via `getUsers()`
+       - Client Component `src/app/admin/users/users-list.tsx` für Filtering/Sorting/Delete
+       - Client Component `src/app/admin/users/new/user-form.tsx` für New User
+       - Client Component `src/app/admin/users/[id]/edit/user-edit-form.tsx` für Edit User
+       - Server Component `src/app/admin/users/[id]/edit/page.tsx` mit notFound()
+       - Nutzt Server Actions: createUser(), updateUser(), deleteUser(), isEmailTaken()
+       - Serialisierung von Date → string für Client-Übertragung
+       - Build erfolgreich
+
+42. **Dashboard auf Prisma umgestellt** - NEU
+        - Server Component `src/app/page.tsx` lädt via `getIssues()` + `getProjects()`
+        - Berechnet Stats (open, inProgress, dueSoon, activeProjects) aus DB-Daten
+        - Serialisiert Issues für Client-Component `IssuesTable`
+        - `IssuesTable` Komponente refaktoriert: nimmt jetzt `issues` als required Prop
+        - Keine Mock-Data Imports mehr in Dashboard
+        - Build erfolgreich
+
+43. **E2E Tests mit Playwright** - NEU
+        - Playwright installiert + konfiguriert (`playwright.config.ts`)
+        - 5 E2E Test-Suites erstellt:
+          - `e2e/dashboard.spec.ts` - Dashboard, Navigation, Stat Cards (3 Tests)
+          - `e2e/issues.spec.ts` - Issues CRUD, Filtering, Details (5 Tests)
+          - `e2e/projects.spec.ts` - Projects CRUD, Filtering, Details (5 Tests)
+          - `e2e/time.spec.ts` - Time Tracking Liste, Form (3 Tests)
+          - `e2e/admin-users.spec.ts` - User Management CRUD (4 Tests)
+        - Alle 20 E2E-Tests grün
+        - npm run test:e2e / npm run test:e2e:ui
+
+44. **Comments-System implementiert**
+        - Prisma-Schema erweitert: `Comment` Model mit issueId, authorId, content
+        - Relations: Issue -> Comments (cascade delete), User -> Comments
+        - TypeScript Types: `Comment` Interface in `src/types/index.ts`
+        - Utility Functions: `src/lib/comments.ts` (sortComments, getCommentById, getCommentsByIssue)
+        - 8 Unit Tests für comments.ts (alle grün)
+        - Server Actions: `src/app/actions/comments.ts` (CRUD operations)
+        - Client Component: `src/app/issues/[id]/comments.tsx`
+          - Comment-Liste mit Avatar, Author, Zeitangabe
+          - Add Comment Form mit Textarea
+          - Optimistic UI Update nach Submit
+          - Empty-State wenn keine Kommentare
+        - Issue Detail Page integriert: zeigt Comments statt Activity-Placeholder
+        - Build erfolgreich
+
+45. **Toast Notifications implementiert** - NEU
+        - Sonner (shadcn/ui) installiert
+        - Toaster in Layout integriert (`src/app/layout.tsx`)
+        - Position: bottom-right, richColors, closeButton
+        - Issue Create: Success/Error Toast mit Subject
+        - Issue Edit: Success/Error Toast
+        - Issue Delete: Success/Error Toast mit Subject
+        - Build erfolgreich
+
+46. **Toast Notifications für alle Formulare** - NEU
+        - Project Create: Success/Error Toast mit Name
+        - Project Edit: Success/Error Toast mit Name
+        - Project Delete: Success/Error Toast mit Name
+        - User Create: Success/Error Toast mit Name
+        - User Edit: Success/Error Toast mit Name
+        - User Delete: Success/Error Toast mit Name
+        - Time Entry Create: Success/Error Toast mit Stunden
+        - Build erfolgreich
+
+### Nächste Schritte (Priorität):
+
+1. **Notifications / Alerts** - System-Benachrichtigungen (optional)
+2. **Search Global** - Globale Suche über Issues/Projects (optional)
+
+### Befehle:
+
+```bash
+npm run dev        # Dev-Server starten
+npm run test       # Unit Tests im Watch-Mode
+npm run test:run   # Unit Tests einmalig (181 Tests grün)
+npm run test:e2e   # E2E Tests mit Playwright (20 Tests grün)
+npm run build      # Production Build
+npm run db:seed    # Datenbank seeden
+npm run db:reset   # Datenbank zurücksetzen + seeden
+```
+
+### Test-Status:
+
+**Unit Tests (Vitest):**
+- `src/types/index.test.ts` - 9 Tests
+- `src/lib/issues.test.ts` - 27 Tests
+- `src/lib/issue-form.test.ts` - 21 Tests
+- `src/lib/projects.test.ts` - 23 Tests
+- `src/lib/project-form.test.ts` - 19 Tests
+- `src/lib/time-entries.test.ts` - 24 Tests
+- `src/lib/time-entry-form.test.ts` - 13 Tests
+- `src/lib/users.test.ts` - 20 Tests
+- `src/lib/user-form.test.ts` - 25 Tests
+- `src/lib/comments.test.ts` - 8 Tests
+- **Gesamt: 189 Unit Tests alle grün**
+
+**E2E Tests (Playwright):**
+- `e2e/dashboard.spec.ts` - 3 Tests
+- `e2e/issues.spec.ts` - 5 Tests
+- `e2e/projects.spec.ts` - 5 Tests
+- `e2e/time.spec.ts` - 3 Tests
+- `e2e/admin-users.spec.ts` - 4 Tests
+- **Gesamt: 20 E2E Tests alle grün**
+
+### Design-Entscheidungen:
+
+- **Industrial-Utilitarian Style**: Sachlich, präzise, funktional
+- **Fonts**: Source Sans 3 (Body), JetBrains Mono (Code/Zahlen)
+- **Farben**: Warme Off-White Background, Deep Blue Primary, Amber Accent
+- **Sidebar**: Links fixiert, collapsible, mit Projekt-Shortcuts
+- **Animations**: Card fade-in, Row stagger-animation
+- **Projects**: Card-Grid Layout mit Progress-Bars und Issue-Stats
+
+### Offene TODOs im Code:
+
+(keine bekannten offenen TODOs mehr für Issues)
+
+### Sonstiges
+- Wenn möglich mit Chrome testen um zu verifizieren (oder Playwright)
+- Navigation in Sidebar bereits korrekt verlinkt zu /projects und /projects/[identifier]
+- ESLint, Build, Tests alle grün
+- ✅ GEFIXT: SelectItem value="" Error in Assignee-Dropdown (Iteration 8)
+  - Lösung: Sentinel-Wert `__unassigned__` statt leerem String
+  - Betrifft: issues/new/page.tsx und issues/[id]/edit/page.tsx
+
+---
+Letzte Aktualisierung: Iteration 37 - Verifizierung: 189 Unit Tests + 20 E2E Tests alle grün, Build OK
+
+**FAZIT:** Redmine Clone ist feature-complete. Alle Kern-Features implementiert und getestet.

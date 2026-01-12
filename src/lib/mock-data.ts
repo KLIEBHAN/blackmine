@@ -1,4 +1,4 @@
-import type { User, Project, Issue } from '@/types'
+import type { User, Project, Issue, TimeEntry } from '@/types'
 
 export const mockUsers: User[] = [
   {
@@ -132,5 +132,58 @@ export const mockIssues: Issue[] = [
     estimatedHours: 24,
     createdAt: new Date('2024-03-05'),
     updatedAt: new Date('2024-03-20'),
+  },
+]
+
+export const mockTimeEntries: TimeEntry[] = [
+  {
+    id: 'time-1',
+    issueId: 'issue-1',
+    userId: 'user-2',
+    hours: 2.5,
+    comments: 'Investigated performance bottleneck',
+    activityType: 'development',
+    spentOn: new Date('2024-03-15'),
+    createdAt: new Date('2024-03-15T10:00:00'),
+  },
+  {
+    id: 'time-2',
+    issueId: 'issue-1',
+    userId: 'user-2',
+    hours: 4,
+    comments: 'Implemented lazy loading fix',
+    activityType: 'development',
+    spentOn: new Date('2024-03-16'),
+    createdAt: new Date('2024-03-16T14:00:00'),
+  },
+  {
+    id: 'time-3',
+    issueId: 'issue-3',
+    userId: 'user-2',
+    hours: 3,
+    comments: 'Debugging Google OAuth flow',
+    activityType: 'development',
+    spentOn: new Date('2024-03-18'),
+    createdAt: new Date('2024-03-18T09:00:00'),
+  },
+  {
+    id: 'time-4',
+    issueId: 'issue-5',
+    userId: 'user-2',
+    hours: 6,
+    comments: 'Stripe SDK integration and testing',
+    activityType: 'development',
+    spentOn: new Date('2024-03-19'),
+    createdAt: new Date('2024-03-19T08:00:00'),
+  },
+  {
+    id: 'time-5',
+    issueId: 'issue-5',
+    userId: 'user-3',
+    hours: 1.5,
+    comments: 'Code review for payment module',
+    activityType: 'review',
+    spentOn: new Date('2024-03-20'),
+    createdAt: new Date('2024-03-20T11:00:00'),
   },
 ]

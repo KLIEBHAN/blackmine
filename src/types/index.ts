@@ -52,6 +52,15 @@ export interface TimeEntry {
   createdAt: Date
 }
 
+export interface Comment {
+  id: string
+  issueId: string
+  authorId: string
+  content: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 // Helper functions
 export function getFullName(user: User): string {
   return `${user.firstName} ${user.lastName}`.trim()

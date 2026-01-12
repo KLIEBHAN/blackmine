@@ -4,21 +4,27 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Bell, Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
+
+// Use useSyncExternalStore for SSR-safe DOM access
+function useIsDarkMode() {
+  return useSyncExternalStore(
+    (callback) => {
+      // Subscribe to class changes on documentElement
+      const observer = new MutationObserver(callback)
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+      return () => observer.disconnect()
+    },
+    () => document.documentElement.classList.contains('dark'),
+    () => false // Server snapshot
+  )
+}
 
 export function DashboardHeader() {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    // Check initial preference
-    const dark = document.documentElement.classList.contains('dark')
-    setIsDark(dark)
-  }, [])
+  const isDark = useIsDarkMode()
 
   const toggleTheme = () => {
-    const newDark = !isDark
-    setIsDark(newDark)
-    document.documentElement.classList.toggle('dark', newDark)
+    document.documentElement.classList.toggle('dark', !isDark)
   }
 
   return (

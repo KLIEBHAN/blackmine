@@ -12,11 +12,21 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import type { Issue, IssueStatus, IssueTracker, IssuePriority } from '@/types'
-import { mockIssues, mockUsers, mockProjects } from '@/lib/mock-data'
-import { getFullName, isOverdue } from '@/types'
+import type { IssueStatus, IssueTracker, IssuePriority } from '@/types'
 import { AlertCircle, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
+
+// Serialized types for client component (dates as strings)
+export type SerializedIssue = {
+  id: string
+  subject: string
+  status: string
+  priority: string
+  tracker: string
+  dueDate: string | null
+  project: { id: string; name: string; identifier: string }
+  assignee: { id: string; firstName: string; lastName: string } | null
+}
 
 const statusLabels: Record<IssueStatus, string> = {
   new: 'New',
@@ -50,16 +60,26 @@ function getInitials(name: string): string {
     .slice(0, 2)
 }
 
+function getFullName(user: { firstName: string; lastName: string }): string {
+  return `${user.firstName} ${user.lastName}`
+}
+
+function isOverdue(issue: SerializedIssue): boolean {
+  if (!issue.dueDate) return false
+  if (issue.status === 'closed' || issue.status === 'rejected') return false
+  return new Date(issue.dueDate) < new Date()
+}
+
 interface IssuesTableProps {
   title?: string
-  issues?: Issue[]
+  issues: SerializedIssue[]
   showProject?: boolean
   className?: string
 }
 
 export function IssuesTable({
   title = 'Recent Issues',
-  issues = mockIssues,
+  issues,
   showProject = true,
   className,
 }: IssuesTableProps) {
@@ -90,10 +110,6 @@ export function IssuesTable({
           </TableHeader>
           <TableBody>
             {issues.map((issue) => {
-              const assignee = issue.assigneeId
-                ? mockUsers.find((u) => u.id === issue.assigneeId)
-                : null
-              const project = mockProjects.find((p) => p.id === issue.projectId)
               const overdue = isOverdue(issue)
 
               return (
@@ -119,10 +135,10 @@ export function IssuesTable({
                             `tracker-${issue.tracker}`
                           )}
                         >
-                          {trackerLabels[issue.tracker]}
+                          {trackerLabels[issue.tracker as IssueTracker]}
                         </Badge>
                         <span className="font-mono text-xs text-muted-foreground">
-                          #{issue.id.split('-')[1]}
+                          #{issue.id.slice(-4)}
                         </span>
                       </div>
                       <Link
@@ -137,9 +153,12 @@ export function IssuesTable({
                   {/* Project */}
                   {showProject && (
                     <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {project?.name || 'Unknown'}
-                      </span>
+                      <Link 
+                        href={`/projects/${issue.project.identifier}`}
+                        className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                      >
+                        {issue.project.name}
+                      </Link>
                     </TableCell>
                   )}
 
@@ -152,7 +171,7 @@ export function IssuesTable({
                         `status-${issue.status}`
                       )}
                     >
-                      {statusLabels[issue.status]}
+                      {statusLabels[issue.status as IssueStatus]}
                     </Badge>
                   </TableCell>
 
@@ -166,20 +185,20 @@ export function IssuesTable({
                         issue.priority === 'high' && 'text-orange-600'
                       )}
                     >
-                      {priorityLabels[issue.priority]}
+                      {priorityLabels[issue.priority as IssuePriority]}
                     </span>
                   </TableCell>
 
                   {/* Assignee */}
                   <TableCell>
-                    {assignee ? (
+                    {issue.assignee ? (
                       <div className="flex items-center gap-2">
                         <Avatar className="size-6">
                           <AvatarFallback className="bg-muted text-[10px] font-medium">
-                            {getInitials(getFullName(assignee))}
+                            {getInitials(getFullName(issue.assignee))}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm">{getFullName(assignee)}</span>
+                        <span className="text-sm">{getFullName(issue.assignee)}</span>
                       </div>
                     ) : (
                       <span className="text-sm text-muted-foreground">Unassigned</span>

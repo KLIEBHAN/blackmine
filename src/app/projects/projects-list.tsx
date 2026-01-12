@@ -1,0 +1,337 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+} from '@/components/ui/dropdown-menu'
+import type { ProjectStatus } from '@/types'
+import {
+  Search,
+  Plus,
+  ListFilter,
+  X,
+  FolderKanban,
+  Bug,
+  Sparkles,
+  HelpCircle,
+  CheckSquare,
+} from 'lucide-react'
+import Link from 'next/link'
+
+// Serialized project type from server
+export type SerializedProject = {
+  id: string
+  name: string
+  identifier: string
+  description: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  _count: {
+    issues: number
+  }
+}
+
+// Serialized issue for stats calculation
+export type SerializedIssueForStats = {
+  id: string
+  projectId: string
+  status: string
+  tracker: string
+}
+
+type Props = {
+  projects: SerializedProject[]
+  issues: SerializedIssueForStats[]
+  totalCount: number
+}
+
+const statusLabels: Record<ProjectStatus, string> = {
+  active: 'Active',
+  archived: 'Archived',
+  closed: 'Closed',
+}
+
+const statusColors: Record<ProjectStatus, string> = {
+  active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
+  archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
+  closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
+}
+
+const allStatuses: ProjectStatus[] = ['active', 'archived', 'closed']
+
+const trackerIcons: Record<string, React.ReactNode> = {
+  bug: <Bug className="size-3.5" />,
+  feature: <Sparkles className="size-3.5" />,
+  support: <HelpCircle className="size-3.5" />,
+  task: <CheckSquare className="size-3.5" />,
+}
+
+// Calculate project stats from issues
+function getProjectStats(projectId: string, issues: SerializedIssueForStats[]) {
+  const projectIssues = issues.filter((i) => i.projectId === projectId)
+  const openIssues = projectIssues.filter((i) => i.status !== 'closed').length
+  const closedIssues = projectIssues.filter((i) => i.status === 'closed').length
+  const totalIssues = projectIssues.length
+  const progress = totalIssues > 0 ? (closedIssues / totalIssues) * 100 : 0
+
+  const byTracker: Record<string, number> = {}
+  for (const issue of projectIssues) {
+    byTracker[issue.tracker] = (byTracker[issue.tracker] || 0) + 1
+  }
+
+  return { totalIssues, openIssues, closedIssues, progress, byTracker }
+}
+
+// Filter projects by status and search
+function filterProjects(
+  projects: SerializedProject[],
+  filters: { status?: ProjectStatus[]; search?: string }
+) {
+  return projects.filter((project) => {
+    // Status filter
+    if (filters.status && filters.status.length > 0) {
+      if (!filters.status.includes(project.status as ProjectStatus)) {
+        return false
+      }
+    }
+
+    // Search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase()
+      const matches =
+        project.name.toLowerCase().includes(searchLower) ||
+        project.identifier.toLowerCase().includes(searchLower) ||
+        project.description.toLowerCase().includes(searchLower)
+      if (!matches) return false
+    }
+
+    return true
+  })
+}
+
+export function ProjectsList({ projects, issues, totalCount }: Props) {
+  const [search, setSearch] = useState('')
+  const [selectedStatuses, setSelectedStatuses] = useState<ProjectStatus[]>(['active'])
+
+  // Apply filters
+  const filteredProjects = useMemo(() => {
+    return filterProjects(projects, {
+      status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+      search: search || undefined,
+    })
+  }, [projects, search, selectedStatuses])
+
+  const toggleStatus = (status: ProjectStatus) => {
+    setSelectedStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    )
+  }
+
+  const clearFilters = () => {
+    setSelectedStatuses([])
+    setSearch('')
+  }
+
+  const activeFilterCount = selectedStatuses.length
+
+  return (
+    <div className="grid-pattern min-h-full">
+      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+        {/* Page Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              <span className="font-mono">{filteredProjects.length}</span> of{' '}
+              <span className="font-mono">{totalCount}</span> projects
+            </p>
+          </div>
+          <Button className="gap-2" asChild>
+            <Link href="/projects/new">
+              <Plus className="size-4" />
+              New Project
+            </Link>
+          </Button>
+        </div>
+
+        {/* Filter Bar */}
+        <Card className="mb-6 opacity-0 animate-card-in delay-1">
+          <CardContent className="p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Search */}
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search projects..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9 font-sans"
+                />
+              </div>
+
+              {/* Status Filter */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <ListFilter className="size-4" />
+                    Status
+                    {selectedStatuses.length > 0 && (
+                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs font-mono">
+                        {selectedStatuses.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {allStatuses.map((status) => (
+                    <DropdownMenuCheckboxItem
+                      key={status}
+                      checked={selectedStatuses.includes(status)}
+                      onCheckedChange={() => toggleStatus(status)}
+                    >
+                      <Badge
+                        variant="outline"
+                        className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', statusColors[status])}
+                      >
+                        {statusLabels[status]}
+                      </Badge>
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Clear Filters */}
+              {(activeFilterCount > 0 || search) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="size-3.5" />
+                  Clear
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Projects Grid */}
+        {filteredProjects.length === 0 ? (
+          <Card className="opacity-0 animate-card-in delay-2">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <FolderKanban className="size-12 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">No projects found</p>
+              {(activeFilterCount > 0 || search) && (
+                <Button variant="link" size="sm" onClick={clearFilters} className="mt-2">
+                  Clear filters
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProjects.map((project, index) => {
+              const stats = getProjectStats(project.id, issues)
+
+              return (
+                <Card
+                  key={project.id}
+                  className="group opacity-0 animate-card-in hover:shadow-md transition-shadow"
+                  style={{ animationDelay: `${(index + 2) * 50}ms` }}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <Link
+                          href={`/projects/${project.identifier}`}
+                          className="block"
+                        >
+                          <CardTitle className="text-lg font-semibold leading-tight hover:text-primary transition-colors truncate">
+                            {project.name}
+                          </CardTitle>
+                        </Link>
+                        <p className="mt-0.5 text-xs font-mono text-muted-foreground">
+                          {project.identifier}
+                        </p>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className={cn('shrink-0 rounded-sm px-1.5 py-0 text-[10px]', statusColors[project.status as ProjectStatus])}
+                      >
+                        {statusLabels[project.status as ProjectStatus]}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-mono font-medium">
+                          {stats.progress.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          style={{ width: `${stats.progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Issue Stats */}
+                    <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>
+                          <span className="font-mono font-medium text-foreground">{stats.openIssues}</span> open
+                        </span>
+                        <span>
+                          <span className="font-mono font-medium text-foreground">{stats.closedIssues}</span> closed
+                        </span>
+                      </div>
+
+                      {/* Tracker breakdown */}
+                      <div className="flex items-center gap-1.5">
+                        {Object.entries(stats.byTracker).map(([tracker, count]) => {
+                          if (count === 0) return null
+                          return (
+                            <div
+                              key={tracker}
+                              className="flex items-center gap-0.5 text-xs text-muted-foreground"
+                              title={`${count} ${tracker}${count !== 1 ? 's' : ''}`}
+                            >
+                              {trackerIcons[tracker]}
+                              <span className="font-mono">{count}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

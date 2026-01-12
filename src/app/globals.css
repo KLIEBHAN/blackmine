@@ -216,3 +216,19 @@
   font-family: 'JetBrains Mono', monospace;
   font-feature-settings: "tnum";
 }
+
+/* Row fade-in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}

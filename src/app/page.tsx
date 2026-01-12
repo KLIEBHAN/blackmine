@@ -1,14 +1,22 @@
 import { CircleDot, FolderKanban, Clock, AlertTriangle } from 'lucide-react'
 import { StatCard, IssuesTable, QuickActions } from '@/components/dashboard'
-import { mockIssues, mockProjects } from '@/lib/mock-data'
+import { getIssues } from '@/app/actions/issues'
+import { getProjects } from '@/app/actions/projects'
+import type { SerializedIssue } from '@/components/dashboard/issues-table'
 
-export default function DashboardPage() {
-  // Calculate stats from mock data
-  const openIssues = mockIssues.filter(
+export default async function DashboardPage() {
+  // Load data from database
+  const [issues, projects] = await Promise.all([
+    getIssues(),
+    getProjects(),
+  ])
+
+  // Calculate stats
+  const openIssues = issues.filter(
     (i) => i.status === 'new' || i.status === 'in_progress'
   ).length
-  const inProgress = mockIssues.filter((i) => i.status === 'in_progress').length
-  const dueSoon = mockIssues.filter((i) => {
+  const inProgress = issues.filter((i) => i.status === 'in_progress').length
+  const dueSoon = issues.filter((i) => {
     if (!i.dueDate || i.status === 'closed' || i.status === 'rejected') return false
     const dueDate = new Date(i.dueDate)
     const now = new Date()
@@ -16,7 +24,29 @@ export default function DashboardPage() {
     weekFromNow.setDate(weekFromNow.getDate() + 7)
     return dueDate >= now && dueDate <= weekFromNow
   }).length
-  const activeProjects = mockProjects.filter((p) => p.status === 'active').length
+  const activeProjects = projects.filter((p) => p.status === 'active').length
+
+  // Serialize issues for client component (recent 5)
+  const recentIssues: SerializedIssue[] = issues.slice(0, 5).map((issue) => ({
+    id: issue.id,
+    subject: issue.subject,
+    status: issue.status,
+    priority: issue.priority,
+    tracker: issue.tracker,
+    dueDate: issue.dueDate?.toISOString() ?? null,
+    project: {
+      id: issue.project.id,
+      name: issue.project.name,
+      identifier: issue.project.identifier,
+    },
+    assignee: issue.assignee
+      ? {
+          id: issue.assignee.id,
+          firstName: issue.assignee.firstName,
+          lastName: issue.assignee.lastName,
+        }
+      : null,
+  }))
 
   return (
     <div className="grid-pattern min-h-full">
@@ -69,7 +99,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Issues Table - takes 2 columns */}
           <div className="lg:col-span-2">
-            <IssuesTable issues={mockIssues} />
+            <IssuesTable issues={recentIssues} />
           </div>
 
           {/* Quick Actions - takes 1 column */}

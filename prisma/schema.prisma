@@ -1,0 +1,100 @@
+// Prisma schema for Redmine Clone
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  role      String   @default("developer") // admin, manager, developer, reporter
+  createdAt DateTime @default(now())
+
+  // Relations
+  authoredIssues  Issue[]     @relation("IssueAuthor")
+  assignedIssues  Issue[]     @relation("IssueAssignee")
+  timeEntries     TimeEntry[]
+  comments        Comment[]
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  identifier  String   @unique
+  description String   @default("")
+  status      String   @default("active") // active, archived, closed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  issues Issue[]
+}
+
+model Issue {
+  id             String    @id @default(cuid())
+  tracker        String    // bug, feature, support, task
+  subject        String
+  description    String    @default("")
+  status         String    @default("new") // new, in_progress, resolved, closed, rejected
+  priority       String    @default("normal") // low, normal, high, urgent, immediate
+  dueDate        DateTime?
+  estimatedHours Float?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String
+  author     User        @relation("IssueAuthor", fields: [authorId], references: [id])
+  authorId   String
+  assignee   User?       @relation("IssueAssignee", fields: [assigneeId], references: [id])
+  assigneeId String?
+  timeEntries TimeEntry[]
+  comments    Comment[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([assigneeId])
+}
+
+model TimeEntry {
+  id           String   @id @default(cuid())
+  hours        Float
+  comments     String   @default("")
+  activityType String   // development, design, review, meeting, support, documentation
+  spentOn      DateTime
+  createdAt    DateTime @default(now())
+
+  // Relations
+  issue   Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@index([issueId])
+  @@index([userId])
+  @@index([spentOn])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  issue   Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId String
+  author  User   @relation(fields: [authorId], references: [id])
+  authorId String
+
+  @@index([issueId])
+  @@index([authorId])
+}
