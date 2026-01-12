@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { cn } from '@/lib/utils'
+import { cn, formatShortId } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -132,7 +132,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                     <ListFilter className="size-4" />
                     Status
                     {selectedStatuses.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs font-mono">
+                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
                         {selectedStatuses.length}
                       </Badge>
                     )}
@@ -211,7 +211,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                           </CardTitle>
                         </Link>
                         <p className="mt-0.5 text-xs font-mono text-muted-foreground">
-                          {project.identifier}
+                          {formatShortId(project.identifier)}
                         </p>
                       </div>
                       <Badge

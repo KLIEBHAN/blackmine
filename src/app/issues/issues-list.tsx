@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { cn, getInitials, formatDate, staggerDelay } from '@/lib/utils'
+import { cn, getInitials, formatDate, staggerDelay, formatShortId } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -92,9 +92,10 @@ function toIssue(issue: IssueWithRelations): Issue {
 type Props = {
   issues: IssueWithRelations[]
   totalCount: number
+  hideHeader?: boolean
 }
 
-export function IssuesList({ issues, totalCount }: Props) {
+export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
   const [search, setSearch] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>([])
   const [selectedTrackers, setSelectedTrackers] = useState<IssueTracker[]>([])
@@ -143,23 +144,25 @@ export function IssuesList({ issues, totalCount }: Props) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+      <div className={cn("mx-auto max-w-7xl p-6 lg:p-8", hideHeader && "pt-0")}>
         {/* Page Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Issues</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              <span className="font-mono">{filteredIssues.length}</span> of{' '}
-              <span className="font-mono">{totalCount}</span> issues
-            </p>
+        {!hideHeader && (
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Issues</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                <span className="font-mono">{filteredIssues.length}</span> of{' '}
+                <span className="font-mono">{totalCount}</span> issues
+              </p>
+            </div>
+            <Button asChild className="gap-2">
+              <Link href="/issues/new">
+                <Plus className="size-4" />
+                New Issue
+              </Link>
+            </Button>
           </div>
-          <Button asChild className="gap-2">
-            <Link href="/issues/new">
-              <Plus className="size-4" />
-              New Issue
-            </Link>
-          </Button>
-        </div>
+        )}
 
         {/* Filter Bar */}
         <Card className="mb-6 opacity-0 animate-card-in delay-1">
@@ -183,7 +186,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <ListFilter className="size-4" />
                     Status
                     {selectedStatuses.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs font-mono">
+                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
                         {selectedStatuses.length}
                       </Badge>
                     )}
@@ -216,7 +219,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <Filter className="size-4" />
                     Tracker
                     {selectedTrackers.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs font-mono">
+                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
                         {selectedTrackers.length}
                       </Badge>
                     )}
@@ -249,7 +252,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <SlidersHorizontal className="size-4" />
                     Priority
                     {selectedPriorities.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs font-mono">
+                      <Badge variant="default" className="ml-1 px-1.5 py-0 text-[10px] font-mono rounded-full h-4 min-w-4 flex items-center justify-center">
                         {selectedPriorities.length}
                       </Badge>
                     )}
@@ -391,9 +394,9 @@ export function IssuesList({ issues, totalCount }: Props) {
                               >
                                 {trackerLabels[issue.tracker as IssueTracker]}
                               </Badge>
-                              <span className="font-mono text-xs text-muted-foreground">
-                                #{issue.id.split('-').pop()}
-                              </span>
+                                <span className="font-mono text-xs text-muted-foreground">
+                                  #{formatShortId(issue.id)}
+                                </span>
                             </div>
                             <Link
                               href={`/issues/${issue.id}`}

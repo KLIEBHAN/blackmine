@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Bell, Moon, Sun } from 'lucide-react'
 import { useSyncExternalStore } from 'react'
+import { Breadcrumbs } from './breadcrumbs'
 
 // Use useSyncExternalStore for SSR-safe DOM access
 function useIsDarkMode() {
@@ -39,8 +40,8 @@ export function DashboardHeader() {
       <Separator orientation="vertical" className="mr-2 h-4" />
 
       {/* Breadcrumb / Page title */}
-      <div className="flex items-center gap-2">
-        <h1 className="text-sm font-semibold">Dashboard</h1>
+      <div className="flex items-center gap-2 overflow-hidden">
+        <Breadcrumbs />
       </div>
 
       {/* Spacer */}
