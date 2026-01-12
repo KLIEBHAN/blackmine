@@ -2,6 +2,14 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: filterProjects generisch gemacht**
+  - `src/lib/projects.ts`: Funktion jetzt generisch mit TypeScript Generics
+  - `FilterableProject` Interface für strukturelles Typing
+  - Unterstützt sowohl `Project` als auch `SerializedProject` Types
+  - Lokale Duplikat-Funktion aus `src/app/projects/projects-list.tsx` entfernt (~25 Zeilen)
+  - Keine Breaking Changes - bestehende Tests weiterhin grün
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: Konstanten und GeneralFormError konsolidiert**
   - `EMAIL_REGEX` aus `src/lib/user-form.ts` exportiert und in 4 Dateien importiert
     - `src/app/actions/users.ts`
@@ -127,6 +135,7 @@
 - [x] DRY: EMAIL_REGEX zentralisiert (5 Stellen)
 - [x] DRY: GeneralFormError Komponente erstellt (5 Stellen)
 - [x] DRY: ActivityType zentralisiert (3 Definitionen)
+- [x] DRY: filterProjects generisch gemacht (lokales Duplikat entfernt)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -147,4 +156,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-12 (EMAIL_REGEX, GeneralFormError, ActivityType DRY-Refactoring)
+Letzte Aktualisierung: 2026-01-12 (filterProjects generisch gemacht)

@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { ProjectStatus, IssueTracker } from '@/types'
 import { projectStatusLabels, allProjectStatuses } from '@/types'
+import { filterProjects } from '@/lib/projects'
 import { Search, Plus, ListFilter, X, FolderKanban } from 'lucide-react'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
 import Link from 'next/link'
@@ -68,33 +69,6 @@ function getProjectStats(projectId: string, issues: SerializedIssueForStats[]) {
   }
 
   return { totalIssues, openIssues, closedIssues, progress, byTracker }
-}
-
-// Filter projects by status and search
-function filterProjects(
-  projects: SerializedProject[],
-  filters: { status?: ProjectStatus[]; search?: string }
-) {
-  return projects.filter((project) => {
-    // Status filter
-    if (filters.status && filters.status.length > 0) {
-      if (!filters.status.includes(project.status as ProjectStatus)) {
-        return false
-      }
-    }
-
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
-      const matches =
-        project.name.toLowerCase().includes(searchLower) ||
-        project.identifier.toLowerCase().includes(searchLower) ||
-        project.description.toLowerCase().includes(searchLower)
-      if (!matches) return false
-    }
-
-    return true
-  })
 }
 
 export function ProjectsList({ projects, issues, totalCount }: Props) {

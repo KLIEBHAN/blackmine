@@ -13,13 +13,22 @@ export interface ProjectStats {
   byTracker: Record<IssueTracker, number>
 }
 
+// Minimal interface for filterable projects (supports both Project and serialized variants)
+interface FilterableProject {
+  name: string
+  identifier: string
+  description: string
+  status: string
+}
+
 /**
- * Filter projects by status and search term
+ * Filter projects by status and search term.
+ * Generic to support both domain Project and serialized variants.
  */
-export function filterProjects(projects: Project[], filters: ProjectFilters): Project[] {
+export function filterProjects<T extends FilterableProject>(projects: T[], filters: ProjectFilters): T[] {
   return projects.filter((project) => {
     // Status filter
-    if (filters.status?.length && !filters.status.includes(project.status)) {
+    if (filters.status?.length && !filters.status.includes(project.status as ProjectStatus)) {
       return false
     }
 
