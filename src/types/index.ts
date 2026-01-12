@@ -124,8 +124,11 @@ export function getFullName(user: { firstName: string; lastName: string }): stri
   return `${user.firstName} ${user.lastName}`.trim()
 }
 
-export function isOverdue(issue: Pick<Issue, 'status' | 'dueDate'>): boolean {
-  if (!issue.dueDate || issue.status === 'closed' || issue.status === 'rejected') {
+// Statuses that indicate an issue is "done" and should not be considered overdue
+const completedStatuses: readonly string[] = ['resolved', 'closed', 'rejected']
+
+export function isOverdue(issue: { status: string; dueDate: Date | string | null }): boolean {
+  if (!issue.dueDate || completedStatuses.includes(issue.status)) {
     return false
   }
   return new Date(issue.dueDate) < new Date()

@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority } from '@/types'
-import { statusLabels, trackerLabels, priorityLabels, getFullName } from '@/types'
+import { statusLabels, trackerLabels, priorityLabels, getFullName, isOverdue } from '@/types'
 import { AlertCircle, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -27,12 +27,6 @@ export type SerializedIssue = {
   dueDate: string | null
   project: { id: string; name: string; identifier: string }
   assignee: { id: string; firstName: string; lastName: string } | null
-}
-
-function isOverdue(issue: SerializedIssue): boolean {
-  if (!issue.dueDate) return false
-  if (issue.status === 'closed' || issue.status === 'rejected') return false
-  return new Date(issue.dueDate) < new Date()
 }
 
 interface IssuesTableProps {

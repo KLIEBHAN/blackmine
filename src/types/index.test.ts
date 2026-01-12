@@ -66,6 +66,18 @@ describe('isOverdue', () => {
     expect(isOverdue({ ...baseIssue, status: 'rejected', dueDate: yesterday })).toBe(false)
   })
 
+  it('returns false when status is resolved', () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(isOverdue({ ...baseIssue, status: 'resolved', dueDate: yesterday })).toBe(false)
+  })
+
+  it('handles string dueDate (serialized from JSON)', () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(isOverdue({ status: 'in_progress', dueDate: yesterday.toISOString() })).toBe(true)
+  })
+
   it('returns true when dueDate is in the past and issue is open', () => {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)

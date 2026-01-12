@@ -28,13 +28,7 @@ import {
 } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
-import { statusLabels, trackerLabels, priorityLabels, getFullName } from '@/types'
-
-function isOverdue(dueDate: string | null, status: string): boolean {
-  if (!dueDate) return false
-  if (status === 'closed' || status === 'rejected' || status === 'resolved') return false
-  return new Date(dueDate) < new Date()
-}
+import { statusLabels, trackerLabels, priorityLabels, getFullName, isOverdue } from '@/types'
 
 // Serialized types for client component
 export type SerializedIssue = {
@@ -76,7 +70,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const overdue = isOverdue(issue.dueDate, issue.status)
+  const overdue = isOverdue(issue)
 
   const handleDelete = async () => {
     setIsDeleting(true)

@@ -2,6 +2,19 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **Bug Fix + DRY: isOverdue() Funktion konsolidiert**
+  - **Bug gefunden:** Zentrale `isOverdue()` ignorierte `resolved` Status
+    - Ein Issue mit Status `resolved` und vergangenem Due Date wurde fälschlich als "overdue" markiert
+  - **Lösung:**
+    - `src/types/index.ts`: `resolved` zu completedStatuses hinzugefügt
+    - Signatur generisch gemacht: `{ status: string; dueDate: Date | string | null }`
+  - **DRY:** 2 lokale Duplikate entfernt:
+    - `src/app/issues/[id]/issue-detail.tsx` (lokale isOverdue Funktion ~5 Zeilen)
+    - `src/components/dashboard/issues-table.tsx` (lokale isOverdue Funktion ~4 Zeilen)
+  - Tests erweitert: 2 neue Tests (resolved Status, String-Datum Handling)
+  - **191 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-12)
 - **Bug Hunt: Delete Handler Error Handling verbessert**
   - Problem: `else if ('error' in result)` ließ unerwartete Fälle ohne Feedback
   - Lösung: `else` mit Fallback-Fehlermeldung (`'error' in result ? result.error : 'Fallback'`)
@@ -148,6 +161,8 @@
 - [x] DRY: GeneralFormError Komponente erstellt (5 Stellen)
 - [x] DRY: ActivityType zentralisiert (3 Definitionen)
 - [x] DRY: filterProjects generisch gemacht (lokales Duplikat entfernt)
+- [x] Bug Fix: isOverdue() ignorierte 'resolved' Status
+- [x] DRY: isOverdue() konsolidiert (2 lokale Duplikate entfernt)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -168,4 +183,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-12 (filterProjects generisch gemacht)
+Letzte Aktualisierung: 2026-01-12 (isOverdue Bug gefixed + DRY konsolidiert)
