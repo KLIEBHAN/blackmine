@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { updateProject, isIdentifierTaken } from '@/app/actions/projects'
+import { FormFieldError } from '@/components/ui/form-field-error'
 import { ArrowLeft, Save, AlertCircle, Loader2, FolderEdit } from 'lucide-react'
 import { type ProjectStatus, projectStatusOptions } from '@/types'
 
@@ -193,12 +194,7 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
                   className={cn(hasError('name') && 'border-destructive')}
                   autoFocus
                 />
-                {errors.name && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.name}
-                  </p>
-                )}
+                <FormFieldError error={errors.name} />
               </div>
 
               {/* Identifier */}
@@ -225,12 +221,7 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
                 <p className="text-xs text-muted-foreground">
                   Used in URLs. Lowercase letters, numbers, and hyphens only.
                 </p>
-                {errors.identifier && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.identifier}
-                  </p>
-                )}
+                <FormFieldError error={errors.identifier} />
                 {identifierExists && !errors.identifier && (
                   <p className="flex items-center gap-1.5 text-sm text-amber-600">
                     <AlertCircle className="size-3.5" />
@@ -284,12 +275,7 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.status && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.status}
-                  </p>
-                )}
+                <FormFieldError error={errors.status} />
               </div>
             </CardContent>
           </Card>

@@ -19,7 +19,8 @@ import {
 import type { UserRole } from '@/types'
 import { useFormField } from '@/hooks'
 import { createUser, isEmailTaken } from '@/app/actions/users'
-import { ArrowLeft, Save, AlertCircle, Loader2, UserPlus, Shield, Briefcase, Code, FileText } from 'lucide-react'
+import { FormFieldError } from '@/components/ui/form-field-error'
+import { ArrowLeft, Save, Loader2, UserPlus, Shield, Briefcase, Code, FileText } from 'lucide-react'
 
 type UserFormData = {
   email: string
@@ -157,12 +158,7 @@ export function UserForm() {
                     className={cn(hasError('firstName') && 'border-destructive')}
                     autoFocus
                   />
-                  {errors.firstName && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.firstName}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.firstName} />
                 </div>
 
                 {/* Last Name */}
@@ -180,12 +176,7 @@ export function UserForm() {
                     onChange={(e) => updateField('lastName', e.target.value)}
                     className={cn(hasError('lastName') && 'border-destructive')}
                   />
-                  {errors.lastName && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.lastName}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.lastName} />
                 </div>
               </div>
 
@@ -205,12 +196,7 @@ export function UserForm() {
                   onChange={(e) => updateField('email', e.target.value)}
                   className={cn(hasError('email') && 'border-destructive')}
                 />
-                {errors.email && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.email}
-                  </p>
-                )}
+                <FormFieldError error={errors.email} />
               </div>
 
               {/* Role */}
@@ -253,12 +239,7 @@ export function UserForm() {
                     })}
                   </SelectContent>
                 </Select>
-                {errors.role && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.role}
-                  </p>
-                )}
+                <FormFieldError error={errors.role} />
               </div>
             </CardContent>
           </Card>

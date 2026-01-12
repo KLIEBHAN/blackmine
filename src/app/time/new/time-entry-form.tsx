@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { createTimeEntry, type TimeEntryFormErrors } from '@/app/actions/time-entries'
 import { useFormField } from '@/hooks'
+import { FormFieldError } from '@/components/ui/form-field-error'
 import { ArrowLeft, Save, AlertCircle, Loader2, Clock } from 'lucide-react'
 
 const activityTypes = [
@@ -185,12 +186,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.issueId && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.issueId}
-                  </p>
-                )}
+                <FormFieldError error={errors.issueId} />
               </div>
 
               {/* Hours & Activity Row */}
@@ -213,12 +209,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
                     }
                     className={cn('font-mono', hasError('hours') && 'border-destructive')}
                   />
-                  {errors.hours && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.hours}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.hours} />
                 </div>
 
                 {/* Activity Type */}
@@ -244,12 +235,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.activityType && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.activityType}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.activityType} />
                 </div>
               </div>
 
@@ -265,12 +251,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
                   onChange={(e) => updateField('spentOn', e.target.value)}
                   className={cn('font-mono', hasError('spentOn') && 'border-destructive')}
                 />
-                {errors.spentOn && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.spentOn}
-                  </p>
-                )}
+                <FormFieldError error={errors.spentOn} />
               </div>
 
               {/* Comments */}

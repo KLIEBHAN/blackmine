@@ -2,6 +2,22 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: FormFieldError Komponente erstellt**
+  - Neue UI-Komponente in `src/components/ui/form-field-error.tsx`
+  - Kapselt das wiederkehrende Pattern: `{error && <p><AlertCircle/>{error}</p>}`
+  - 7 Form-Komponenten refaktoriert:
+    - `src/app/admin/users/new/user-form.tsx` (4 Stellen)
+    - `src/app/admin/users/[id]/edit/user-edit-form.tsx` (4 Stellen)
+    - `src/app/issues/new/issue-form.tsx` (3 Stellen)
+    - `src/app/issues/[id]/edit/issue-edit-form.tsx` (3 Stellen)
+    - `src/app/time/new/time-entry-form.tsx` (4 Stellen)
+    - `src/app/projects/new/project-form.tsx` (3 Stellen)
+    - `src/app/projects/[identifier]/edit/project-edit-form.tsx` (3 Stellen)
+  - **24 identische JSX-Blöcke → 1 wiederverwendbare Komponente**
+  - ~120 Zeilen duplizierter Code entfernt (5 Zeilen × 24 = 120, Ersatz: 18 Zeilen)
+  - Guard-Clause (`if (!error) return null`) vereinfacht Consumer-Code
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: useFormField() Custom Hook erstellt**
   - Neuer Hook in `src/hooks/useFormField.ts` - kapselt das Pattern "Update Field + Clear Error"
   - 5 Form-Komponenten refaktoriert:
@@ -88,6 +104,7 @@
 - [x] DRY: getFullName() generisch gemacht
 - [x] DRY: Form Options zentralisiert (tracker, priority, projectStatus)
 - [x] DRY: getFullName() konsistent genutzt (4 Stellen)
+- [x] DRY: FormFieldError Komponente erstellt (24 Stellen)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -98,9 +115,9 @@
 - Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
 - ~~`updateField` Hook: 7 Form-Komponenten~~ → ✅ Erledigt! `useFormField()` Hook erstellt
+- ~~`<FormFieldError>` Komponente: Error-Rendering Pattern (24 Stellen)~~ → ✅ Erledigt! `FormFieldError` Komponente erstellt
 - `roleOptions` mit Icons: 2 Dateien (user-form, user-edit-form) - Icons sind UI-spezifisch, daher nicht in types/
 - `SerializedUser/Project/Issue` Types: Viele ähnliche Definitionen (je ~3-8 Felder unterschiedlich pro Kontext)
-- `<FormFieldError>` Komponente: Error-Rendering Pattern (~50 Stellen) - könnte extrahiert werden
 
 ## Nächste Schritte
 - Auth vollständig implementieren
@@ -108,4 +125,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-12
+Letzte Aktualisierung: 2026-01-12 (FormFieldError DRY-Refactoring)

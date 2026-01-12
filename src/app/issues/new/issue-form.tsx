@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { createIssue, type IssueFormErrors } from '@/app/actions/issues'
+import { FormFieldError } from '@/components/ui/form-field-error'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
@@ -167,12 +168,7 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.projectId && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.projectId}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.projectId} />
                 </div>
 
                 {/* Tracker */}
@@ -208,12 +204,7 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.tracker && (
-                    <p className="flex items-center gap-1.5 text-sm text-destructive">
-                      <AlertCircle className="size-3.5" />
-                      {errors.tracker}
-                    </p>
-                  )}
+                  <FormFieldError error={errors.tracker} />
                 </div>
               </div>
 
@@ -229,12 +220,7 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
                   onChange={(e) => updateField('subject', e.target.value)}
                   className={cn(hasError('subject') && 'border-destructive')}
                 />
-                {errors.subject && (
-                  <p className="flex items-center gap-1.5 text-sm text-destructive">
-                    <AlertCircle className="size-3.5" />
-                    {errors.subject}
-                  </p>
-                )}
+                <FormFieldError error={errors.subject} />
               </div>
 
               {/* Description */}
