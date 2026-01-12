@@ -92,8 +92,8 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
 
     if (result.success) {
       setComments(comments.filter(c => c.id !== commentId))
-    } else if ('error' in result) {
-      setError(result.error)
+    } else {
+      setError('error' in result ? result.error : 'Failed to delete comment')
     }
 
     setDeletingId(null)

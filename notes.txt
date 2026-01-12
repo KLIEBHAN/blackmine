@@ -2,6 +2,18 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **Bug Hunt: Delete Handler Error Handling verbessert**
+  - Problem: `else if ('error' in result)` ließ unerwartete Fälle ohne Feedback
+  - Lösung: `else` mit Fallback-Fehlermeldung (`'error' in result ? result.error : 'Fallback'`)
+  - 4 Dateien gefixt:
+    - `src/app/issues/[id]/issue-detail.tsx` (handleDelete)
+    - `src/app/issues/[id]/comments.tsx` (handleDelete)
+    - `src/app/projects/[identifier]/project-detail.tsx` (handleDelete)
+    - `src/app/admin/users/users-list.tsx` (handleDelete)
+  - Vorher: Bei unerwarteten Server-Responses blieb Button ggf. im "Deleting..." Zustand
+  - Nachher: Immer ein Error-Toast + State-Reset bei Fehler
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: filterProjects generisch gemacht**
   - `src/lib/projects.ts`: Funktion jetzt generisch mit TypeScript Generics
   - `FilterableProject` Interface für strukturelles Typing
@@ -117,7 +129,7 @@
 - [x] Test Coverage auf 35% -> **98.56% erreicht!**
 - [x] Dokumentation verbessern -> README.md aktualisiert
 - [x] Code Quality / SortDirection DRY -> vollständig zentralisiert
-- [x] Bug hunt (1 Code Smell gefixed: unsicherer Type Cast)
+- [x] Bug hunt (4 Delete Handlers: fehlende Error-Fallbacks gefixed)
 - [x] Lesbarkeit: toggle-Funktionen DRY gemacht
 - [x] Performance-Optimierungen -> useMemo für toIssue() separiert
 - [x] Design optimieren (Dark mode) -> System-Präferenz + Persistenz
