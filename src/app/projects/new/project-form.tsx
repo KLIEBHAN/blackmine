@@ -19,14 +19,7 @@ import {
 } from '@/components/ui/select'
 import { createProject, isIdentifierTaken } from '@/app/actions/projects'
 import { ArrowLeft, Save, AlertCircle, Loader2, FolderPlus } from 'lucide-react'
-
-type ProjectStatus = 'active' | 'archived' | 'closed'
-
-const statusOptions: { value: ProjectStatus; label: string }[] = [
-  { value: 'active', label: 'Active' },
-  { value: 'archived', label: 'Archived' },
-  { value: 'closed', label: 'Closed' },
-]
+import { type ProjectStatus, projectStatusOptions } from '@/types'
 
 type ProjectFormData = {
   name: string
@@ -290,7 +283,7 @@ export function ProjectForm() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {statusOptions.map((option) => (
+                    {projectStatusOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         <div className="flex items-center gap-2">
                           <span

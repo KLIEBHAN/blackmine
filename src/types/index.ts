@@ -45,6 +45,11 @@ export const allIssueTrackers = Object.keys(trackerLabels) as IssueTracker[]
 export const allIssuePriorities = Object.keys(priorityLabels) as IssuePriority[]
 export const allProjectStatuses = Object.keys(projectStatusLabels) as ProjectStatus[]
 
+// Form select options - derived from labels for single source of truth
+export const trackerOptions = allIssueTrackers.map(value => ({ value, label: trackerLabels[value] }))
+export const priorityOptions = allIssuePriorities.map(value => ({ value, label: priorityLabels[value] }))
+export const projectStatusOptions = allProjectStatuses.map(value => ({ value, label: projectStatusLabels[value] }))
+
 export interface User {
   id: string
   email: string

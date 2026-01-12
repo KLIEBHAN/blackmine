@@ -2,6 +2,18 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: Form Options zentralisiert**
+  - `trackerOptions`, `priorityOptions`, `projectStatusOptions` in `src/types/index.ts`
+  - Aus Labels abgeleitet (Single Source of Truth)
+  - 4 lokale Duplikate entfernt aus:
+    - `src/app/issues/new/issue-form.tsx`
+    - `src/app/issues/[id]/edit/issue-edit-form.tsx`
+    - `src/app/projects/new/project-form.tsx`
+    - `src/app/projects/[identifier]/edit/project-edit-form.tsx`
+  - ~42 Zeilen duplizierter Code entfernt
+  - Types (`IssueTracker`, `IssuePriority`, `ProjectStatus`) werden nun zentral importiert
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: getFullName() generisch gemacht**
   - Zentrale Funktion in `src/types/index.ts` nun mit `{ firstName: string; lastName: string }` statt `User`
   - 3 lokale Duplikate entfernt aus:
@@ -49,6 +61,7 @@
 - [x] DRY: Server Action Error Handler zentralisiert
 - [x] UX: Broken Links und nicht-funktionale Buttons behoben
 - [x] DRY: getFullName() generisch gemacht
+- [x] DRY: Form Options zentralisiert (tracker, priority, projectStatus)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -59,7 +72,8 @@
 - Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
 - `updateField` Hook: 7 Form-Komponenten mit identischem Pattern (könnte als Custom Hook extrahiert werden)
-- Options Arrays (trackerOptions, priorityOptions): 2 Dateien pro Array (unter 3er-Schwelle)
+- `roleOptions` mit Icons: 2 Dateien (user-form, user-edit-form) - Icons sind UI-spezifisch, daher nicht in types/
+- `SerializedUser/Project/Issue` Types: Viele ähnliche Definitionen (je ~3-8 Felder unterschiedlich pro Kontext)
 
 ## Nächste Schritte
 - Auth vollständig implementieren

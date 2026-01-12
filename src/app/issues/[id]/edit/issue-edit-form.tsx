@@ -20,9 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
-
-type IssueTracker = 'bug' | 'feature' | 'support' | 'task'
-type IssuePriority = 'low' | 'normal' | 'high' | 'urgent' | 'immediate'
+import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions } from '@/types'
 
 type FormData = {
   projectId: string
@@ -65,21 +63,6 @@ type Props = {
   users: SerializedUser[]
   projects: SerializedProject[]
 }
-
-const trackerOptions: { value: IssueTracker; label: string }[] = [
-  { value: 'bug', label: 'Bug' },
-  { value: 'feature', label: 'Feature' },
-  { value: 'support', label: 'Support' },
-  { value: 'task', label: 'Task' },
-]
-
-const priorityOptions: { value: IssuePriority; label: string }[] = [
-  { value: 'low', label: 'Low' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'high', label: 'High' },
-  { value: 'urgent', label: 'Urgent' },
-  { value: 'immediate', label: 'Immediate' },
-]
 
 export function IssueEditForm({ issue, users, projects }: Props) {
   const router = useRouter()
