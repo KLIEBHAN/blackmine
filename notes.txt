@@ -2,6 +2,25 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: Konstanten und GeneralFormError konsolidiert**
+  - `EMAIL_REGEX` aus `src/lib/user-form.ts` exportiert und in 4 Dateien importiert
+    - `src/app/actions/users.ts`
+    - `src/app/admin/users/new/user-form.tsx`
+    - `src/app/admin/users/[id]/edit/user-edit-form.tsx`
+  - `GeneralFormError` Komponente in `src/components/ui/form-field-error.tsx` hinzugefügt
+    - Ersetzt 5 identische `{errors.general && ...}` Blöcke
+    - Mit `className` prop für kontextspezifisches Styling
+  - `ActivityType` zentralisiert in `src/types/index.ts`:
+    - Neuer Type: `ActivityType`
+    - Neues Label-Record: `activityTypeLabels`
+    - Neues Array: `allActivityTypes`
+    - Neue Options: `activityTypeOptions`
+    - `TimeEntry.activityType` jetzt typisiert statt `string`
+  - Lokale Duplikate entfernt aus:
+    - `src/app/time/new/time-entry-form.tsx` (activityTypes Array)
+    - `src/app/time/time-list.tsx` (activityLabels, allActivities)
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: FormFieldError Komponente erstellt**
   - Neue UI-Komponente in `src/components/ui/form-field-error.tsx`
   - Kapselt das wiederkehrende Pattern: `{error && <p><AlertCircle/>{error}</p>}`
@@ -105,6 +124,9 @@
 - [x] DRY: Form Options zentralisiert (tracker, priority, projectStatus)
 - [x] DRY: getFullName() konsistent genutzt (4 Stellen)
 - [x] DRY: FormFieldError Komponente erstellt (24 Stellen)
+- [x] DRY: EMAIL_REGEX zentralisiert (5 Stellen)
+- [x] DRY: GeneralFormError Komponente erstellt (5 Stellen)
+- [x] DRY: ActivityType zentralisiert (3 Definitionen)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -125,4 +147,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-12 (FormFieldError DRY-Refactoring)
+Letzte Aktualisierung: 2026-01-12 (EMAIL_REGEX, GeneralFormError, ActivityType DRY-Refactoring)
