@@ -1,6 +1,6 @@
 'use client'
 
-import { cn, getInitials, formatDate, formatShortId } from '@/lib/utils'
+import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'

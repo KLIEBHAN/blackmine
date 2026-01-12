@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { ArrowLeft, FolderOpen, Edit, Trash2 } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
-import { statusLabels, trackerLabels, priorityLabels, getFullName, isOverdue } from '@/types'
+import { statusLabels, trackerLabels, isOverdue } from '@/types'
 import { IssueSidebar } from './issue-sidebar'
 import { cn, formatShortId } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -81,7 +81,6 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
 
   const tracker = issue.tracker as keyof typeof trackerLabels
   const status = issue.status as keyof typeof statusLabels
-  const priority = issue.priority as keyof typeof priorityLabels
 
   return (
     <div className="grid-pattern min-h-full">
