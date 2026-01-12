@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { createComment } from '@/app/actions/comments'
-import { MessageSquare, Send } from 'lucide-react'
+import { createComment, deleteComment } from '@/app/actions/comments'
+import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Markdown } from '@/components/ui/markdown'
 
 export type SerializedComment = {
@@ -61,6 +61,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
   const [comments, setComments] = useState(initialComments)
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,6 +93,21 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
     }
 
     setIsSubmitting(false)
+  }
+
+  const handleDelete = async (commentId: string) => {
+    setDeletingId(commentId)
+    setError(null)
+
+    const result = await deleteComment(commentId)
+
+    if (result.success) {
+      setComments(comments.filter(c => c.id !== commentId))
+    } else {
+      setError(result.error || 'Failed to delete comment')
+    }
+
+    setDeletingId(null)
   }
 
   return (
@@ -133,6 +149,18 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
                       <span className="text-xs text-muted-foreground">
                         {timeAgo(comment.createdAt)}
                       </span>
+                      {comment.author.id === currentUserId && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-6 ml-auto text-muted-foreground hover:text-destructive"
+                          onClick={() => handleDelete(comment.id)}
+                          disabled={deletingId === comment.id}
+                          title="Delete comment"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      )}
                     </div>
                     <Markdown>{comment.content}</Markdown>
                   </div>

@@ -40,7 +40,7 @@
 
 ### Lesbarkeit des Codes
 
-- Bitte optimiere diesen Code für maximale Lesbarkeit und Verständlichkeit. Achte auf aussagekräftige, konsistente Bezeichner, vermeide unnötige Komplexität und erstelle gegebenenfalls kleine, fokussierte Funktionen. Ergänze kurze, sinnvolle Kommentare, die das ‚Warum‘ statt das ‚Wie‘ hervorheben. Erkläre abschließend, wie deine Änderungen die Verständlichkeit und Wartbarkeit verbessern.
+- Bitte optimiere diesen Code für maximale Lesbarkeit und Verständlichkeit. Achte auf aussagekräftige, konsistente Bezeichner, vermeide unnötige Komplexität und erstelle gegebenenfalls kleine, fokussierte Funktionen. Ergänze kurze, sinnvolle Kommentare, die das ‚Warum' statt das ‚Wie' hervorheben. Erkläre abschließend, wie deine Änderungen die Verständlichkeit und Wartbarkeit verbessern.
 
 ### Komplexität reduzieren
 
@@ -56,13 +56,18 @@
 
 ### UX verbessern
 
-### Kommentare zu Issues sollten löschbar sein
-
 ### Administration (Settings) Implementieren
 
 ---
 
 ## Erledigt
+
+### Kommentare zu Issues löschbar ✅ (2026-01-12)
+
+- Delete-Button für Kommentare hinzugefügt (nur für den Autor sichtbar)
+- Nutzt bestehende `deleteComment` Server-Action
+- Optimistische UI-Updates (Kommentar verschwindet sofort)
+- Fehlerbehandlung integriert
 
 ### Markdown in Issues Beschreibung korrekt rendern ✅ (2026-01-12)
 

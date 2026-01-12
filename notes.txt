@@ -2,13 +2,14 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
-  - `react-markdown` + `remark-gfm` installiert
-  - Neue `<Markdown>` Komponente in `src/components/ui/markdown.tsx`
-  - Eigene `prose` CSS-Styles in globals.css (Tailwind v4 kompatibel)
-  - Angewandt auf: `issue-detail.tsx` (Beschreibung) und `comments.tsx` (Kommentare)
+- **Kommentare löschbar:** Delete-Button für Kommentare hinzugefügt
+  - Nur für Autor des Kommentars sichtbar (author.id === currentUserId)
+  - Nutzt bestehende `deleteComment` Server-Action
+  - UI-State-Updates: `deletingId` für Loading-State
+  - Fehlerbehandlung integriert
 
 ## Vorherige Iterationen
+- **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
 - **Performance:** `issues-list.tsx` - `toIssue()` Mapping in separates `useMemo`
 - **Dark Mode:** System-Präferenz + Persistenz
 - **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
@@ -26,6 +27,7 @@
 - [x] Performance-Optimierungen → useMemo für toIssue() separiert
 - [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
 - [x] Markdown in Issues rendern ✅
+- [x] Kommentare löschbar ✅
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -33,9 +35,9 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Nächste Schritte
-- Kommentare löschbar machen (PRD: "Kommentare zu Issues sollten löschbar sein")
 - Auth vollständig implementieren
 - UX verbessern
+- Administration (Settings) Implementieren
 
 ---
 Letzte Aktualisierung: 2026-01-12
