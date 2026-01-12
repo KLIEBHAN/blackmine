@@ -158,14 +158,16 @@ export function IssuesList({ issues, totalCount }: Props) {
     search: search || undefined,
   }), [search, selectedStatuses, selectedTrackers, selectedPriorities])
 
-  // Convert to Issue format, filter, sort, then map back
+  // Memoize conversion separately - only recalculates when issues prop changes
+  const issueObjects = useMemo(() => issues.map(toIssue), [issues])
+  
+  // Filter and sort (recalculates on filter/sort changes, but not on conversion)
   const filteredIssues = useMemo(() => {
-    const issueObjects = issues.map(toIssue)
     const filtered = filterIssues(issueObjects, filters)
     const sorted = sortIssues(filtered, sort)
     // Map back to original issues with relations
     return sorted.map(fi => issues.find(i => i.id === fi.id)!)
-  }, [issues, filters, sort])
+  }, [issues, issueObjects, filters, sort])
 
   const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length
 
