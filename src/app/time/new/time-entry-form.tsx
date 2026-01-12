@@ -38,9 +38,10 @@ type Props = {
   issues: SerializedIssue[]
   projects: SerializedProject[]
   preselectedIssueId?: string
+  currentUserId: string
 }
 
-export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
+export function TimeEntryForm({ issues, projects, preselectedIssueId, currentUserId }: Props) {
   const router = useRouter()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -83,9 +84,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
 
     setIsSubmitting(true)
 
-    // TODO: Get actual user ID from auth context
-    const userId = 'user-1'
-    const result = await createTimeEntry(formData, userId)
+    const result = await createTimeEntry(formData, currentUserId)
 
     if (!result.success) {
       setErrors(result.errors || {})

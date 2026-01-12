@@ -8,9 +8,9 @@ import {
   Settings,
   ChevronDown,
   Plus,
-  Search,
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import {
   Sidebar,
@@ -34,15 +34,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { IssueSearch } from './issue-search'
 
 const mainNavItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, href: '/', isActive: true },
+  { title: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { title: 'Projects', icon: FolderKanban, href: '/projects' },
   { title: 'Issues', icon: CircleDot, href: '/issues' },
   { title: 'Time Tracking', icon: Clock, href: '/time' },
 ]
 
+function isActiveRoute(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(href + '/')
+}
+
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border pb-4">
@@ -61,17 +69,7 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Quick Search */}
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <div className="relative px-2">
-            <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-sidebar-foreground/50" />
-            <input
-              type="text"
-              placeholder="Search issues..."
-              className="h-9 w-full rounded-md border border-sidebar-border bg-sidebar-accent/50 pl-9 pr-3 text-sm placeholder:text-sidebar-foreground/40 focus:border-sidebar-ring focus:outline-none focus:ring-1 focus:ring-sidebar-ring"
-            />
-            <kbd className="absolute right-4 top-1/2 -translate-y-1/2 rounded border border-sidebar-border bg-sidebar px-1.5 py-0.5 text-[10px] font-mono text-sidebar-foreground/50">
-              /
-            </kbd>
-          </div>
+          <IssueSearch />
         </SidebarGroup>
 
         {/* Quick Actions */}
@@ -101,7 +99,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.title}>
+                  <SidebarMenuButton asChild isActive={isActiveRoute(pathname, item.href)} tooltip={item.title}>
                     <Link href={item.href}>
                       <item.icon className="size-4" />
                       <span>{item.title}</span>
@@ -123,7 +121,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Users">
+                <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/users')} tooltip="Users">
                   <Link href="/admin/users">
                     <Settings className="size-4" />
                     <span>Users</span>

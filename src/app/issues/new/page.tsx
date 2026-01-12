@@ -14,7 +14,6 @@ export default async function NewIssuePage({ searchParams }: Props) {
     getProjects(),
   ])
 
-  // Serialize for client component
   const serializedUsers = users.map((u) => ({
     id: u.id,
     firstName: u.firstName,
@@ -27,12 +26,15 @@ export default async function NewIssuePage({ searchParams }: Props) {
     status: p.status,
   }))
 
+  const currentUserId = users[0]?.id ?? ''
+
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
       <IssueForm
         users={serializedUsers}
         projects={serializedProjects}
         defaultProjectId={params.project}
+        currentUserId={currentUserId}
       />
     </Suspense>
   )

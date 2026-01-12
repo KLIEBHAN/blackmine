@@ -51,6 +51,34 @@ export async function getIssueById(id: string) {
   })
 }
 
+// Search issues by subject/description (for quick search)
+export async function searchIssues(query: string, limit = 10) {
+  if (!query || query.trim().length < 2) {
+    return []
+  }
+  
+  const searchTerm = query.trim()
+  
+  return prisma.issue.findMany({
+    where: {
+      OR: [
+        { subject: { contains: searchTerm } },
+        { description: { contains: searchTerm } },
+      ],
+    },
+    select: {
+      id: true,
+      subject: true,
+      status: true,
+      priority: true,
+      tracker: true,
+      project: { select: { name: true, identifier: true } },
+    },
+    orderBy: { updatedAt: 'desc' },
+    take: limit,
+  })
+}
+
 // Get issues for a specific project
 export async function getIssuesByProject(projectId: string) {
   return prisma.issue.findMany({

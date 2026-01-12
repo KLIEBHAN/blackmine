@@ -6,6 +6,7 @@ A modern project management application inspired by Redmine, built with Next.js 
 
 - **Projects** - Create, edit, and manage projects with descriptions and status tracking
 - **Issues** - Full issue tracking with priorities, statuses, and assignments
+- **Quick Search** - Live search in sidebar with keyboard navigation (`/` to focus, `↑↓` to navigate, `Enter` to select)
 - **Time Tracking** - Log time entries against issues for project accounting
 - **Comments** - Add comments to issues for collaboration
 - **Users** - User management with roles and assignments
@@ -75,6 +76,15 @@ src/
 ├── hooks/         # Custom React hooks
 └── types/         # TypeScript type definitions
 ```
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `/` | Focus search input |
+| `↑` `↓` | Navigate search results |
+| `Enter` | Open selected issue |
+| `Escape` | Close search dropdown |
 
 ## Testing
 

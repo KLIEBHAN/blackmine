@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
+import { getUsers } from '@/app/actions/users'
 import { TimeEntryForm } from './time-entry-form'
 
 type Props = {
@@ -11,12 +12,12 @@ export default async function NewTimeEntryPage({ searchParams }: Props) {
   const params = await searchParams
   const preselectedIssueId = params.issue ?? ''
 
-  const [issues, projects] = await Promise.all([
+  const [issues, projects, users] = await Promise.all([
     getIssues(),
     getProjects(),
+    getUsers(),
   ])
 
-  // Serialize for client component
   const serializedIssues = issues.map((issue) => ({
     id: issue.id,
     subject: issue.subject,
@@ -28,12 +29,15 @@ export default async function NewTimeEntryPage({ searchParams }: Props) {
     name: project.name,
   }))
 
+  const currentUserId = users[0]?.id ?? ''
+
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
       <TimeEntryForm
         issues={serializedIssues}
         projects={serializedProjects}
         preselectedIssueId={preselectedIssueId}
+        currentUserId={currentUserId}
       />
     </Suspense>
   )

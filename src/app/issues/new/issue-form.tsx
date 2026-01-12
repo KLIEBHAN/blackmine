@@ -51,9 +51,10 @@ type Props = {
   users: SerializedUser[]
   projects: SerializedProject[]
   defaultProjectId?: string
+  currentUserId: string
 }
 
-export function IssueForm({ users, projects, defaultProjectId }: Props) {
+export function IssueForm({ users, projects, defaultProjectId, currentUserId }: Props) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<IssueFormErrors>({})
@@ -89,7 +90,7 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
         dueDate: formData.dueDate,
         estimatedHours: formData.estimatedHours,
       },
-      'user-1' // TODO: Get from auth context
+      currentUserId
     )
 
     if (!result.success) {
