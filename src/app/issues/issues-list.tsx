@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
-import { isOverdue, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities } from '@/types'
+import { isOverdue, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
 import { filterIssues, sortIssues, type IssueSort, type IssueFilters } from '@/lib/issues'
 import {
   AlertCircle,
@@ -356,7 +356,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                 ) : (
                   filteredIssues.map((issue, index) => {
                     const assigneeName = issue.assignee
-                      ? `${issue.assignee.firstName} ${issue.assignee.lastName}`
+                      ? getFullName(issue.assignee)
                       : null
                     const overdue = isOverdue({
                       status: issue.status as IssueStatus,

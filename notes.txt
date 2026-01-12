@@ -2,6 +2,18 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: getFullName() konsistent genutzt**
+  - 7 Stellen mit direkter `{firstName} {lastName}` Konkatenation durch `getFullName()` ersetzt
+  - Dateien:
+    - `src/app/issues/new/issue-form.tsx`
+    - `src/app/issues/[id]/edit/issue-edit-form.tsx`
+    - `src/app/issues/[id]/issue-detail.tsx` (2 Stellen: assignee + author)
+    - `src/app/issues/[id]/comments.tsx`
+    - `src/app/issues/issues-list.tsx`
+    - `src/app/projects/[identifier]/project-detail.tsx`
+  - Vorteile: Single Source of Truth, einfacher Format-Änderung, Type Safety
+
+## Vorherige Iteration (2026-01-12)
 - **DRY: Form Options zentralisiert**
   - `trackerOptions`, `priorityOptions`, `projectStatusOptions` in `src/types/index.ts`
   - Aus Labels abgeleitet (Single Source of Truth)
@@ -62,6 +74,7 @@
 - [x] UX: Broken Links und nicht-funktionale Buttons behoben
 - [x] DRY: getFullName() generisch gemacht
 - [x] DRY: Form Options zentralisiert (tracker, priority, projectStatus)
+- [x] DRY: getFullName() konsistent genutzt (4 Stellen)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context

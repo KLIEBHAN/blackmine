@@ -37,7 +37,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
-import { statusLabels, trackerLabels, projectStatusLabels, type IssueTracker } from '@/types'
+import { statusLabels, trackerLabels, projectStatusLabels, type IssueTracker, getFullName } from '@/types'
 
 const projectStatusColors = {
   active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
@@ -344,7 +344,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                                   </AvatarFallback>
                                 </Avatar>
                                 <span className="text-sm">
-                                  {issue.assignee.firstName} {issue.assignee.lastName}
+                                  {getFullName(issue.assignee)}
                                 </span>
                               </div>
                             ) : (

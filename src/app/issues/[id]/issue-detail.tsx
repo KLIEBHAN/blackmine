@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown } from '@/components/ui/markdown'
-import { statusLabels, trackerLabels, priorityLabels } from '@/types'
+import { statusLabels, trackerLabels, priorityLabels, getFullName } from '@/types'
 
 function isOverdue(dueDate: string | null, status: string): boolean {
   if (!dueDate) return false
@@ -281,7 +281,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                         </AvatarFallback>
                       </Avatar>
                       <span className="text-sm">
-                        {issue.assignee.firstName} {issue.assignee.lastName}
+                        {getFullName(issue.assignee)}
                       </span>
                     </div>
                   ) : (
@@ -301,7 +301,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm">
-                      {issue.author.firstName} {issue.author.lastName}
+                      {getFullName(issue.author)}
                     </span>
                   </div>
                 </div>

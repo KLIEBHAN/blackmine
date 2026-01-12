@@ -10,6 +10,7 @@ import { createComment, deleteComment } from '@/app/actions/comments'
 import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Markdown } from '@/components/ui/markdown'
 import { getInitials, formatDate } from '@/lib/utils'
+import { getFullName } from '@/types'
 
 export type SerializedComment = {
   id: string
@@ -132,7 +133,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-medium">
-                        {comment.author.firstName} {comment.author.lastName}
+                        {getFullName(comment.author)}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {timeAgo(comment.createdAt)}

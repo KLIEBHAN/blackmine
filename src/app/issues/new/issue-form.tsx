@@ -20,7 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { createIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
-import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions } from '@/types'
+import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 
 type FormData = {
   projectId: string
@@ -304,7 +304,7 @@ export function IssueForm({ users, projects, defaultProjectId }: Props) {
                       <SelectItem value="__unassigned__">Unassigned</SelectItem>
                       {users.map((user) => (
                         <SelectItem key={user.id} value={user.id}>
-                          {user.firstName} {user.lastName}
+                          {getFullName(user)}
                         </SelectItem>
                       ))}
                     </SelectContent>
