@@ -24,7 +24,13 @@ export function DashboardHeader() {
   const isDark = useIsDarkMode()
 
   const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark', !isDark)
+    const newIsDark = !isDark
+    document.documentElement.classList.toggle('dark', newIsDark)
+    try {
+      localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
+    } catch {
+      // localStorage not available
+    }
   }
 
   return (

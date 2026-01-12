@@ -2,6 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **Dark Mode:** System-Präferenz und Persistenz implementiert
+  - Inline script im `<head>` für Flash-freies SSR
+  - Respektiert `prefers-color-scheme` als Default
+  - Persistiert User-Wahl in localStorage
+  - Toggle im Header aktualisiert
+
+## Vorherige Iteration
 - **Lesbarkeit/DRY:** `issues-list.tsx` refactored
   - Drei identische `toggleStatus/Tracker/Priority` Funktionen zu einer generischen `toggle<T>()` Funktion konsolidiert
   - Reduziert Codezeilen um ~15 und eliminiert Duplikation
@@ -24,7 +31,7 @@
 - [ ] Performance-Optimierungen
 - [ ] Weitere Lesbarkeit (FilterDropdown-Komponente extrahieren?)
 - [ ] Komplexität reduzieren
-- [ ] Design optimieren (Dark mode)
+- [x] Design optimieren (Dark mode) ✅ System-Präferenz + Persistenz
 -  weiteres siehe prd
 
 ## Bekannte TODOs im Code
@@ -33,9 +40,8 @@
 (Diese sind architekturelle Platzhalter für Auth-System, kein Bug)
 
 ## Nächste Schritte
-- Filter-Dropdowns könnten zu wiederverwendbarer Komponente extrahiert werden (3x fast identisch)
+- Filter-Dropdowns: Extraktion lohnt nicht (unterschiedliches Rendering pro Filter)
 - Performance: React.memo, useMemo für teure Berechnungen prüfen
-- Dark mode als System-Default
 
 ---
 Letzte Aktualisierung: 2026-01-12
