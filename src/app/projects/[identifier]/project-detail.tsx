@@ -113,7 +113,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       toast.success(`Project "${project.name}" deleted`)
       router.push('/projects')
     } else if ('error' in result) {
-      toast.error(result.error || 'Failed to delete project')
+      toast.error(result.error)
       setIsDeleting(false)
     }
   }

@@ -87,7 +87,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
       })
       router.push('/issues')
     } else if ('error' in result) {
-      toast.error(result.error || 'Failed to delete issue')
+      toast.error(result.error)
       setIsDeleting(false)
     }
   }
