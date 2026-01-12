@@ -1,7 +1,6 @@
 import type { Comment, SortDirection } from '@/types'
 
 type SortField = 'createdAt'
-export type { SortDirection } from '@/types'
 
 /**
  * Sort comments by field and direction

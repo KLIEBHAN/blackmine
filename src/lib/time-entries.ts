@@ -10,7 +10,6 @@ export interface TimeEntryFilters {
 }
 
 export type TimeEntrySortField = 'spentOn' | 'hours' | 'createdAt'
-export type { SortDirection } from '@/types'
 
 export function filterTimeEntries(
   entries: TimeEntry[],

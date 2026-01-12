@@ -2,6 +2,10 @@
 
 
 ## Letzte Iteration (2026-01-12)
+- **DRY: Ungenutzte SortDirection Re-Exports entfernt**
+  - 4 Dateien: `comments.ts`, `issues.ts`, `time-entries.ts`, `users.ts`
+  - Re-Exports waren nie genutzt, alle Consumer importieren direkt aus `@/types`
+  
 - **DRY: SortDirection in time-list.tsx**
   - Lokale `type SortDirection` Definition entfernt
   - Nutzt jetzt zentrale Definition aus `types/index.ts`

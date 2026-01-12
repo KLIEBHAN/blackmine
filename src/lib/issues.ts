@@ -13,7 +13,6 @@ export interface IssueFilters {
 }
 
 export type IssueSortField = 'priority' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate' | 'subject'
-export type { SortDirection } from '@/types'
 
 export interface IssueSort {
   field: IssueSortField
