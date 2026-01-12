@@ -15,6 +15,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
 import type { ProjectStatus } from '@/types'
+import { projectStatusLabels, allProjectStatuses } from '@/types'
 import {
   Search,
   Plus,
@@ -56,19 +57,11 @@ type Props = {
   totalCount: number
 }
 
-const statusLabels: Record<ProjectStatus, string> = {
-  active: 'Active',
-  archived: 'Archived',
-  closed: 'Closed',
-}
-
 const statusColors: Record<ProjectStatus, string> = {
   active: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
   archived: 'bg-slate-500/10 text-slate-600 border-slate-500/20',
   closed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
 }
-
-const allStatuses: ProjectStatus[] = ['active', 'archived', 'closed']
 
 const trackerIcons: Record<string, React.ReactNode> = {
   bug: <Bug className="size-3.5" />,
@@ -196,7 +189,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                 <DropdownMenuContent align="start" className="w-48">
                   <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {allStatuses.map((status) => (
+                  {allProjectStatuses.map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
                       checked={selectedStatuses.includes(status)}
@@ -206,7 +199,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                         variant="outline"
                         className={cn('mr-2 rounded-sm px-1.5 py-0 text-[10px]', statusColors[status])}
                       >
-                        {statusLabels[status]}
+                        {projectStatusLabels[status]}
                       </Badge>
                     </DropdownMenuCheckboxItem>
                   ))}
@@ -272,7 +265,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                         variant="outline"
                         className={cn('shrink-0 rounded-sm px-1.5 py-0 text-[10px]', statusColors[project.status as ProjectStatus])}
                       >
-                        {statusLabels[project.status as ProjectStatus]}
+                        {projectStatusLabels[project.status as ProjectStatus]}
                       </Badge>
                     </div>
                   </CardHeader>

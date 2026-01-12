@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
-import { isOverdue, statusLabels, trackerLabels, priorityLabels } from '@/types'
+import { isOverdue, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities } from '@/types'
 import { filterIssues, sortIssues, type IssueSort, type IssueFilters } from '@/lib/issues'
 import {
   AlertCircle,
@@ -69,10 +69,6 @@ type IssueWithRelations = {
     lastName: string
   } | null
 }
-
-const allStatuses: IssueStatus[] = ['new', 'in_progress', 'resolved', 'closed', 'rejected']
-const allTrackers: IssueTracker[] = ['bug', 'feature', 'support', 'task']
-const allPriorities: IssuePriority[] = ['immediate', 'urgent', 'high', 'normal', 'low']
 
 // Convert serialized Prisma data to Issue type for filter utilities
 function toIssue(issue: IssueWithRelations): Issue {
@@ -196,7 +192,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                 <DropdownMenuContent align="start" className="w-48">
                   <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {allStatuses.map((status) => (
+                  {allIssueStatuses.map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
                       checked={selectedStatuses.includes(status)}
@@ -229,7 +225,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                 <DropdownMenuContent align="start" className="w-44">
                   <DropdownMenuLabel>Filter by Tracker</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {allTrackers.map((tracker) => (
+                  {allIssueTrackers.map((tracker) => (
                     <DropdownMenuCheckboxItem
                       key={tracker}
                       checked={selectedTrackers.includes(tracker)}
@@ -262,7 +258,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                 <DropdownMenuContent align="start" className="w-44">
                   <DropdownMenuLabel>Filter by Priority</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {allPriorities.map((priority) => (
+                  {allIssuePriorities.map((priority) => (
                     <DropdownMenuCheckboxItem
                       key={priority}
                       checked={selectedPriorities.includes(priority)}

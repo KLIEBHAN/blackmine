@@ -39,6 +39,12 @@ export const projectStatusLabels: Record<ProjectStatus, string> = {
   closed: 'Closed',
 }
 
+// All values arrays - derived from label keys for type-safety
+export const allIssueStatuses = Object.keys(statusLabels) as IssueStatus[]
+export const allIssueTrackers = Object.keys(trackerLabels) as IssueTracker[]
+export const allIssuePriorities = Object.keys(priorityLabels) as IssuePriority[]
+export const allProjectStatuses = Object.keys(projectStatusLabels) as ProjectStatus[]
+
 export interface User {
   id: string
   email: string

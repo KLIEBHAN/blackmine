@@ -2,12 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-12)
-- **DRY: `SortIcon` Komponente zentralisiert**
-  - Generische `<SortIcon>` Komponente nach `src/components/ui/sort-icon.tsx` extrahiert
-  - 3 Dateien bereinigt: `issues-list.tsx`, `users-list.tsx`, `time-list.tsx`
-  - ~30 Zeilen duplizierter Code entfernt
+- **DRY: Enum-Arrays zentralisiert**
+  - `allIssueStatuses`, `allIssueTrackers`, `allIssuePriorities`, `allProjectStatuses` in `types/index.ts`
+  - Abgeleitet aus Label-Objekten (type-safe)
+  - `issues-list.tsx` und `projects-list.tsx` bereinigt (~8 Zeilen)
 
 ## Vorherige Iterationen
+- **DRY: `SortIcon` Komponente zentralisiert** (3 Dateien, ~30 Zeilen)
 - **DRY: `getInitials()` zentralisiert** (7 Dateien, ~50 Zeilen)
 - **DRY: Label-Konstanten zentralisiert** (statusLabels, trackerLabels, priorityLabels, projectStatusLabels)
 - **Markdown Rendering:** Issue-Beschreibungen und Kommentare rendern jetzt Markdown
