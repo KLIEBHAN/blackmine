@@ -51,3 +51,11 @@ export function formatDate(date: string | Date, format: DateFormat = 'medium'): 
 export function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
+
+/** Stagger delay (ms) for cascading list animations. */
+const STAGGER_DELAY_MS = 30
+
+/** Returns inline style for staggered animation delay. */
+export function staggerDelay(index: number): { animationDelay: string } {
+  return { animationDelay: `${index * STAGGER_DELAY_MS}ms` }
+}

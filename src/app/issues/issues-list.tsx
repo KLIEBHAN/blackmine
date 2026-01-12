@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { cn, getInitials, formatDate } from '@/lib/utils'
+import { cn, getInitials, formatDate, staggerDelay } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -282,6 +282,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                   size="sm"
                   onClick={clearFilters}
                   className="gap-1.5 text-muted-foreground hover:text-foreground"
+                  aria-label={`Clear ${activeFilterCount} active filters`}
                 >
                   <X className="size-3.5" />
                   Clear ({activeFilterCount})
@@ -302,6 +303,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <button
                       onClick={() => toggleSort('subject')}
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                      aria-label="Sort by issue"
                     >
                       Issue
                       <SortIcon field="subject" currentField={sort.field} direction={sort.direction} />
@@ -312,6 +314,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <button
                       onClick={() => toggleSort('status')}
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                      aria-label="Sort by status"
                     >
                       Status
                       <SortIcon field="status" currentField={sort.field} direction={sort.direction} />
@@ -321,6 +324,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <button
                       onClick={() => toggleSort('priority')}
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                      aria-label="Sort by priority"
                     >
                       Priority
                       <SortIcon field="priority" currentField={sort.field} direction={sort.direction} />
@@ -331,6 +335,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                     <button
                       onClick={() => toggleSort('dueDate')}
                       className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
+                      aria-label="Sort by due date"
                     >
                       Due
                       <SortIcon field="dueDate" currentField={sort.field} direction={sort.direction} />
@@ -364,7 +369,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                       <TableRow
                         key={issue.id}
                         className="group animate-fade-in"
-                        style={{ animationDelay: `${index * 30}ms` }}
+                        style={staggerDelay(index)}
                       >
                         {/* Priority indicator */}
                         <TableCell className="pl-4 pr-0">
@@ -382,10 +387,7 @@ export function IssuesList({ issues, totalCount }: Props) {
                             <div className="flex items-center gap-2">
                               <Badge
                                 variant="secondary"
-                                className={cn(
-                                  'rounded px-1.5 py-0 text-[10px] font-semibold uppercase',
-                                  `tracker-${issue.tracker}`
-                                )}
+                                className={cn('badge-tracker', `tracker-${issue.tracker}`)}
                               >
                                 {trackerLabels[issue.tracker as IssueTracker]}
                               </Badge>

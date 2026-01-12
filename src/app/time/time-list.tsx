@@ -31,7 +31,7 @@ import {
   Activity,
 } from 'lucide-react'
 import Link from 'next/link'
-import { getInitials, formatDate } from '@/lib/utils'
+import { getInitials, formatDate, staggerDelay } from '@/lib/utils'
 import { SortIcon } from '@/components/ui/sort-icon'
 import { type SortDirection, type ActivityType, getFullName, activityTypeLabels, allActivityTypes } from '@/types'
 
@@ -256,6 +256,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                   size="sm"
                   onClick={clearFilters}
                   className="gap-1.5 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear all filters"
                 >
                   <X className="size-3.5" />
                   Clear
@@ -275,6 +276,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                     <button
                       onClick={() => toggleSort('spentOn')}
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                      aria-label="Sort by date"
                     >
                       Date
                       <SortIcon field="spentOn" currentField={sort.field} direction={sort.direction} />
@@ -288,6 +290,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                     <button
                       onClick={() => toggleSort('hours')}
                       className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
+                      aria-label="Sort by hours"
                     >
                       Hours
                       <SortIcon field="hours" currentField={sort.field} direction={sort.direction} />
@@ -315,7 +318,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                     <TableRow
                       key={entry.id}
                       className="group animate-fade-in"
-                      style={{ animationDelay: `${index * 30}ms` }}
+                      style={staggerDelay(index)}
                     >
                       {/* Date */}
                       <TableCell className="pl-4">

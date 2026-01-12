@@ -165,6 +165,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                   size="sm"
                   onClick={clearFilters}
                   className="gap-1.5 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear all filters"
                 >
                   <X className="size-3.5" />
                   Clear
@@ -181,7 +182,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
               <FolderKanban className="size-12 text-muted-foreground/50 mb-4" />
               <p className="text-muted-foreground">No projects found</p>
               {(activeFilterCount > 0 || search) && (
-                <Button variant="link" size="sm" onClick={clearFilters} className="mt-2">
+                <Button variant="link" size="sm" onClick={clearFilters} className="mt-2" aria-label="Clear all filters">
                   Clear filters
                 </Button>
               )}

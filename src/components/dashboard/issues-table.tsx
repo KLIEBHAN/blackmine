@@ -90,10 +90,7 @@ export function IssuesTable({
                       <div className="flex items-center gap-2">
                         <Badge
                           variant="secondary"
-                          className={cn(
-                            'rounded px-1.5 py-0 text-[10px] font-semibold uppercase',
-                            `tracker-${issue.tracker}`
-                          )}
+                          className={cn('badge-tracker', `tracker-${issue.tracker}`)}
                         >
                           {trackerLabels[issue.tracker as IssueTracker]}
                         </Badge>

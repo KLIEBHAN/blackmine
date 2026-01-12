@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { cn, getInitials, formatDate } from '@/lib/utils'
+import { cn, getInitials, formatDate, staggerDelay } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -277,7 +277,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                         <TableRow
                           key={issue.id}
                           className="group animate-fade-in"
-                          style={{ animationDelay: `${index * 30}ms` }}
+                          style={staggerDelay(index)}
                         >
                           {/* Priority indicator */}
                           <TableCell className="pl-4 pr-0">
@@ -295,10 +295,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                               <div className="flex items-center gap-2">
                                 <Badge
                                   variant="secondary"
-                                  className={cn(
-                                    'rounded px-1.5 py-0 text-[10px] font-semibold uppercase',
-                                    `tracker-${issue.tracker}`
-                                  )}
+                                  className={cn('badge-tracker', `tracker-${issue.tracker}`)}
                                 >
                                   {trackerLabels[tracker]}
                                 </Badge>

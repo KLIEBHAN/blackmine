@@ -53,7 +53,7 @@ import {
 import { SortIcon } from '@/components/ui/sort-icon'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getInitials, formatDate } from '@/lib/utils'
+import { getInitials, formatDate, staggerDelay } from '@/lib/utils'
 
 // Serialized type for client-side (dates as strings)
 export type SerializedUser = {
@@ -259,6 +259,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                 size="sm"
                 onClick={clearFilters}
                 className="gap-1.5 text-muted-foreground hover:text-foreground"
+                aria-label="Clear all filters"
               >
                 <X className="size-3.5" />
                 Clear
@@ -278,6 +279,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                   <button
                     onClick={() => toggleSort('lastName')}
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    aria-label="Sort by name"
                   >
                     Name
                     <SortIcon field="lastName" currentField={sort.field} direction={sort.direction} />
@@ -287,6 +289,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                   <button
                     onClick={() => toggleSort('email')}
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    aria-label="Sort by email"
                   >
                     Email
                     <SortIcon field="email" currentField={sort.field} direction={sort.direction} />
@@ -296,6 +299,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                   <button
                     onClick={() => toggleSort('role')}
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    aria-label="Sort by role"
                   >
                     Role
                     <SortIcon field="role" currentField={sort.field} direction={sort.direction} />
@@ -305,6 +309,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                   <button
                     onClick={() => toggleSort('createdAt')}
                     className="flex items-center gap-1.5 hover:text-primary transition-colors"
+                    aria-label="Sort by creation date"
                   >
                     Created
                     <SortIcon field="createdAt" currentField={sort.field} direction={sort.direction} />
@@ -337,7 +342,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                     <TableRow
                       key={user.id}
                       className="group animate-fade-in"
-                      style={{ animationDelay: `${index * 30}ms` }}
+                      style={staggerDelay(index)}
                     >
                       {/* Name */}
                       <TableCell className="pl-4">
