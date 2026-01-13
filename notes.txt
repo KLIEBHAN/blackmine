@@ -2,6 +2,21 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **PRD aktualisiert: Erledigte Tasks dokumentiert**
+  - PRD war veraltet - viele Tasks waren in notes.txt als erledigt markiert, aber nicht in PRD
+  - 6 erledigte Task-Kategorien nach "Erledigt" verschoben mit Details:
+    - Test Coverage (98.69%)
+    - Bug Hunt (keine kritischen Bugs)
+    - Code Quality / DRY (~400+ Zeilen entfernt)
+    - Design (Dark Mode)
+    - Dokumentation (README)
+  - Offene Tasks bereinigt - nur noch echte offene Tasks:
+    - Auth vollständig implementieren
+    - UX verbessern
+    - Administration (Settings) implementieren
+  - **213 Tests grün, Lint clean**
+
+## Vorherige Iteration (2026-01-13)
 - **DRY: StatCard Komponenten konsolidiert**
   - Problem: Zwei verschiedene `StatCard` Komponenten mit unterschiedlichen APIs:
     - `src/components/ui/stat-card.tsx` (label, progress)

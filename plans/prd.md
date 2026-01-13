@@ -17,46 +17,20 @@
 
 ## Offen
 
-### Performance-Optimierungen
-
-### Code Quality
-
-- **Code smells beseitigen:** Schlechte Patterns korrigieren, Lesbarkeit verbessern (aussagekräftige Bezeichner, kleine fokussierte Funktionen, Kommentare für das "Warum"). Bestehende Logik nicht brechen.
-
-### Test Coverage prüfen und wenn nötig erhöhen
-
-- Test Coverage auf mindestens 35% bringen
-- Fokus auf Services mit Business-Logik, nicht auf Coverage-Padding
-
-### Bug hunt
-
-- Scanne die Codebase nach Bugs (Null/Undefined, async races, error handling, parsing, state consistency, security). Pro Bug: Ort, Symptom, Root Cause, Fix, Test. Priorisiere P0-P2. Nur Bugs fixen, die vollständig verstanden sind.
-
-### Dokumentation verbessern
-
-- Prüfe die Dokumentation und vergleiche mit den Code
-- Verbessere die Dokumentation wo es sinnvoll ist und einen Mehrwert bringt
-- Wenn du eindeutige Fehler oder Inkonsistenzen bemerkst, fixe diese
-
-### Lesbarkeit des Codes
-
-- Bitte optimiere diesen Code für maximale Lesbarkeit und Verständlichkeit. Achte auf aussagekräftige, konsistente Bezeichner, vermeide unnötige Komplexität und erstelle gegebenenfalls kleine, fokussierte Funktionen. Ergänze kurze, sinnvolle Kommentare, die das ‚Warum' statt das ‚Wie' hervorheben. Erkläre abschließend, wie deine Änderungen die Verständlichkeit und Wartbarkeit verbessern.
-
-### Komplexität reduzieren
-
-- Bitte suche nach unnötiger Komplexität und Redundanz. Erkläre mir dann bitte genau, wie dies zustande kommt und was die wahrscheinlichsten Ursachen sind.
-- Versuche es dann besser zu lösen und zu vereinheitlichen.
-
-### Design optimieren
-
-- Kannst Du prüfen ob wir das Design noch optisch schöner gestalten können?
-- Dark mode als Standard setzen bzw Systemeinstellungen übernehmen
-
 ### Auth vollständig Implementieren
+
+- Server Actions absichern (aktuell nur UI-basierte Autorisierung)
+- Login/Logout implementieren
+- Session-Management
+- Rollen-basierte Berechtigungen durchsetzen
 
 ### UX verbessern
 
+- Weitere UX-Verbesserungen identifizieren und umsetzen
+
 ### Administration (Settings) Implementieren
+
+- Globale Einstellungen verwalten
 
 ---
 
@@ -75,6 +49,39 @@
 - Wiederverwendbare `<Markdown>` Komponente in `src/components/ui/markdown.tsx`
 - Issue-Beschreibungen und Kommentare rendern jetzt Markdown (Code, Listen, Links, Tabellen etc.)
 - Eigene `prose` CSS-Styles in globals.css (Tailwind v4 kompatibel)
+
+### Test Coverage ✅ (2026-01-12)
+
+- **Ziel 35% → Erreicht 98.69%**
+- Alle lib-Module und types vollständig getestet
+- 213 Unit-Tests, alle grün
+
+### Bug Hunt ✅ (2026-01-12)
+
+- Umfassende Codebase-Analyse: Keine kritischen Bugs
+- Geprüft: Leere catch-Blöcke, TypeScript Hacks, XSS, Race Conditions, Null-Returns, Input Validierung
+- Delete Handler Error Handling verbessert (4 Dateien)
+- isOverdue() Bug gefixt (ignorierte `resolved` Status)
+
+### Code Quality / DRY ✅ (2026-01-12/13)
+
+- Zentralisiert: `getInitials()`, `formatDate()`, `generateId()`, `getFullName()`, `isOverdue()`
+- Zentralisiert: Label-Konstanten, Form Options, Badge Colors, Email Regex
+- Komponenten: `FormFieldError`, `GeneralFormError`, `SortableTableHeader`, `FilterDropdown`, `StatCard`
+- Hooks: `useFormField()`
+- Server Action Error Handler konsolidiert
+- ~400+ Zeilen duplizierter Code entfernt
+
+### Design optimieren ✅ (2026-01-12)
+
+- Dark Mode mit System-Präferenz + localStorage-Persistenz
+- FOUC-Prevention via Inline-Script
+
+### Dokumentation ✅ (2026-01-12)
+
+- README.md projektspezifisch aktualisiert
+- Keyboard Shortcuts dokumentiert
+- Docker-Anweisungen hinzugefügt
 
 ---
 
