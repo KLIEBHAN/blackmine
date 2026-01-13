@@ -15,6 +15,8 @@ if [ ! -f "$DB_PATH" ]; then
   echo "Database ready. Run 'docker compose exec app npx tsx prisma/seed.ts' to seed demo data."
 else
   echo "Existing database found ($(stat -c%s "$DB_PATH" 2>/dev/null || stat -f%z "$DB_PATH") bytes)"
+  echo "Applying pending migrations..."
+  npx prisma migrate deploy
 fi
 
 exec "$@"
