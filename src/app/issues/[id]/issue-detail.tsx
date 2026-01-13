@@ -87,13 +87,13 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
       <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between opacity-0 animate-card-in">
-          <div className="flex items-start gap-4">
-            <Button variant="ghost" size="icon" asChild className="mt-1">
+          <div className="flex items-start gap-4 min-w-0">
+            <Button variant="ghost" size="icon" asChild className="mt-1 shrink-0">
               <Link href="/issues">
                 <ArrowLeft className="size-4" />
               </Link>
             </Button>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <Badge
                   variant="secondary"
@@ -108,7 +108,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                   #{formatShortId(issue.id)}
                 </span>
               </div>
-              <h1 className="text-2xl font-bold tracking-tight">{issue.subject}</h1>
+              <h1 className="text-2xl font-bold tracking-tight break-all">{issue.subject}</h1>
               <Link
                 href={`/projects/${issue.project.identifier}`}
                 className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
