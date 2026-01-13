@@ -39,6 +39,7 @@ import {
   CircleDot,
   Clock,
 } from 'lucide-react'
+import { StatCard } from '@/components/ui/stat-card'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
 import { statusLabels, trackerLabels, projectStatusLabels, projectStatusColors, type IssueTracker, getFullName } from '@/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -115,7 +116,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+      <div className="p-6 lg:p-8">
         <Link
           href="/projects"
           className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -188,67 +189,35 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid gap-4 md:grid-cols-4 mb-6">
-              <Card className="opacity-0 animate-card-in delay-1">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Issues</p>
-                      <p className="text-2xl font-bold font-mono">{totalIssues}</p>
-                    </div>
-                    <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <BarChart3 className="size-5 text-primary" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="opacity-0 animate-card-in delay-2">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Open</p>
-                      <p className="text-2xl font-bold font-mono">{openIssues}</p>
-                    </div>
-                    <div className="size-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                      <AlertCircle className="size-5 text-amber-600" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="opacity-0 animate-card-in delay-3">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Closed</p>
-                      <p className="text-2xl font-bold font-mono">{closedIssues}</p>
-                    </div>
-                    <div className="size-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                      <CheckSquare className="size-5 text-emerald-600" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="opacity-0 animate-card-in delay-4">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Progress</p>
-                      <p className="text-2xl font-bold font-mono">{progress.toFixed(0)}%</p>
-                    </div>
-                    <div className="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                      <Calendar className="size-5 text-blue-600" />
-                    </div>
-                  </div>
-                  <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all duration-500"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+              <StatCard
+                label="Total Issues"
+                value={totalIssues}
+                icon={BarChart3}
+                iconClassName="bg-primary/10 text-primary"
+                delay={1}
+              />
+              <StatCard
+                label="Open"
+                value={openIssues}
+                icon={AlertCircle}
+                iconClassName="bg-amber-500/10 text-amber-600"
+                delay={2}
+              />
+              <StatCard
+                label="Closed"
+                value={closedIssues}
+                icon={CheckSquare}
+                iconClassName="bg-emerald-500/10 text-emerald-600"
+                delay={3}
+              />
+              <StatCard
+                label="Progress"
+                value={`${progress.toFixed(0)}%`}
+                icon={Calendar}
+                iconClassName="bg-blue-500/10 text-blue-600"
+                progress={progress}
+                delay={4}
+              />
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">

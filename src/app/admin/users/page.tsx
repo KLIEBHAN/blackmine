@@ -17,7 +17,7 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+      <div className="p-6 lg:p-8">
         <UsersList initialUsers={serializedUsers} />
       </div>
     </div>

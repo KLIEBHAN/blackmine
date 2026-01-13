@@ -2,6 +2,14 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **DRY: StatCard Komponente erstellt**
+  - Neue wiederverwendbare Komponente: `src/components/ui/stat-card.tsx`
+  - Props: label, value, icon, iconClassName, progress (optional), delay
+  - 4 identische Card-Strukturen in `project-detail.tsx` konsolidiert
+  - **~32 Zeilen netto entfernt** (62 Zeilen entfernt, 30 Zeilen hinzugefügt)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-13)
 - **Test Coverage: utils.ts von 18.75% auf 100% erhöht**
   - Neue Testdatei: `src/lib/utils.test.ts` mit 22 Tests
   - Getestete Funktionen: `cn`, `getInitials`, `formatDate`, `generateId`, `formatShortId`, `staggerDelay`
@@ -236,6 +244,7 @@
 - [x] DRY: isOverdue() konsolidiert (2 lokale Duplikate entfernt)
 - [x] DRY: generateId() zentralisiert (4 lokale Duplikate entfernt)
 - [x] DRY: Badge Color Constants zentralisiert (projectStatusColors, roleColors)
+- [x] DRY: StatCard Komponente erstellt (4 identische Cards konsolidiert)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context

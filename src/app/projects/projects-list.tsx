@@ -85,7 +85,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-7xl p-6 lg:p-8">
+      <div className="p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
