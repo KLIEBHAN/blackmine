@@ -137,7 +137,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className={cn("p-6 lg:p-8", hideHeader && "pt-0")}>
+      <div className={cn("p-4 sm:p-6 lg:p-8", hideHeader && "pt-0")}>
         {/* Page Header */}
         {!hideHeader && (
           <div className="mb-6 flex items-center justify-between">
@@ -159,10 +159,10 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
 
         {/* Filter Bar */}
         <Card className="mb-6 opacity-0 animate-card-in delay-1">
-          <CardContent className="p-4">
-            <div className="flex flex-wrap items-center gap-3">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               {/* Search */}
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search issues..."
@@ -172,6 +172,8 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                 />
               </div>
 
+              {/* Filters Row - scrollable on mobile */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 sm:gap-3 sm:overflow-visible">
               {/* Status Filter */}
               <FilterDropdown<IssueStatus>
                 label="Status"
@@ -235,13 +237,14 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                   variant="ghost"
                   size="sm"
                   onClick={clearFilters}
-                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                  className="gap-1.5 text-muted-foreground hover:text-foreground shrink-0"
                   aria-label={`Clear ${activeFilterCount} active filters`}
                 >
                   <X className="size-3.5" />
                   Clear ({activeFilterCount})
                 </Button>
               )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -249,7 +252,8 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
         {/* Issues Table */}
         <Card className="opacity-0 animate-card-in delay-2 overflow-hidden">
           <CardContent className="p-0">
-            <Table className="table-fixed">
+            <div className="overflow-x-auto">
+            <Table className="table-fixed min-w-[800px]">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="w-8 pl-4"></TableHead>
@@ -262,7 +266,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                       onSort={toggleSort}
                     />
                   </TableHead>
-                  <TableHead className="font-semibold">Project</TableHead>
+                  <TableHead className="font-semibold hidden md:table-cell">Project</TableHead>
                   <TableHead className="font-semibold">
                     <SortableTableHeader
                       field="status"
@@ -281,7 +285,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                       onSort={toggleSort}
                     />
                   </TableHead>
-                  <TableHead className="font-semibold">Assignee</TableHead>
+                  <TableHead className="font-semibold hidden lg:table-cell">Assignee</TableHead>
                   <TableHead className="pr-4 text-right font-semibold">
                     <SortableTableHeader
                       field="dueDate"
@@ -357,7 +361,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                         </TableCell>
 
                         {/* Project */}
-                        <TableCell>
+                        <TableCell className="hidden md:table-cell">
                           <Link
                             href={`/projects/${issue.project.identifier}`}
                             className="text-sm text-muted-foreground hover:text-primary hover:underline truncate block"
@@ -395,7 +399,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                         </TableCell>
 
                         {/* Assignee */}
-                        <TableCell>
+                        <TableCell className="hidden lg:table-cell">
                           {assigneeName ? (
                             <div className="flex items-center gap-2 min-w-0">
                               <Avatar className="size-6 shrink-0">
@@ -436,6 +440,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                 )}
               </TableBody>
             </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

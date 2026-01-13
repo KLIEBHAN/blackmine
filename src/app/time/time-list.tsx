@@ -158,7 +158,7 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>

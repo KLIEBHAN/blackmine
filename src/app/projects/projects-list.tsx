@@ -85,7 +85,7 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -105,10 +105,10 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
 
         {/* Filter Bar */}
         <Card className="mb-6 opacity-0 animate-card-in delay-1">
-          <CardContent className="p-4">
-            <div className="flex flex-wrap items-center gap-3">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               {/* Search */}
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search projects..."
@@ -118,6 +118,8 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                 />
               </div>
 
+              {/* Filters Row */}
+              <div className="flex items-center gap-2 sm:gap-3">
               {/* Status Filter */}
               <FilterDropdown<ProjectStatus>
                 label="Status"
@@ -142,13 +144,14 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
                   variant="ghost"
                   size="sm"
                   onClick={clearFilters}
-                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                  className="gap-1.5 text-muted-foreground hover:text-foreground shrink-0"
                   aria-label="Clear all filters"
                 >
                   <X className="size-3.5" />
                   Clear
                 </Button>
               )}
+              </div>
             </div>
           </CardContent>
         </Card>

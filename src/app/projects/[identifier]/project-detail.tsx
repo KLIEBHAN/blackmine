@@ -116,7 +116,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <Link
           href="/projects"
           className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"

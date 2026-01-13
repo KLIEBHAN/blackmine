@@ -55,15 +55,16 @@ export function IssuesTable({
         </Link>
       </CardHeader>
       <CardContent className="p-0">
-        <Table>
+        <div className="overflow-x-auto">
+        <Table className="min-w-[700px]">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-12 pl-4"></TableHead>
               <TableHead className="font-semibold">Issue</TableHead>
-              {showProject && <TableHead className="font-semibold">Project</TableHead>}
+              {showProject && <TableHead className="font-semibold hidden md:table-cell">Project</TableHead>}
               <TableHead className="font-semibold">Status</TableHead>
               <TableHead className="font-semibold">Priority</TableHead>
-              <TableHead className="font-semibold">Assignee</TableHead>
+              <TableHead className="font-semibold hidden lg:table-cell">Assignee</TableHead>
               <TableHead className="pr-4 text-right font-semibold">Due</TableHead>
             </TableRow>
           </TableHeader>
@@ -109,7 +110,7 @@ export function IssuesTable({
 
                   {/* Project */}
                   {showProject && (
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Link 
                         href={`/projects/${issue.project.identifier}`}
                         className="text-sm text-muted-foreground hover:text-primary hover:underline"
@@ -147,7 +148,7 @@ export function IssuesTable({
                   </TableCell>
 
                   {/* Assignee */}
-                  <TableCell>
+                  <TableCell className="hidden lg:table-cell">
                     {assigneeName ? (
                       <div className="flex items-center gap-2">
                         <Avatar className="size-6">
@@ -187,6 +188,7 @@ export function IssuesTable({
             })}
           </TableBody>
         </Table>
+        </div>
       </CardContent>
     </Card>
   )

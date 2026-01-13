@@ -113,7 +113,7 @@ export function IssueForm({ users, projects, defaultProjectId, currentUserId }: 
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-3xl p-6 lg:p-8">
+      <div className="mx-auto max-w-3xl p-4 sm:p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex items-center gap-4 opacity-0 animate-card-in">
           <Button variant="ghost" size="icon" asChild>
