@@ -1,6 +1,9 @@
 import { getDatabaseStats } from '@/app/actions/database'
 import { DatabaseManager } from './database-manager'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDatabasePage() {
   const stats = await getDatabaseStats()
 
