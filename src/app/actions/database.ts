@@ -2,14 +2,12 @@
 
 import { prisma } from '@/lib/db'
 
-const isDev = process.env.NODE_ENV !== 'production'
-
 function log(...args: unknown[]) {
-  if (isDev) console.log('[DB Import]', ...args)
+  console.log('[DB]', ...args)
 }
 
 function logError(...args: unknown[]) {
-  console.error('[DB Import]', ...args)
+  console.error('[DB ERROR]', ...args)
 }
 
 export interface DatabaseExport {
