@@ -11,12 +11,12 @@ ls -la "$DB_DIR" 2>/dev/null || echo "(directory empty or not accessible)"
 
 if [ ! -f "$DB_PATH" ]; then
   echo "Database not found. Initializing..."
-  npx prisma db push --url "$DATABASE_URL"
+  ./node_modules/.bin/prisma db push --url "$DATABASE_URL"
   echo "Database ready. Run 'docker compose exec app npx tsx prisma/seed.ts' to seed demo data."
 else
   echo "Existing database found ($(stat -c%s "$DB_PATH" 2>/dev/null || stat -f%z "$DB_PATH") bytes)"
   echo "Applying pending migrations..."
-  npx prisma migrate deploy
+  ./node_modules/.bin/prisma migrate deploy
 fi
 
 exec "$@"
