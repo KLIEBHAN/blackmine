@@ -2,6 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **Lint Fix: sonner.tsx refaktoriert (useSyncExternalStore)**
+  - ESLint 'react-hooks/set-state-in-effect' Regel flaggte setState in useEffect
+  - Lösung: `useSyncExternalStore` (React 18+ Pattern) für Theme-Erkennung
+  - `mounted` State-Workaround entfernt - useSyncExternalStore handled SSR/Hydration
+  - 16 Zeilen hinzugefügt, 18 entfernt (netto: -2 Zeilen)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: "Auth: UI Rollen-Berechtigungen" implementieren
+
+## Vorherige Iteration (2026-01-13)
 - **Auth: Server Actions abgesichert**
   - **Issues Actions (`src/app/actions/issues.ts`):**
     - `createIssue`: requireAuth(), authorId aus Session
