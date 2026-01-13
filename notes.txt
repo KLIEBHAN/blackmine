@@ -2,18 +2,14 @@
 
 
 ## Letzte Iteration (2026-01-13)
-- **PRD aktualisiert: Erledigte Tasks dokumentiert**
-  - PRD war veraltet - viele Tasks waren in notes.txt als erledigt markiert, aber nicht in PRD
-  - 6 erledigte Task-Kategorien nach "Erledigt" verschoben mit Details:
-    - Test Coverage (98.69%)
-    - Bug Hunt (keine kritischen Bugs)
-    - Code Quality / DRY (~400+ Zeilen entfernt)
-    - Design (Dark Mode)
-    - Dokumentation (README)
-  - Offene Tasks bereinigt - nur noch echte offene Tasks:
-    - Auth vollständig implementieren
-    - UX verbessern
-    - Administration (Settings) implementieren
+- **Dokumentation bereinigt: PRD + notes.txt synchronisiert**
+  - PRD aktualisiert: Erledigte Tasks dokumentiert (Test Coverage, Bug Hunt, DRY, Design, Dokumentation)
+  - notes.txt bereinigt: Redundante Sektionen entfernt
+    - "PRD-Tasks Status" Checkliste entfernt (jetzt in PRD "Erledigt")
+    - "Nächste Schritte" entfernt (jetzt in PRD "Offen")
+    - Erledigte Strikethrough-Items entfernt
+  - Coverage-Zahl korrigiert: 98.61% → 98.69% (aktueller Wert)
+  - ~60 Zeilen Redundanz entfernt
   - **213 Tests grün, Lint clean**
 
 ## Vorherige Iteration (2026-01-13)
@@ -257,39 +253,7 @@
 - **Dark Mode:** System-Präferenz + Persistenz
 - **Lesbarkeit/DRY:** toggle-Funktionen konsolidiert
 - README.md projektspezifisch aktualisiert
-- Test Coverage: **98.61%** (weit über Ziel 35%)
-
-## PRD-Tasks Status:
-- [x] Test Coverage auf 35% -> **98.61% erreicht!**
-- [x] Dokumentation verbessern -> README.md aktualisiert
-- [x] Code Quality / SortDirection DRY -> vollständig zentralisiert
-- [x] Bug hunt (4 Delete Handlers gefixed + umfassende Analyse: keine kritischen Bugs)
-- [x] Lesbarkeit: toggle-Funktionen DRY gemacht
-- [x] Performance-Optimierungen -> useMemo für toIssue() separiert
-- [x] Design optimieren (Dark mode) -> System-Präferenz + Persistenz
-- [x] Markdown in Issues rendern
-- [x] Kommentare löschbar
-- [x] DRY: getInitials() zentralisiert
-- [x] DRY: TrackerIcon zentralisiert
-- [x] DRY: formatDate() zentralisiert
-- [x] DRY: Server Action Error Handler zentralisiert
-- [x] UX: Broken Links und nicht-funktionale Buttons behoben
-- [x] DRY: getFullName() generisch gemacht
-- [x] DRY: Form Options zentralisiert (tracker, priority, projectStatus)
-- [x] DRY: getFullName() konsistent genutzt (4 Stellen)
-- [x] DRY: FormFieldError Komponente erstellt (24 Stellen)
-- [x] DRY: EMAIL_REGEX zentralisiert (5 Stellen)
-- [x] DRY: GeneralFormError Komponente erstellt (5 Stellen)
-- [x] DRY: ActivityType zentralisiert (3 Definitionen)
-- [x] DRY: filterProjects generisch gemacht (lokales Duplikat entfernt)
-- [x] Bug Fix: isOverdue() ignorierte 'resolved' Status
-- [x] DRY: isOverdue() konsolidiert (2 lokale Duplikate entfernt)
-- [x] DRY: generateId() zentralisiert (4 lokale Duplikate entfernt)
-- [x] DRY: Badge Color Constants zentralisiert (projectStatusColors, roleColors)
-- [x] DRY: StatCard Komponente erstellt (4 identische Cards konsolidiert)
-
-- [x] DRY: SortableTableHeader Komponente erstellt (10 Patterns konsolidiert)
-- [x] DRY: StatCard Komponenten konsolidiert (ui + dashboard → eine einheitliche Komponente)
+- Test Coverage: **98.69%** (weit über Ziel 35%)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -299,15 +263,8 @@
 ## Weitere DRY-Kandidaten (identifiziert, noch nicht umgesetzt)
 - Server Action revalidatePath: Wiederholende Calls (geringer Nutzen)
 - Unique-Check Functions: `isIdentifierTaken` / `isEmailTaken` ähnlich (nur 2 Stellen, unter 3er-Schwelle)
-- ~~`updateField` Hook: 7 Form-Komponenten~~ → ✅ Erledigt! `useFormField()` Hook erstellt
-- ~~`<FormFieldError>` Komponente: Error-Rendering Pattern (24 Stellen)~~ → ✅ Erledigt! `FormFieldError` Komponente erstellt
 - `roleOptions` mit Icons: 2 Dateien (user-form, user-edit-form) - Icons sind UI-spezifisch, daher nicht in types/
 - `SerializedUser/Project/Issue` Types: Viele ähnliche Definitionen (je ~3-8 Felder unterschiedlich pro Kontext)
 
-## Nächste Schritte
-- Auth vollständig implementieren
-- UX verbessern
-- Administration (Settings) Implementieren
-
 ---
-Letzte Aktualisierung: 2026-01-13 (DRY: StatCard konsolidiert)
+Letzte Aktualisierung: 2026-01-13 (PRD aktualisiert, redundante Sektionen bereinigt)
