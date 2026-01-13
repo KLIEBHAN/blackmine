@@ -118,7 +118,7 @@ type Props = {
 
 export function IssuesList({ issues, totalCount, hideHeader = false, users = [] }: Props) {
   const [search, setSearch] = useState('')
-  const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>([])
+  const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>(['new', 'in_progress'])
   const [selectedTrackers, setSelectedTrackers] = useState<IssueTracker[]>([])
   const [selectedPriorities, setSelectedPriorities] = useState<IssuePriority[]>([])
   const [sort, setSort] = useState<IssueSort>({ field: 'dueDate', direction: 'asc' })

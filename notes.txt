@@ -2,6 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **UX: Issues-Liste zeigt standardmäßig nur offene Issues**
+  - Problem: Issues-Liste hatte keinen Default-Filter, zeigte ALLE Issues (inkl. closed/rejected)
+  - User musste manuell filtern, um aktuelle Issues zu sehen
+  - Inkonsistent mit Projekte-Liste (die hat Default-Filter auf "active")
+  - Lösung: Default-Status-Filter auf `['new', 'in_progress']` gesetzt
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-13)
 - **UX: Unnötiges Dropdown im Sidebar-Footer entfernt**
   - Problem: User-Bereich im Sidebar-Footer hatte ein Dropdown mit nur einer Aktion (Logout)
   - User musste 2x klicken: 1. Dropdown öffnen, 2. Logout wählen
