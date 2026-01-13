@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Plus,
   Database,
+  LogOut,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -37,6 +38,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { IssueSearch } from './issue-search'
 import { useSession } from '@/contexts/session-context'
+import { logout } from '@/app/actions/auth'
 import { getFullName } from '@/types'
 import { getInitials } from '@/lib/utils'
 
@@ -177,9 +179,14 @@ export function AppSidebar() {
                 <DropdownMenuItem disabled>Profile</DropdownMenuItem>
                 <DropdownMenuItem disabled>Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem disabled className="text-destructive">
-                  Log out
-                </DropdownMenuItem>
+                <form action={logout}>
+                  <DropdownMenuItem asChild>
+                    <button type="submit" className="w-full flex items-center gap-2 text-destructive cursor-pointer">
+                      <LogOut className="size-4" />
+                      Log out
+                    </button>
+                  </DropdownMenuItem>
+                </form>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
