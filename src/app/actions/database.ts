@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 
 function log(...args: unknown[]) {
@@ -307,6 +308,15 @@ export async function importDatabase(
 
     const finalCounts = await getDatabaseStats()
     log('Import completed. Final counts:', finalCounts)
+
+    // Revalidate all affected pages
+    log('Revalidating cached pages...')
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin/users')
+    revalidatePath('/admin/database')
+    revalidatePath('/projects')
+    revalidatePath('/issues')
+    revalidatePath('/time')
 
     return { success: true, counts: finalCounts }
   } catch (error) {
