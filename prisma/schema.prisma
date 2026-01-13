@@ -10,12 +10,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  role      String   @default("developer") // admin, manager, developer, reporter
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @default("") // Empty = password not set (for migration)
+  firstName    String
+  lastName     String
+  role         String   @default("developer") // admin, manager, developer, reporter
+  createdAt    DateTime @default(now())
 
   // Relations
   authoredIssues  Issue[]     @relation("IssueAuthor")

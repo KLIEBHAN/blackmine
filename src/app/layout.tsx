@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
-import { AppSidebar, DashboardHeader } from '@/components/dashboard'
 import { Toaster } from '@/components/ui/sonner'
-import { MobileNav } from '@/components/ui/mobile-nav'
 
 export const metadata: Metadata = {
   title: 'Blackmine - Project Management',
@@ -36,14 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <DashboardHeader />
-            <main className="flex-1 overflow-auto pb-20 md:pb-0">{children}</main>
-          </SidebarInset>
-        </SidebarProvider>
-        <MobileNav />
+        {children}
         <Toaster position="bottom-right" richColors closeButton />
       </body>
     </html>

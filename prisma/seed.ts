@@ -1,24 +1,40 @@
 import { PrismaClient } from '../src/generated/prisma/client'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { webcrypto } from 'node:crypto'
 
 const adapter = new PrismaLibSql({
   url: process.env.DATABASE_URL ?? 'file:dev.db',
 })
 const prisma = new PrismaClient({ adapter })
 
+async function hashPassword(password: string): Promise<string> {
+  const salt = webcrypto.getRandomValues(new Uint8Array(16))
+  const encoder = new TextEncoder()
+  const key = await webcrypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits'])
+  const hashBuffer = await webcrypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, key, 256)
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('')
+  const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
+  return `${saltHex}:${hashHex}`
+}
+
 async function main() {
   console.log('🌱 Seeding database...')
 
   // Clean existing data
+  await prisma.comment.deleteMany()
   await prisma.timeEntry.deleteMany()
   await prisma.issue.deleteMany()
   await prisma.project.deleteMany()
   await prisma.user.deleteMany()
 
+  // Demo password for all users (in production, each user would have unique password)
+  const demoPasswordHash = await hashPassword('password123')
+
   // Create Users
   const adminUser = await prisma.user.create({
     data: {
       email: 'admin@example.com',
+      passwordHash: demoPasswordHash,
       firstName: 'Admin',
       lastName: 'User',
       role: 'admin',
@@ -28,6 +44,7 @@ async function main() {
   const devUser = await prisma.user.create({
     data: {
       email: 'developer@example.com',
+      passwordHash: demoPasswordHash,
       firstName: 'John',
       lastName: 'Developer',
       role: 'developer',
@@ -37,6 +54,7 @@ async function main() {
   const managerUser = await prisma.user.create({
     data: {
       email: 'manager@example.com',
+      passwordHash: demoPasswordHash,
       firstName: 'Sarah',
       lastName: 'Manager',
       role: 'manager',

@@ -3,9 +3,10 @@
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Bell, Moon, Sun } from 'lucide-react'
+import { Bell, Moon, Sun, LogOut } from 'lucide-react'
 import { useSyncExternalStore } from 'react'
 import { Breadcrumbs } from './breadcrumbs'
+import { logout } from '@/app/actions/auth'
 
 // Use useSyncExternalStore for SSR-safe DOM access
 function useIsDarkMode() {
@@ -69,6 +70,18 @@ export function DashboardHeader() {
         >
           {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
         </Button>
+        
+        <form action={logout}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            type="submit"
+            aria-label="Sign out"
+          >
+            <LogOut className="size-4" />
+          </Button>
+        </form>
       </div>
     </header>
   )

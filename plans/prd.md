@@ -4,7 +4,7 @@
 
 1. **Status:** Wichtig: `git diff` prüfen → bei Änderungen: genau prüfen, passende Tests (`npm test`) und commiten/pushen
 2. **Feature:** EIN Feature aus "Offen" wählen (höchste Priorität zuerst - bewerte selbst)
-3. **Implementieren:** Code schreiben → echte Lösung, keine Shortcuts
+3. **Implementieren:** Code schreiben → echte Lösung, keine Shortcuts - Testen mit Playwright auf http://localhost:3000/ ist möglich
 4. **Clean up**: Code nochmals prüfen, aufräumen und sonstiges Cleanup
 5. **Quality Gates:**
    - `npm run lint` — KEINE neuen `eslint-disable` ohne Genehmigung!
@@ -17,12 +17,11 @@
 
 ## Offen
 
-### Auth vollständig Implementieren
+### Auth: Server Actions absichern
 
-- Server Actions absichern (aktuell nur UI-basierte Autorisierung)
-- Login/Logout implementieren
-- Session-Management
-- Rollen-basierte Berechtigungen durchsetzen
+- `requireAuth()` in alle mutierenden Server Actions einfügen
+- Rollen-basierte Checks (z.B. nur Admin darf User löschen)
+- UI-Elemente basierend auf Session-Role ein-/ausblenden
 
 ### UX verbessern
 
@@ -35,6 +34,23 @@
 ---
 
 ## Erledigt
+
+### Auth Infrastruktur ✅ (2026-01-13)
+
+- **Login/Logout implementiert:**
+  - Login-Page unter `/login` mit Email/Password
+  - Logout-Button im Header
+  - Cookie-basierte Sessions (7 Tage, HttpOnly)
+- **Session-Management:**
+  - `getSession()`, `createSession()`, `destroySession()`
+  - `requireAuth()`, `requireRole()` Helper
+- **Route Protection:**
+  - Route Groups: `(app)/` geschützt, `(auth)/` öffentlich
+  - Automatischer Redirect zu `/login` für unauthentifizierte User
+- **Password Hashing:**
+  - PBKDF2 mit Web Crypto API (100k Iterations)
+  - Prisma Schema: `passwordHash` Feld
+- **Demo-Credentials:** admin@example.com / password123
 
 ### Kommentare zu Issues löschbar ✅ (2026-01-12)
 
