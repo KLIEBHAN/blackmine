@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "41314:3000"
+    environment:
+      - DATABASE_URL=file:/app/data/redmine.db
+    volumes:
+      - redmine-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  redmine-data:

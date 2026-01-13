@@ -96,6 +96,36 @@ npm test -- --coverage
 npm test src/lib/issues.test.ts
 ```
 
+## Docker
+
+### Quick Start
+
+```bash
+docker compose up -d --build
+```
+
+App available at [http://localhost:41314](http://localhost:41314).
+
+### Database Backup & Restore
+
+```bash
+# Export database
+./scripts/db-export.sh ./backups
+
+# Import database
+./scripts/db-import.sh ./backups/redmine_backup_20240115_120000.db
+```
+
+### Manual Database Setup
+
+```bash
+# Apply migrations manually
+docker compose exec app npx prisma migrate deploy
+
+# Seed demo data (requires running container with tsx)
+docker compose exec app npx tsx prisma/seed.ts
+```
+
 ## License
 
 MIT
