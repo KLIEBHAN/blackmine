@@ -2,38 +2,32 @@
 
 
 ## Letzte Iteration (2026-01-13)
-- **Auth Infrastruktur implementiert (Phase 1)**
-  - **Prisma Schema erweitert:**
-    - `passwordHash` Feld zu User hinzugefügt (default "" für Migration)
-    - Migration `20260113185235_add_password_hash` erstellt und angewendet
-  - **Auth Utilities erstellt (`src/lib/auth.ts`):**
-    - `hashPassword()` - PBKDF2 mit Web Crypto API (100k Iterations, SHA-256)
-    - `verifyPassword()` - Timing-safe Verifikation
-    - `authenticateUser()` - Email/Password Login
-    - `SessionUser` Type für sichere Session-Daten
-  - **Session Management (`src/lib/session.ts`):**
-    - Cookie-basierte Sessions (7 Tage, HttpOnly, Secure in Prod)
-    - `createSession()`, `destroySession()`, `getSession()`
-    - `requireAuth()`, `requireRole()` für Route/Action Protection
-  - **Login Page (`src/app/(auth)/login/`):**
-    - Login-Formular mit Email/Password
-    - Demo-Credentials angezeigt (admin@example.com / password123)
-    - Redirect zu / nach erfolgreichem Login
-  - **Route Groups:**
-    - `(app)/` - Haupt-App mit Sidebar (geschützt, redirect zu /login)
-    - `(auth)/` - Auth-Seiten ohne Sidebar
-    - Root Layout vereinfacht (nur HTML-Shell + Toaster)
-  - **Logout:**
-    - Logout-Button im Header hinzugefügt
-    - Server Action löscht Session-Cookie
-  - **Seed aktualisiert:**
-    - Alle Demo-User haben jetzt Passwort "password123"
-    - Hash-Funktion inline (da tsx statt Next.js)
+- **Auth: Server Actions abgesichert**
+  - **Issues Actions (`src/app/actions/issues.ts`):**
+    - `createIssue`: requireAuth(), authorId aus Session
+    - `updateIssue`: requireAuth()
+    - `deleteIssue`: requireAuth()
+    - `bulkUpdateIssues`: requireAuth()
+  - **Users Actions (`src/app/actions/users.ts`):**
+    - `createUser`, `updateUser`, `deleteUser`: requireRole(['admin'])
+  - **Projects Actions (`src/app/actions/projects.ts`):**
+    - `createProject`, `updateProject`, `deleteProject`: requireRole(['admin', 'manager'])
+  - **Comments Actions (`src/app/actions/comments.ts`):**
+    - `createComment`: requireAuth(), authorId aus Session
+    - `updateComment`: requireAuth() + Ownership-Check
+    - `deleteComment`: requireAuth() + Ownership-Check (oder Admin)
+  - **Time Entries Actions (`src/app/actions/time-entries.ts`):**
+    - `createTimeEntry`: requireAuth(), userId aus Session
+    - `deleteTimeEntry`: requireAuth() + Ownership-Check (oder Admin)
+  - **Database Actions (`src/app/actions/database.ts`):**
+    - `importDatabase`: requireRole(['admin'])
+  - **Refactoring:**
+    - `currentUserId` Parameter aus Forms entfernt (4 Dateien)
+    - Server holt User-ID jetzt direkt aus Session
   - **213 Tests grün, Lint clean, Build erfolgreich**
   
-  **Nächste Schritte für Auth:**
-  - Server Actions absichern (aktuell noch keine Auth-Checks)
-  - Rollen-basierte Berechtigungen in UI (z.B. Admin-Bereich nur für Admins)
+  **Nächste Schritte:**
+  - UI-Elemente basierend auf Session-Role ein-/ausblenden (z.B. Admin-Bereich nur für Admins)
 
 ## Vorherige Iteration (2026-01-13)
 - **Dokumentation bereinigt: PRD + notes.txt synchronisiert**

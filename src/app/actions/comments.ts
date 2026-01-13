@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { requireAuth } from '@/lib/session'
 import { handleActionError } from './utils'
 
 export type CommentFormData = {
@@ -51,9 +52,10 @@ function validateCommentForm(data: CommentFormData): CommentFormErrors {
 // Create a new comment
 export async function createComment(
   issueId: string,
-  authorId: string,
   data: CommentFormData
 ) {
+  const session = await requireAuth()
+  
   const errors = validateCommentForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -63,7 +65,7 @@ export async function createComment(
     const comment = await prisma.comment.create({
       data: {
         issueId,
-        authorId,
+        authorId: session.id,
         content: data.content.trim(),
       },
       include: {
@@ -81,6 +83,17 @@ export async function createComment(
 
 // Update an existing comment
 export async function updateComment(id: string, data: CommentFormData) {
+  const session = await requireAuth()
+  
+  // Verify ownership
+  const existing = await prisma.comment.findUnique({
+    where: { id },
+    select: { authorId: true },
+  })
+  if (!existing || existing.authorId !== session.id) {
+    return { success: false, errors: { general: 'You can only edit your own comments' } }
+  }
+  
   const errors = validateCommentForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -107,12 +120,26 @@ export async function updateComment(id: string, data: CommentFormData) {
 
 // Delete a comment
 export async function deleteComment(id: string) {
+  const session = await requireAuth()
+  
+  // Verify ownership or admin
+  const existing = await prisma.comment.findUnique({
+    where: { id },
+    select: { authorId: true, issueId: true },
+  })
+  if (!existing) {
+    return { success: false, error: 'Comment not found' }
+  }
+  if (existing.authorId !== session.id && session.role !== 'admin') {
+    return { success: false, error: 'You can only delete your own comments' }
+  }
+  
   try {
-    const comment = await prisma.comment.delete({
+    await prisma.comment.delete({
       where: { id },
     })
 
-    revalidatePath(`/issues/${comment.issueId}`)
+    revalidatePath(`/issues/${existing.issueId}`)
 
     return { success: true }
   } catch (error) {

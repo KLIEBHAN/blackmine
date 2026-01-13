@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { requireAuth } from '@/lib/session'
 import { handleActionError } from './utils'
 
 export type TimeEntryFormData = {
@@ -78,7 +79,9 @@ function validateTimeEntryForm(data: TimeEntryFormData): TimeEntryFormErrors {
 }
 
 // Create a new time entry
-export async function createTimeEntry(data: TimeEntryFormData, userId: string) {
+export async function createTimeEntry(data: TimeEntryFormData) {
+  const session = await requireAuth()
+  
   const errors = validateTimeEntryForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -88,7 +91,7 @@ export async function createTimeEntry(data: TimeEntryFormData, userId: string) {
     const timeEntry = await prisma.timeEntry.create({
       data: {
         issueId: data.issueId,
-        userId,
+        userId: session.id,
         hours: data.hours,
         activityType: data.activityType,
         spentOn: new Date(data.spentOn),
@@ -110,13 +113,26 @@ export async function createTimeEntry(data: TimeEntryFormData, userId: string) {
 
 // Delete a time entry
 export async function deleteTimeEntry(id: string) {
+  const session = await requireAuth()
+  
+  const existing = await prisma.timeEntry.findUnique({
+    where: { id },
+    select: { userId: true, issueId: true },
+  })
+  if (!existing) {
+    return { success: false, error: 'Time entry not found' }
+  }
+  if (existing.userId !== session.id && session.role !== 'admin') {
+    return { success: false, error: 'You can only delete your own time entries' }
+  }
+  
   try {
-    const entry = await prisma.timeEntry.delete({
+    await prisma.timeEntry.delete({
       where: { id },
     })
 
     revalidatePath('/time')
-    revalidatePath(`/issues/${entry.issueId}`)
+    revalidatePath(`/issues/${existing.issueId}`)
     
     return { success: true }
   } catch (error) {

@@ -38,10 +38,9 @@ type Props = {
   issues: SerializedIssue[]
   projects: SerializedProject[]
   preselectedIssueId?: string
-  currentUserId: string
 }
 
-export function TimeEntryForm({ issues, projects, preselectedIssueId, currentUserId }: Props) {
+export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
   const router = useRouter()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -84,7 +83,7 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId, currentUse
 
     setIsSubmitting(true)
 
-    const result = await createTimeEntry(formData, currentUserId)
+    const result = await createTimeEntry(formData)
 
     if (!result.success) {
       setErrors(result.errors || {})

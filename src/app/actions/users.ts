@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db'
 import { EMAIL_REGEX } from '@/lib/user-form'
 import { revalidatePath } from 'next/cache'
+import { requireRole } from '@/lib/session'
 import { handleActionError } from './utils'
 
 export type UserFormData = {
@@ -66,6 +67,8 @@ export async function isEmailTaken(email: string, excludeId?: string) {
 
 // Create a new user
 export async function createUser(data: UserFormData) {
+  await requireRole(['admin'])
+  
   const errors = validateUserForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -100,6 +103,8 @@ export async function createUser(data: UserFormData) {
 
 // Update an existing user
 export async function updateUser(id: string, data: Partial<UserFormData>) {
+  await requireRole(['admin'])
+  
   const updateData: Record<string, unknown> = {}
 
   if (data.firstName !== undefined) {
@@ -150,6 +155,8 @@ export async function updateUser(id: string, data: Partial<UserFormData>) {
 
 // Delete a user
 export async function deleteUser(id: string) {
+  await requireRole(['admin'])
+  
   try {
     // Check if user has any references that would prevent deletion
     const user = await prisma.user.findUnique({

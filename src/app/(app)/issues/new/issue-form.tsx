@@ -51,10 +51,9 @@ type Props = {
   users: SerializedUser[]
   projects: SerializedProject[]
   defaultProjectId?: string
-  currentUserId: string
 }
 
-export function IssueForm({ users, projects, defaultProjectId, currentUserId }: Props) {
+export function IssueForm({ users, projects, defaultProjectId }: Props) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<IssueFormErrors>({})
@@ -79,19 +78,16 @@ export function IssueForm({ users, projects, defaultProjectId, currentUserId }: 
     setIsSubmitting(true)
     setErrors({})
 
-    const result = await createIssue(
-      {
-        projectId: formData.projectId,
-        tracker: formData.tracker,
-        subject: formData.subject,
-        description: formData.description,
-        priority: formData.priority,
-        assigneeId: formData.assigneeId,
-        dueDate: formData.dueDate,
-        estimatedHours: formData.estimatedHours,
-      },
-      currentUserId
-    )
+    const result = await createIssue({
+      projectId: formData.projectId,
+      tracker: formData.tracker,
+      subject: formData.subject,
+      description: formData.description,
+      priority: formData.priority,
+      assigneeId: formData.assigneeId,
+      dueDate: formData.dueDate,
+      estimatedHours: formData.estimatedHours,
+    })
 
     if (!result.success) {
       const errors = (result.errors || {}) as IssueFormErrors

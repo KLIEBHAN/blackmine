@@ -59,7 +59,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
     setIsSubmitting(true)
     setError(null)
 
-    const result = await createComment(issueId, currentUserId, { content: newComment })
+    const result = await createComment(issueId, { content: newComment })
 
     if (result.success && result.comment) {
       // Add new comment to local state
@@ -93,7 +93,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
     if (result.success) {
       setComments(comments.filter(c => c.id !== commentId))
     } else {
-      setError('error' in result ? result.error : 'Failed to delete comment')
+      setError('error' in result ? (result.error ?? 'Failed to delete comment') : 'Failed to delete comment')
     }
 
     setDeletingId(null)

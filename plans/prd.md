@@ -17,11 +17,11 @@
 
 ## Offen
 
-### Auth: Server Actions absichern
+### Auth: UI Rollen-Berechtigungen
 
-- `requireAuth()` in alle mutierenden Server Actions einfügen
-- Rollen-basierte Checks (z.B. nur Admin darf User löschen)
-- UI-Elemente basierend auf Session-Role ein-/ausblenden
+- UI-Elemente basierend auf Session-Role ein-/ausblenden (z.B. Admin-Bereich nur für Admins)
+- "New Project" Button nur für Admin/Manager
+- Delete-Buttons nur für berechtigte Rollen
 
 ### UX verbessern
 
@@ -34,6 +34,16 @@
 ---
 
 ## Erledigt
+
+### Auth: Server Actions abgesichert ✅ (2026-01-13)
+
+- **Issues:** createIssue, updateIssue, deleteIssue, bulkUpdateIssues - requireAuth()
+- **Users:** createUser, updateUser, deleteUser - requireRole(['admin'])
+- **Projects:** createProject, updateProject, deleteProject - requireRole(['admin', 'manager'])
+- **Comments:** createComment (requireAuth), updateComment/deleteComment (Ownership-Check)
+- **Time Entries:** createTimeEntry (requireAuth), deleteTimeEntry (Ownership-Check)
+- **Database:** importDatabase - requireRole(['admin'])
+- User-ID wird jetzt aus Session geholt statt als Parameter übergeben
 
 ### Auth Infrastruktur ✅ (2026-01-13)
 

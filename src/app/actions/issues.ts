@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { requireAuth } from '@/lib/session'
 import { handleActionError } from './utils'
 
 export type IssueFormData = {
@@ -114,7 +115,9 @@ function validateIssueForm(data: IssueFormData): IssueFormErrors {
 }
 
 // Create a new issue
-export async function createIssue(data: IssueFormData, authorId: string) {
+export async function createIssue(data: IssueFormData) {
+  const session = await requireAuth()
+  
   const errors = validateIssueForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -128,7 +131,7 @@ export async function createIssue(data: IssueFormData, authorId: string) {
         subject: data.subject.trim(),
         description: data.description?.trim() || '',
         priority: data.priority,
-        authorId,
+        authorId: session.id,
         assigneeId: data.assigneeId || null,
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
         estimatedHours: data.estimatedHours || null,
@@ -146,6 +149,8 @@ export async function createIssue(data: IssueFormData, authorId: string) {
 
 // Update an existing issue
 export async function updateIssue(id: string, data: Partial<IssueFormData> & { status?: string }) {
+  await requireAuth()
+  
   const updateData: Record<string, unknown> = {}
 
   if (data.subject !== undefined) {
@@ -195,6 +200,8 @@ export async function updateIssue(id: string, data: Partial<IssueFormData> & { s
 
 // Delete an issue
 export async function deleteIssue(id: string) {
+  await requireAuth()
+  
   try {
     const issue = await prisma.issue.delete({
       where: { id },
@@ -224,6 +231,8 @@ export async function bulkUpdateIssues(
   ids: string[],
   data: BulkUpdateData
 ): Promise<{ success: boolean; updatedCount?: number; error?: string }> {
+  await requireAuth()
+  
   if (!ids.length) {
     return { success: false, error: 'No issues selected' }
   }

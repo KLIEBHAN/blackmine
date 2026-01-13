@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
+import { requireRole } from '@/lib/session'
 
 function log(...args: unknown[]) {
   console.log('[DB]', ...args)
@@ -198,6 +199,8 @@ export async function exportDatabase(): Promise<DatabaseExport> {
 export async function importDatabase(
   data: DatabaseExport
 ): Promise<{ success: boolean; error?: string; counts?: Record<string, number> }> {
+  await requireRole(['admin'])
+  
   log('Starting import validation...')
 
   const validation = validateExportData(data)

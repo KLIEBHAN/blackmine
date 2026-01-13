@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
-import { getUsers } from '@/app/actions/users'
 import { TimeEntryForm } from './time-entry-form'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
@@ -15,10 +14,9 @@ export default async function NewTimeEntryPage({ searchParams }: Props) {
   const params = await searchParams
   const preselectedIssueId = params.issue ?? ''
 
-  const [issues, projects, users] = await Promise.all([
+  const [issues, projects] = await Promise.all([
     getIssues(),
     getProjects(),
-    getUsers(),
   ])
 
   const serializedIssues = issues.map((issue) => ({
@@ -32,15 +30,12 @@ export default async function NewTimeEntryPage({ searchParams }: Props) {
     name: project.name,
   }))
 
-  const currentUserId = users[0]?.id ?? ''
-
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
       <TimeEntryForm
         issues={serializedIssues}
         projects={serializedProjects}
         preselectedIssueId={preselectedIssueId}
-        currentUserId={currentUserId}
       />
     </Suspense>
   )

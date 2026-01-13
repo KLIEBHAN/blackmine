@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { requireRole } from '@/lib/session'
 import { handleActionError } from './utils'
 
 export type ProjectFormData = {
@@ -87,6 +88,8 @@ export async function isIdentifierTaken(identifier: string, excludeId?: string) 
 
 // Create a new project
 export async function createProject(data: ProjectFormData) {
+  await requireRole(['admin', 'manager'])
+  
   const errors = validateProjectForm(data)
   if (Object.keys(errors).length > 0) {
     return { success: false, errors }
@@ -121,6 +124,8 @@ export async function createProject(data: ProjectFormData) {
 
 // Update an existing project
 export async function updateProject(id: string, data: Partial<ProjectFormData>) {
+  await requireRole(['admin', 'manager'])
+  
   const updateData: Record<string, unknown> = {}
 
   if (data.name !== undefined) {
@@ -172,6 +177,8 @@ export async function updateProject(id: string, data: Partial<ProjectFormData>) 
 
 // Delete a project
 export async function deleteProject(id: string) {
+  await requireRole(['admin', 'manager'])
+  
   try {
     await prisma.project.delete({
       where: { id },
