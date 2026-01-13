@@ -2,6 +2,12 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **UX: User-Dropdown Menüpunkte deaktiviert**
+  - Profile, Settings und Log out Menüpunkte als `disabled` markiert
+  - Verhindert Klick ohne Funktion (Auth noch nicht implementiert)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-13)
 - **Lint Fix: Unused Imports in e2e/seed.spec.ts entfernt**
   - `expect` Import und `page` Parameter waren ungenutzt
   - 2 Lint-Warnings behoben

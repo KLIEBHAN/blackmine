@@ -159,10 +159,10 @@ export function AppSidebar() {
                 align="start"
                 className="w-56"
               >
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem disabled>Profile</DropdownMenuItem>
+                <DropdownMenuItem disabled>Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
+                <DropdownMenuItem disabled className="text-destructive">
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
