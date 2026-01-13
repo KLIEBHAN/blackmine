@@ -2,6 +2,18 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **UX: Unnötiges Dropdown im Sidebar-Footer entfernt**
+  - Problem: User-Bereich im Sidebar-Footer hatte ein Dropdown mit nur einer Aktion (Logout)
+  - User musste 2x klicken: 1. Dropdown öffnen, 2. Logout wählen
+  - Header hat bereits einen Logout-Button, also Redundanz
+  - Lösung: Dropdown komplett entfernt, User-Info wird statisch angezeigt
+  - Entfernt: `DropdownMenu*` Imports, `ChevronDown`, `LogOut`, `logout` Action
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-13)
 - **UX: Fake Notifications-Button aus Header entfernt**
   - Problem: Header zeigte Bell-Icon mit rotem Notification-Dot
   - Aber es gibt KEIN Notifications-System - Button war funktionslos

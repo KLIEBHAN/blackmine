@@ -6,10 +6,8 @@ import {
   CircleDot,
   Clock,
   Settings,
-  ChevronDown,
   Plus,
   Database,
-  LogOut,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -29,15 +27,8 @@ import {
 } from '@/components/ui/sidebar'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { IssueSearch } from './issue-search'
 import { useSession } from '@/contexts/session-context'
-import { logout } from '@/app/actions/auth'
 import { getFullName } from '@/types'
 import { getInitials } from '@/lib/utils'
 
@@ -150,43 +141,17 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent"
-                >
-                  <Avatar className="size-8 rounded-md">
-                    <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
-                      {session ? getInitials(session.firstName, session.lastName) : '??'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
-                    <span className="text-sm font-medium">{session ? getFullName(session) : 'Unknown'}</span>
-                    <span className="text-xs text-sidebar-foreground/60">{session?.email ?? ''}</span>
-                  </div>
-                  <ChevronDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="start"
-                className="w-56"
-              >
-                <form action={logout}>
-                  <DropdownMenuItem asChild>
-                    <button type="submit" className="w-full flex items-center gap-2 text-destructive cursor-pointer">
-                      <LogOut className="size-4" />
-                      Log out
-                    </button>
-                  </DropdownMenuItem>
-                </form>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-3 p-2">
+          <Avatar className="size-8 rounded-md">
+            <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
+              {session ? getInitials(session.firstName, session.lastName) : '??'}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
+            <span className="text-sm font-medium">{session ? getFullName(session) : 'Unknown'}</span>
+            <span className="text-xs text-sidebar-foreground/60">{session?.email ?? ''}</span>
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   )
