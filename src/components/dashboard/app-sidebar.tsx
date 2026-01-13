@@ -33,7 +33,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { IssueSearch } from './issue-search'
@@ -176,9 +175,6 @@ export function AppSidebar() {
                 align="start"
                 className="w-56"
               >
-                <DropdownMenuItem disabled>Profile</DropdownMenuItem>
-                <DropdownMenuItem disabled>Settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <form action={logout}>
                   <DropdownMenuItem asChild>
                     <button type="submit" className="w-full flex items-center gap-2 text-destructive cursor-pointer">

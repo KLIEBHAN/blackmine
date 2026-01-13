@@ -2,6 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **UX: Deaktivierte Dropdown-Menüpunkte entfernt**
+  - Problem: User-Dropdown im Sidebar-Footer hatte `disabled` "Profile" und "Settings" Items
+  - Diese zeigten Funktionen, die nicht existieren - schlechte UX
+  - Lösung: Deaktivierte Items und Separator entfernt
+  - Ungenutzten `DropdownMenuSeparator` Import entfernt
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-13)
 - **UX: Sidebar Logout Button funktional gemacht**
   - Problem: User-Dropdown im Sidebar-Footer hatte `disabled` Log out
   - Header hatte bereits funktionierenden Logout, Sidebar nicht
