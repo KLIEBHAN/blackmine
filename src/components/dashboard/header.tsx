@@ -3,7 +3,7 @@
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Bell, Moon, Sun, LogOut } from 'lucide-react'
+import { Moon, Sun, LogOut } from 'lucide-react'
 import { useSyncExternalStore } from 'react'
 import { Breadcrumbs } from './breadcrumbs'
 import { logout } from '@/app/actions/auth'
@@ -50,17 +50,6 @@ export function DashboardHeader() {
 
       {/* Actions */}
       <div className="flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative size-8"
-          aria-label="Notifications"
-        >
-          <Bell className="size-4" />
-          {/* Notification dot */}
-          <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500" />
-        </Button>
-
         <Button
           variant="ghost"
           size="icon"

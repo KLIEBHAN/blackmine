@@ -2,6 +2,18 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **UX: Fake Notifications-Button aus Header entfernt**
+  - Problem: Header zeigte Bell-Icon mit rotem Notification-Dot
+  - Aber es gibt KEIN Notifications-System - Button war funktionslos
+  - User würden draufklicken und nichts passiert - schlechte UX
+  - Lösung: Bell-Button + Dot komplett entfernt (analog zu vorherigen Dropdown-Cleanups)
+  - Ungenutzten `Bell` Import entfernt
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-13)
 - **UX: Deaktivierte Dropdown-Menüpunkte entfernt**
   - Problem: User-Dropdown im Sidebar-Footer hatte `disabled` "Profile" und "Settings" Items
   - Diese zeigten Funktionen, die nicht existieren - schlechte UX
