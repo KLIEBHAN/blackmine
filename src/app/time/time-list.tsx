@@ -343,7 +343,8 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                         <div className="flex flex-col gap-0.5">
                           <Link
                             href={`/issues/${entry.issue.id}`}
-                            className="text-sm font-medium hover:text-primary hover:underline"
+                            className="text-sm font-medium hover:text-primary hover:underline truncate"
+                            title={entry.issue.subject}
                           >
                             {entry.issue.subject}
                           </Link>

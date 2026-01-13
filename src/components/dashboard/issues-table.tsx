@@ -186,7 +186,8 @@ export function IssuesTable({
                       </div>
                       <Link
                         href={`/issues/${issue.id}`}
-                        className="font-medium hover:text-primary hover:underline"
+                        className="font-medium hover:text-primary hover:underline truncate"
+                        title={issue.subject}
                       >
                         {issue.subject}
                       </Link>

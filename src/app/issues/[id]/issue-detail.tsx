@@ -108,7 +108,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                   #{formatShortId(issue.id)}
                 </span>
               </div>
-              <h1 className="text-2xl font-bold tracking-tight break-all">{issue.subject}</h1>
+              <h1 className="text-2xl font-bold tracking-tight [overflow-wrap:anywhere]">{issue.subject}</h1>
               <Link
                 href={`/projects/${issue.project.identifier}`}
                 className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
