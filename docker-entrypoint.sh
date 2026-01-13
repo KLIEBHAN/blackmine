@@ -34,6 +34,13 @@ table_exists() {
   [ "$result" != "0" ]
 }
 
+column_exists() {
+  table_name="$1"
+  column_name="$2"
+  result=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM pragma_table_info('$table_name') WHERE name='$column_name';" 2>/dev/null || echo "0")
+  [ "$result" != "0" ]
+}
+
 apply_migration() {
   migration_name="$1"
   migration_file="$2"
@@ -64,12 +71,40 @@ bootstrap_existing_db() {
     echo "Marked init migration as applied (tables exist)"
   fi
   
-  if table_exists "Comment"; then
-    column_exists=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM pragma_table_info('User') WHERE name='passwordHash';" 2>/dev/null || echo "0")
-    if [ "$column_exists" != "0" ]; then
-      mark_migration_applied "20260113185235_add_password_hash"
-      echo "Marked add_password_hash migration as applied (column exists)"
-    fi
+  if table_exists "Comment" && column_exists "User" "passwordHash"; then
+    mark_migration_applied "20260113185235_add_password_hash"
+    echo "Marked add_password_hash migration as applied (Comment table and passwordHash column exist)"
+  fi
+}
+
+apply_manual_fixes() {
+  echo "Applying manual schema fixes if needed..."
+  
+  if ! column_exists "User" "passwordHash"; then
+    echo "Adding missing passwordHash column to User table..."
+    sqlite3 "$DB_PATH" "ALTER TABLE User ADD COLUMN passwordHash TEXT NOT NULL DEFAULT '';"
+    echo "Added passwordHash column"
+  fi
+  
+  if ! table_exists "Comment"; then
+    echo "Creating missing Comment table..."
+    sqlite3 "$DB_PATH" "CREATE TABLE Comment (
+      id TEXT NOT NULL PRIMARY KEY,
+      content TEXT NOT NULL,
+      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updatedAt DATETIME NOT NULL,
+      issueId TEXT NOT NULL,
+      authorId TEXT NOT NULL,
+      CONSTRAINT Comment_issueId_fkey FOREIGN KEY (issueId) REFERENCES Issue (id) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT Comment_authorId_fkey FOREIGN KEY (authorId) REFERENCES User (id) ON DELETE RESTRICT ON UPDATE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS Comment_issueId_idx ON Comment(issueId);
+    CREATE INDEX IF NOT EXISTS Comment_authorId_idx ON Comment(authorId);"
+    echo "Created Comment table"
+  fi
+  
+  if table_exists "Comment" && column_exists "User" "passwordHash"; then
+    mark_migration_applied "20260113185235_add_password_hash"
   fi
 }
 
@@ -87,6 +122,7 @@ else
   echo "Existing database found ($(stat -c%s "$DB_PATH" 2>/dev/null || stat -f%z "$DB_PATH") bytes)"
   
   bootstrap_existing_db
+  apply_manual_fixes
   
   echo "Checking for pending migrations..."
   for migration_dir in prisma/migrations/*/; do
