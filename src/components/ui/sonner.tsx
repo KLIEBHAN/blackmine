@@ -10,29 +10,32 @@ import {
 } from "lucide-react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
-function useLocalTheme() {
-  const [theme, setTheme] = useState<"light" | "dark">("light")
+function useThemeFromDOM(): "light" | "dark" {
+  const [theme, setTheme] = useState<"light" | "dark" | null>(null)
   
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark")
-    setTheme(isDark ? "dark" : "light")
+    const getTheme = () => document.documentElement.classList.contains("dark") ? "dark" : "light"
+    setTheme(getTheme())
     
-    const observer = new MutationObserver(() => {
-      setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
-    })
+    const observer = new MutationObserver(() => setTheme(getTheme()))
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
     return () => observer.disconnect()
   }, [])
   
-  return theme
+  return theme ?? "light"
 }
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const theme = useLocalTheme()
+  const theme = useThemeFromDOM()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => setMounted(true), [])
+  
+  if (!mounted) return null
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={theme}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
