@@ -2,14 +2,11 @@ import { getProjects } from '@/app/actions/projects'
 import { prisma } from '@/lib/db'
 import { ProjectsList, SerializedProject, SerializedIssueForStats } from './projects-list'
 
-// Force dynamic rendering - data comes from runtime database, not build-time
 export const dynamic = 'force-dynamic'
 
 export default async function ProjectsPage() {
-  // Fetch projects from database
   const projects = await getProjects()
   
-  // Fetch all issues for stats calculation
   const issues = await prisma.issue.findMany({
     select: {
       id: true,
@@ -19,7 +16,6 @@ export default async function ProjectsPage() {
     },
   })
 
-  // Serialize dates for client component
   const serializedProjects: SerializedProject[] = projects.map((p) => ({
     id: p.id,
     name: p.name,

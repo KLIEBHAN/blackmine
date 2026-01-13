@@ -20,6 +20,6 @@ const icons: Record<IssueTracker, React.ComponentType<LucideProps>> = {
  * Centralizes tracker icon mapping to avoid duplication across components.
  */
 export function TrackerIcon({ tracker, className = 'size-4' }: TrackerIconProps) {
-  const Icon = icons[tracker]
+  const Icon = icons[tracker] ?? Bug
   return <Icon className={className} />
 }
