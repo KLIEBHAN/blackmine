@@ -3,6 +3,9 @@ import { getUserById } from '@/app/actions/users'
 import { UserEditForm, type SerializedUser } from './user-edit-form'
 import { UserRole } from '@/types'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 interface EditUserPageProps {
   params: Promise<{ id: string }>
 }

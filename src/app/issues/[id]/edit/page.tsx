@@ -5,6 +5,9 @@ import { getUsers } from '@/app/actions/users'
 import { getProjects } from '@/app/actions/projects'
 import { IssueEditForm } from './issue-edit-form'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 type Props = {
   params: Promise<{ id: string }>
 }

@@ -2,6 +2,9 @@ import { notFound } from 'next/navigation'
 import { getProjectByIdentifier } from '@/app/actions/projects'
 import { ProjectDetail, type SerializedProject, type SerializedIssue } from './project-detail'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 interface ProjectDetailPageProps {
   params: Promise<{ identifier: string }>
 }

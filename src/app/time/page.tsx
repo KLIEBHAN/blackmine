@@ -3,6 +3,9 @@ import { getUsers } from '@/app/actions/users'
 import { TimeList, SerializedTimeEntry, SerializedUser } from './time-list'
 import type { ActivityType } from '@/types'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function TimePage() {
   const [timeEntries, users] = await Promise.all([
     getTimeEntries(),

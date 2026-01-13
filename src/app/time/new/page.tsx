@@ -4,6 +4,9 @@ import { getProjects } from '@/app/actions/projects'
 import { getUsers } from '@/app/actions/users'
 import { TimeEntryForm } from './time-entry-form'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 type Props = {
   searchParams: Promise<{ issue?: string }>
 }

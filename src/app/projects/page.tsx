@@ -2,6 +2,9 @@ import { getProjects } from '@/app/actions/projects'
 import { prisma } from '@/lib/db'
 import { ProjectsList, SerializedProject, SerializedIssueForStats } from './projects-list'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function ProjectsPage() {
   // Fetch projects from database
   const projects = await getProjects()

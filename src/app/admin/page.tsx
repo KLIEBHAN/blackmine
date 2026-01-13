@@ -3,6 +3,9 @@ import { Users, Database, FolderKanban, TicketCheck, Clock } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getDatabaseStats } from '@/app/actions/database'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function AdminPage() {
   const stats = await getDatabaseStats()
 

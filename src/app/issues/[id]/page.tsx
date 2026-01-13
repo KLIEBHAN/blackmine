@@ -4,6 +4,9 @@ import { getCommentsByIssue } from '@/app/actions/comments'
 import { IssueDetail, type SerializedIssue } from './issue-detail'
 import { type SerializedComment } from './comments'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 interface IssueDetailPageProps {
   params: Promise<{ id: string }>
 }

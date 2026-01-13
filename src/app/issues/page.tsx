@@ -2,6 +2,9 @@ import { getIssues } from '@/app/actions/issues'
 import { getUsers } from '@/app/actions/users'
 import { IssuesList } from './issues-list'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 // Serialize dates to strings for client component
 function serializeIssue(issue: Awaited<ReturnType<typeof getIssues>>[number]) {
   return {

@@ -2,6 +2,9 @@ import { notFound } from 'next/navigation'
 import { getProjectByIdentifier } from '@/app/actions/projects'
 import { ProjectEditForm, type SerializedProject } from './project-edit-form'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 interface EditProjectPageProps {
   params: Promise<{ identifier: string }>
 }

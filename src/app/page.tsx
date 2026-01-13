@@ -5,6 +5,9 @@ import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
 import type { SerializedIssue } from '@/components/dashboard/issues-table'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   // Load data from database
   const [issues, projects] = await Promise.all([

@@ -2,6 +2,9 @@ import { getUsers } from '@/app/actions/users'
 import { UsersList, type SerializedUser } from './users-list'
 import { UserRole } from '@/types'
 
+// Force dynamic rendering - data comes from runtime database, not build-time
+export const dynamic = 'force-dynamic'
+
 export default async function AdminUsersPage() {
   const users = await getUsers()
 
