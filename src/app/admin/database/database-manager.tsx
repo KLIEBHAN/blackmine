@@ -83,15 +83,22 @@ export function DatabaseManager({ initialStats }: DatabaseManagerProps) {
     setIsImporting(true)
 
     try {
+      console.log('[UI] Starting import...')
       const result = await importDatabase(pendingImport)
+      console.log('[UI] Import result:', result)
 
       if (result.success && result.counts) {
         setStats(result.counts)
-        toast.success('Database imported successfully')
+        toast.success(`Database imported: ${result.counts.users} users, ${result.counts.projects} projects, ${result.counts.issues} issues`)
+        
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
       } else {
         toast.error(result.error ?? 'Import failed')
       }
-    } catch {
+    } catch (error) {
+      console.error('[UI] Import error:', error)
       toast.error('Failed to import database')
     } finally {
       setIsImporting(false)
