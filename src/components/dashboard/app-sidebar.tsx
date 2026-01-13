@@ -8,6 +8,7 @@ import {
   Settings,
   ChevronDown,
   Plus,
+  Database,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -125,6 +126,14 @@ export function AppSidebar() {
                   <Link href="/admin/users">
                     <Settings className="size-4" />
                     <span>Users</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/database')} tooltip="Database">
+                  <Link href="/admin/database">
+                    <Database className="size-4" />
+                    <span>Database</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
