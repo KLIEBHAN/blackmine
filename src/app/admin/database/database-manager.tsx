@@ -88,10 +88,9 @@ export function DatabaseManager({ initialStats }: DatabaseManagerProps) {
       if (result.success && result.counts) {
         setStats(result.counts)
         toast.success(
-          `Imported: ${result.counts.users} users, ${result.counts.projects} projects, ${result.counts.issues} issues`,
-          { duration: 3000 }
+          `Imported: ${result.counts.users} users, ${result.counts.projects} projects, ${result.counts.issues} issues`
         )
-        window.location.reload()
+        setTimeout(() => window.location.reload(), 1000)
       } else {
         toast.error(result.error ?? 'Import failed')
       }
