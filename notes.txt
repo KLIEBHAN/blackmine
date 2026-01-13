@@ -2,6 +2,13 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **Test Coverage: utils.ts von 18.75% auf 100% erhöht**
+  - Neue Testdatei: `src/lib/utils.test.ts` mit 22 Tests
+  - Getestete Funktionen: `cn`, `getInitials`, `formatDate`, `generateId`, `formatShortId`, `staggerDelay`
+  - Coverage gesamt: **98.69%** (vorher 94.44%)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-13)
 - **DRY: FilterDropdown Komponente erstellt**
   - Neue wiederverwendbare Komponente: `src/components/ui/filter-dropdown.tsx`
   - Generisch typisiert für verschiedene Filter-Typen (Status, Tracker, Priority, etc.)
