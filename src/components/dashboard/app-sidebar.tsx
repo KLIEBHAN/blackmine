@@ -36,6 +36,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { IssueSearch } from './issue-search'
+import { useSession } from '@/contexts/session-context'
+import { getFullName } from '@/types'
+import { getInitials } from '@/lib/utils'
 
 const mainNavItems = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/' },
@@ -51,6 +54,7 @@ function isActiveRoute(pathname: string, href: string): boolean {
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { session, isAdmin } = useSession()
 
   return (
     <Sidebar collapsible="icon">
@@ -114,32 +118,34 @@ export function AppSidebar() {
 
         <SidebarSeparator />
 
-        {/* Admin */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
-            Admin
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/users')} tooltip="Users">
-                  <Link href="/admin/users">
-                    <Settings className="size-4" />
-                    <span>Users</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/database')} tooltip="Database">
-                  <Link href="/admin/database">
-                    <Database className="size-4" />
-                    <span>Database</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Admin - only visible to admins */}
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
+              Admin
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/users')} tooltip="Users">
+                    <Link href="/admin/users">
+                      <Settings className="size-4" />
+                      <span>Users</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/database')} tooltip="Database">
+                    <Link href="/admin/database">
+                      <Database className="size-4" />
+                      <span>Database</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
@@ -153,12 +159,12 @@ export function AppSidebar() {
                 >
                   <Avatar className="size-8 rounded-md">
                     <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
-                      AU
+                      {session ? getInitials(session.firstName, session.lastName) : '??'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
-                    <span className="text-sm font-medium">Admin User</span>
-                    <span className="text-xs text-sidebar-foreground/60">admin@example.com</span>
+                    <span className="text-sm font-medium">{session ? getFullName(session) : 'Unknown'}</span>
+                    <span className="text-xs text-sidebar-foreground/60">{session?.email ?? ''}</span>
                   </div>
                   <ChevronDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
                 </SidebarMenuButton>

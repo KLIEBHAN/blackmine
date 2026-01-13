@@ -44,6 +44,7 @@ import { TrackerIcon } from '@/components/ui/tracker-icon'
 import { statusLabels, trackerLabels, projectStatusLabels, projectStatusColors, type IssueTracker, getFullName } from '@/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { IssuesList } from '../../issues/issues-list'
+import { useSession } from '@/contexts/session-context'
 
 export type SerializedProject = {
   id: string
@@ -83,6 +84,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   const router = useRouter()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const { isAdminOrManager } = useSession()
 
   const status = project.status as keyof typeof projectStatusLabels
 
@@ -144,21 +146,25 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2" asChild>
-              <Link href={`/projects/${project.identifier}/edit`}>
-                <Settings className="size-4" />
-                Settings
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 text-destructive hover:text-destructive"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
+            {isAdminOrManager && (
+              <>
+                <Button variant="outline" size="sm" className="gap-2" asChild>
+                  <Link href={`/projects/${project.identifier}/edit`}>
+                    <Settings className="size-4" />
+                    Settings
+                  </Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-destructive hover:text-destructive"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="size-4" />
+                  Delete
+                </Button>
+              </>
+            )}
             <Button asChild size="sm" className="gap-2">
               <Link href={`/issues/new?project=${project.id}`}>
                 <Plus className="size-4" />

@@ -17,12 +17,6 @@
 
 ## Offen
 
-### Auth: UI Rollen-Berechtigungen
-
-- UI-Elemente basierend auf Session-Role ein-/ausblenden (z.B. Admin-Bereich nur für Admins)
-- "New Project" Button nur für Admin/Manager
-- Delete-Buttons nur für berechtigte Rollen
-
 ### UX verbessern
 
 - Weitere UX-Verbesserungen identifizieren und umsetzen
@@ -34,6 +28,17 @@
 ---
 
 ## Erledigt
+
+### Auth: UI Rollen-Berechtigungen ✅ (2026-01-13)
+
+- **SessionContext:** `SessionProvider` + `useSession()` Hook für Client-Komponenten
+- **UI-Sichtbarkeit basierend auf Rolle:**
+  - Admin-Bereich in Sidebar nur für Admins
+  - "New Project" Button nur für Admin/Manager
+  - Project Settings/Delete nur für Admin/Manager
+  - Quick Actions "New Project" nur für Admin/Manager
+- **Route Protection:** `/admin/*` serverseitig auf Admin-Rolle geprüft
+- User-Name/Email in Sidebar aus echter Session
 
 ### Auth: Server Actions abgesichert ✅ (2026-01-13)
 

@@ -2,15 +2,30 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **Auth: UI Rollen-Berechtigungen implementiert**
+  - Neuer `SessionContext` mit `SessionProvider` und `useSession()` Hook
+  - Session-Daten (id, email, name, role) vom Server-Layout an Client-Komponenten weitergegeben
+  - **UI-Änderungen:**
+    - Sidebar: Admin-Bereich nur für Admins sichtbar
+    - Sidebar: User-Name/Email aus echter Session statt hardcoded
+    - Projects-List: "New Project" Button nur für Admin/Manager
+    - Project-Detail: Settings/Delete Buttons nur für Admin/Manager
+    - Quick-Actions: "New Project" nur für Admin/Manager
+  - **Route Protection:**
+    - Neues `/admin/layout.tsx` prüft Admin-Rolle serverseitig
+    - Non-Admins werden zu `/` redirected
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: "UX verbessern" oder "Administration (Settings) Implementieren"
+
+## Vorherige Iteration (2026-01-13)
 - **Lint Fix: sonner.tsx refaktoriert (useSyncExternalStore)**
   - ESLint 'react-hooks/set-state-in-effect' Regel flaggte setState in useEffect
   - Lösung: `useSyncExternalStore` (React 18+ Pattern) für Theme-Erkennung
   - `mounted` State-Workaround entfernt - useSyncExternalStore handled SSR/Hydration
   - 16 Zeilen hinzugefügt, 18 entfernt (netto: -2 Zeilen)
   - **213 Tests grün, Lint clean, Build erfolgreich**
-  
-  **Nächste Schritte:**
-  - PRD-Task: "Auth: UI Rollen-Berechtigungen" implementieren
 
 ## Vorherige Iteration (2026-01-13)
 - **Auth: Server Actions abgesichert**

@@ -13,6 +13,7 @@ import { filterProjects } from '@/lib/projects'
 import { Search, Plus, ListFilter, X, FolderKanban } from 'lucide-react'
 import { TrackerIcon } from '@/components/ui/tracker-icon'
 import Link from 'next/link'
+import { useSession } from '@/contexts/session-context'
 
 // Serialized project type from server
 export type SerializedProject = {
@@ -61,6 +62,7 @@ function getProjectStats(projectId: string, issues: SerializedIssueForStats[]) {
 export function ProjectsList({ projects, issues, totalCount }: Props) {
   const [search, setSearch] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<ProjectStatus[]>(['active'])
+  const { isAdminOrManager } = useSession()
 
   // Apply filters
   const filteredProjects = useMemo(() => {
@@ -95,12 +97,14 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
               <span className="font-mono">{totalCount}</span> projects
             </p>
           </div>
-          <Button className="gap-2" asChild>
-            <Link href="/projects/new">
-              <Plus className="size-4" />
-              New Project
-            </Link>
-          </Button>
+          {isAdminOrManager && (
+            <Button className="gap-2" asChild>
+              <Link href="/projects/new">
+                <Plus className="size-4" />
+                New Project
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Filter Bar */}
