@@ -1,4 +1,4 @@
-// Prisma schema for Redmine Clone
+// Prisma schema for Blackmine
 
 generator client {
   provider = "prisma-client"
