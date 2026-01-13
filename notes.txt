@@ -2,9 +2,14 @@
 
 
 ## Letzte Iteration (2026-01-13)
-- **UX: User-Dropdown Menüpunkte deaktiviert**
-  - Profile, Settings und Log out Menüpunkte als `disabled` markiert
-  - Verhindert Klick ohne Funktion (Auth noch nicht implementiert)
+- **DRY: SortableTableHeader Komponente erstellt**
+  - Neue wiederverwendbare Komponente: `src/components/ui/sortable-table-header.tsx`
+  - Props: field, label, currentField, direction, onSort, align (optional), className (optional)
+  - 10 identische Button+SortIcon Patterns in 3 Dateien konsolidiert:
+    - `src/app/issues/issues-list.tsx` (4 sortable headers)
+    - `src/app/admin/users/users-list.tsx` (4 sortable headers)
+    - `src/app/time/time-list.tsx` (2 sortable headers)
+  - **~50 Zeilen duplizierter Code entfernt** (7 Zeilen × 10 → 40 Zeilen Komponente + 10 × 1 Zeile Aufrufe)
   - **213 Tests grün, Lint clean, Build erfolgreich**
 
 ## Vorherige Iteration (2026-01-13)
@@ -258,6 +263,8 @@
 - [x] DRY: Badge Color Constants zentralisiert (projectStatusColors, roleColors)
 - [x] DRY: StatCard Komponente erstellt (4 identische Cards konsolidiert)
 
+- [x] DRY: SortableTableHeader Komponente erstellt (10 Patterns konsolidiert)
+
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
 - `src/app/issues/new/issue-form.tsx:119` - Get from auth context
@@ -277,4 +284,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-13 (Lint Fix: e2e/seed.spec.ts)
+Letzte Aktualisierung: 2026-01-13 (DRY: SortableTableHeader)

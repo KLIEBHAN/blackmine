@@ -50,7 +50,7 @@ import {
   Mail,
   Trash2,
 } from 'lucide-react'
-import { SortIcon } from '@/components/ui/sort-icon'
+import { SortableTableHeader } from '@/components/ui/sortable-table-header'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getInitials, formatDate, staggerDelay } from '@/lib/utils'
@@ -276,44 +276,40 @@ export function UsersList({ initialUsers }: UsersListProps) {
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="w-[280px] pl-4 font-semibold">
-                  <button
-                    onClick={() => toggleSort('lastName')}
-                    className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                    aria-label="Sort by name"
-                  >
-                    Name
-                    <SortIcon field="lastName" currentField={sort.field} direction={sort.direction} />
-                  </button>
+                  <SortableTableHeader
+                    field="lastName"
+                    label="Name"
+                    currentField={sort.field}
+                    direction={sort.direction}
+                    onSort={toggleSort}
+                  />
                 </TableHead>
                 <TableHead className="font-semibold">
-                  <button
-                    onClick={() => toggleSort('email')}
-                    className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                    aria-label="Sort by email"
-                  >
-                    Email
-                    <SortIcon field="email" currentField={sort.field} direction={sort.direction} />
-                  </button>
+                  <SortableTableHeader
+                    field="email"
+                    label="Email"
+                    currentField={sort.field}
+                    direction={sort.direction}
+                    onSort={toggleSort}
+                  />
                 </TableHead>
                 <TableHead className="font-semibold">
-                  <button
-                    onClick={() => toggleSort('role')}
-                    className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                    aria-label="Sort by role"
-                  >
-                    Role
-                    <SortIcon field="role" currentField={sort.field} direction={sort.direction} />
-                  </button>
+                  <SortableTableHeader
+                    field="role"
+                    label="Role"
+                    currentField={sort.field}
+                    direction={sort.direction}
+                    onSort={toggleSort}
+                  />
                 </TableHead>
                 <TableHead className="font-semibold">
-                  <button
-                    onClick={() => toggleSort('createdAt')}
-                    className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                    aria-label="Sort by creation date"
-                  >
-                    Created
-                    <SortIcon field="createdAt" currentField={sort.field} direction={sort.direction} />
-                  </button>
+                  <SortableTableHeader
+                    field="createdAt"
+                    label="Created"
+                    currentField={sort.field}
+                    direction={sort.direction}
+                    onSort={toggleSort}
+                  />
                 </TableHead>
                 <TableHead className="pr-4 text-right font-semibold">Actions</TableHead>
               </TableRow>

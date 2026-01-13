@@ -28,7 +28,7 @@ import {
   Filter,
   SlidersHorizontal,
 } from 'lucide-react'
-import { SortIcon } from '@/components/ui/sort-icon'
+import { SortableTableHeader } from '@/components/ui/sortable-table-header'
 import Link from 'next/link'
 
 // Types for Prisma-returned data (serialized from server)
@@ -254,46 +254,43 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="w-8 pl-4"></TableHead>
                   <TableHead className="w-[40%] font-semibold">
-                    <button
-                      onClick={() => toggleSort('subject')}
-                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                      aria-label="Sort by issue"
-                    >
-                      Issue
-                      <SortIcon field="subject" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="subject"
+                      label="Issue"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                    />
                   </TableHead>
                   <TableHead className="font-semibold">Project</TableHead>
                   <TableHead className="font-semibold">
-                    <button
-                      onClick={() => toggleSort('status')}
-                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                      aria-label="Sort by status"
-                    >
-                      Status
-                      <SortIcon field="status" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="status"
+                      label="Status"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                    />
                   </TableHead>
                   <TableHead className="font-semibold">
-                    <button
-                      onClick={() => toggleSort('priority')}
-                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                      aria-label="Sort by priority"
-                    >
-                      Priority
-                      <SortIcon field="priority" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="priority"
+                      label="Priority"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                    />
                   </TableHead>
                   <TableHead className="font-semibold">Assignee</TableHead>
                   <TableHead className="pr-4 text-right font-semibold">
-                    <button
-                      onClick={() => toggleSort('dueDate')}
-                      className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
-                      aria-label="Sort by due date"
-                    >
-                      Due
-                      <SortIcon field="dueDate" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="dueDate"
+                      label="Due"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                      align="right"
+                    />
                   </TableHead>
                 </TableRow>
               </TableHeader>

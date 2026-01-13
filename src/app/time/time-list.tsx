@@ -32,7 +32,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { getInitials, formatDate, staggerDelay } from '@/lib/utils'
-import { SortIcon } from '@/components/ui/sort-icon'
+import { SortableTableHeader } from '@/components/ui/sortable-table-header'
 import { type SortDirection, type ActivityType, getFullName, activityTypeLabels, allActivityTypes } from '@/types'
 
 // Serialized types for client component
@@ -273,28 +273,27 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="w-24 pl-4 font-semibold">
-                    <button
-                      onClick={() => toggleSort('spentOn')}
-                      className="flex items-center gap-1.5 hover:text-primary transition-colors"
-                      aria-label="Sort by date"
-                    >
-                      Date
-                      <SortIcon field="spentOn" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="spentOn"
+                      label="Date"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                    />
                   </TableHead>
                   <TableHead className="font-semibold">User</TableHead>
                   <TableHead className="font-semibold">Issue</TableHead>
                   <TableHead className="font-semibold">Activity</TableHead>
                   <TableHead className="font-semibold">Comments</TableHead>
                   <TableHead className="pr-4 text-right font-semibold">
-                    <button
-                      onClick={() => toggleSort('hours')}
-                      className="flex items-center justify-end gap-1.5 hover:text-primary transition-colors ml-auto"
-                      aria-label="Sort by hours"
-                    >
-                      Hours
-                      <SortIcon field="hours" currentField={sort.field} direction={sort.direction} />
-                    </button>
+                    <SortableTableHeader
+                      field="hours"
+                      label="Hours"
+                      currentField={sort.field}
+                      direction={sort.direction}
+                      onSort={toggleSort}
+                      align="right"
+                    />
                   </TableHead>
                 </TableRow>
               </TableHeader>
