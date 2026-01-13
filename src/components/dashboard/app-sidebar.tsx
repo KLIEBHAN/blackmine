@@ -61,7 +61,7 @@ export function AppSidebar() {
             <CircleDot className="size-5 text-sidebar-primary-foreground" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold tracking-tight">Redmine</span>
+            <span className="text-sm font-semibold tracking-tight">Blackmine</span>
             <span className="text-xs text-sidebar-foreground/60 font-mono">v4.0.0</span>
           </div>
         </div>

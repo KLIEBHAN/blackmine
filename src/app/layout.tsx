@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { MobileNav } from '@/components/ui/mobile-nav'
 
 export const metadata: Metadata = {
-  title: 'Redmine Clone - Project Management',
+  title: 'Blackmine - Project Management',
   description: 'A modern project management and issue tracking system',
 }
 

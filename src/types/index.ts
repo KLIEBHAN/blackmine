@@ -1,4 +1,4 @@
-// Core domain types for Redmine Clone
+// Core domain types for Blackmine
 
 export type IssueStatus = 'new' | 'in_progress' | 'resolved' | 'closed' | 'rejected'
 export type IssuePriority = 'low' | 'normal' | 'high' | 'urgent' | 'immediate'

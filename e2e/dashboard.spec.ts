@@ -5,7 +5,7 @@ test.describe('Dashboard', () => {
     await page.goto('/');
     
     // Check page title
-    await expect(page).toHaveTitle(/Redmine Clone/);
+    await expect(page).toHaveTitle(/Blackmine/);
     
     // Check stat cards are visible (use first() to avoid duplicates from table)
     await expect(page.getByText('Open Issues').first()).toBeVisible();

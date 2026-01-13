@@ -1,4 +1,4 @@
-# Redmine Clone
+# Blackmine
 
 A modern project management application inspired by Redmine, built with Next.js 16, React 19, and TypeScript.
 
