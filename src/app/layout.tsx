@@ -3,6 +3,7 @@ import './globals.css'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { AppSidebar, DashboardHeader } from '@/components/dashboard'
 import { Toaster } from '@/components/ui/sonner'
+import { MobileNav } from '@/components/ui/mobile-nav'
 
 export const metadata: Metadata = {
   title: 'Redmine Clone - Project Management',
@@ -39,9 +40,10 @@ export default function RootLayout({
           <AppSidebar />
           <SidebarInset>
             <DashboardHeader />
-            <main className="flex-1 overflow-auto">{children}</main>
+            <main className="flex-1 overflow-auto pb-20 md:pb-0">{children}</main>
           </SidebarInset>
         </SidebarProvider>
+        <MobileNav />
         <Toaster position="bottom-right" richColors closeButton />
       </body>
     </html>

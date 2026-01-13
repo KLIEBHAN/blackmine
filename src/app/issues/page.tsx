@@ -1,4 +1,5 @@
 import { getIssues } from '@/app/actions/issues'
+import { getUsers } from '@/app/actions/users'
 import { IssuesList } from './issues-list'
 
 // Serialize dates to strings for client component
@@ -29,8 +30,19 @@ function serializeIssue(issue: Awaited<ReturnType<typeof getIssues>>[number]) {
 }
 
 export default async function IssuesPage() {
-  const issues = await getIssues()
+  const [issues, users] = await Promise.all([getIssues(), getUsers()])
   const serializedIssues = issues.map(serializeIssue)
+  const serializedUsers = users.map(u => ({
+    id: u.id,
+    firstName: u.firstName,
+    lastName: u.lastName,
+  }))
 
-  return <IssuesList issues={serializedIssues} totalCount={issues.length} />
+  return (
+    <IssuesList
+      issues={serializedIssues}
+      totalCount={issues.length}
+      users={serializedUsers}
+    />
+  )
 }

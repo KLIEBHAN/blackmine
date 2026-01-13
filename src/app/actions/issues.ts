@@ -203,9 +203,64 @@ export async function deleteIssue(id: string) {
 
     revalidatePath('/issues')
     revalidatePath(`/projects/${issue.project.identifier}`)
-    
+
     return { success: true }
   } catch (error) {
     return handleActionError(error, 'delete issue')
+  }
+}
+
+// Type for bulk update (only fields that can be bulk-edited)
+export type BulkUpdateData = {
+  status?: string
+  priority?: string
+  tracker?: string
+  assigneeId?: string | null  // null = set to unassigned
+  dueDate?: string | null     // null = clear due date
+}
+
+// Bulk update multiple issues
+export async function bulkUpdateIssues(
+  ids: string[],
+  data: BulkUpdateData
+): Promise<{ success: boolean; updatedCount?: number; error?: string }> {
+  if (!ids.length) {
+    return { success: false, error: 'No issues selected' }
+  }
+
+  // Build update data (only include explicitly set fields)
+  const updateData: Record<string, unknown> = {}
+
+  if (data.status !== undefined) {
+    updateData.status = data.status
+  }
+  if (data.priority !== undefined) {
+    updateData.priority = data.priority
+  }
+  if (data.tracker !== undefined) {
+    updateData.tracker = data.tracker
+  }
+  if (data.assigneeId !== undefined) {
+    updateData.assigneeId = data.assigneeId || null
+  }
+  if (data.dueDate !== undefined) {
+    updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return { success: false, error: 'No changes specified' }
+  }
+
+  try {
+    const result = await prisma.issue.updateMany({
+      where: { id: { in: ids } },
+      data: updateData,
+    })
+
+    revalidatePath('/issues')
+
+    return { success: true, updatedCount: result.count }
+  } catch (error) {
+    return handleActionError(error, 'bulk update issues')
   }
 }
