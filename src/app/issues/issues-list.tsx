@@ -202,12 +202,12 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
     setIsBulkUpdating(false)
 
     if (result.success) {
-      toast.success(`${result.updatedCount} Issue${result.updatedCount !== 1 ? 's' : ''} aktualisiert`)
+      toast.success(`Updated ${result.updatedCount} issue${result.updatedCount !== 1 ? 's' : ''}`)
       setBulkEditOpen(false)
       setBulkEditData({})
       clearSelection()
     } else {
-      toast.error('Fehler beim Aktualisieren', { description: result.error })
+      toast.error('Failed to update', { description: result.error })
     }
   }
 
@@ -331,7 +331,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-sm font-medium">
-                  {selectedIds.size} Issue{selectedIds.size > 1 ? 's' : ''} ausgewählt
+                  {selectedIds.size} issue{selectedIds.size > 1 ? 's' : ''} selected
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -339,7 +339,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                     size="sm"
                     onClick={clearSelection}
                   >
-                    Auswahl aufheben
+                    Clear
                   </Button>
                   <Button
                     size="sm"
@@ -347,7 +347,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                     className="gap-2"
                   >
                     <Edit2 className="size-4" />
-                    Bearbeiten
+                    Edit
                   </Button>
                 </div>
               </div>
@@ -372,6 +372,19 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
           <>
             {/* Mobile Card View */}
             <div className="space-y-3 md:hidden">
+              {/* Mobile Select All Header */}
+              <div className="flex items-center gap-3 px-1">
+                <Checkbox
+                  checked={allSelected}
+                  indeterminate={someSelected && !allSelected}
+                  onCheckedChange={toggleSelectAll}
+                  aria-label="Select all visible issues"
+                />
+                <span className="text-sm text-muted-foreground">
+                  Select all ({filteredIssues.length})
+                </span>
+              </div>
+
               {filteredIssues.map((issue, index) => {
                 const assigneeName = issue.assignee ? getFullName(issue.assignee) : null
                 const overdue = isOverdue(issue)
@@ -386,7 +399,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                         <Checkbox
                           checked={selectedIds.has(issue.id)}
                           onCheckedChange={() => toggleSelect(issue.id)}
-                          aria-label={`Issue ${issue.subject} auswählen`}
+                          aria-label={`Select issue ${issue.subject}`}
                           className="mt-1"
                         />
                         <div className={cn('priority-indicator h-full min-h-[60px] shrink-0', `priority-${issue.priority}`)} />
@@ -461,7 +474,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                       checked={allSelected}
                       indeterminate={someSelected && !allSelected}
                       onCheckedChange={toggleSelectAll}
-                      aria-label="Alle sichtbaren Issues auswählen"
+                      aria-label="Select all visible issues"
                     />
                   </TableHead>
                   <TableHead className="w-8"></TableHead>
@@ -525,7 +538,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                           <Checkbox
                             checked={selectedIds.has(issue.id)}
                             onCheckedChange={() => toggleSelect(issue.id)}
-                            aria-label={`Issue ${issue.subject} auswählen`}
+                            aria-label={`Select issue ${issue.subject}`}
                           />
                         </TableCell>
 
@@ -653,9 +666,9 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
       <Dialog open={bulkEditOpen} onOpenChange={setBulkEditOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{selectedIds.size} Issue{selectedIds.size > 1 ? 's' : ''} bearbeiten</DialogTitle>
+            <DialogTitle>Edit {selectedIds.size} issue{selectedIds.size > 1 ? 's' : ''}</DialogTitle>
             <DialogDescription>
-              Leere Felder behalten ihren aktuellen Wert. Nur geänderte Felder werden aktualisiert.
+              Empty fields keep their current value. Only changed fields will be updated.
             </DialogDescription>
           </DialogHeader>
 
@@ -671,7 +684,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                 }))}
               >
                 <SelectTrigger id="bulk-status">
-                  <SelectValue placeholder="Keine Änderung" />
+                  <SelectValue placeholder="No change" />
                 </SelectTrigger>
                 <SelectContent>
                   {allIssueStatuses.map(s => (
@@ -687,7 +700,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
 
             {/* Priority */}
             <div className="grid gap-2">
-              <Label htmlFor="bulk-priority">Priorität</Label>
+              <Label htmlFor="bulk-priority">Priority</Label>
               <Select
                 value={bulkEditData.priority ?? ''}
                 onValueChange={(v) => setBulkEditData(prev => ({
@@ -696,7 +709,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                 }))}
               >
                 <SelectTrigger id="bulk-priority">
-                  <SelectValue placeholder="Keine Änderung" />
+                  <SelectValue placeholder="No change" />
                 </SelectTrigger>
                 <SelectContent>
                   {allIssuePriorities.map(p => (
@@ -722,7 +735,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                 }))}
               >
                 <SelectTrigger id="bulk-tracker">
-                  <SelectValue placeholder="Keine Änderung" />
+                  <SelectValue placeholder="No change" />
                 </SelectTrigger>
                 <SelectContent>
                   {allIssueTrackers.map(t => (
@@ -739,7 +752,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
             {/* Assignee */}
             {users.length > 0 && (
               <div className="grid gap-2">
-                <Label htmlFor="bulk-assignee">Zugewiesen an</Label>
+                <Label htmlFor="bulk-assignee">Assignee</Label>
                 <Select
                   value={bulkEditData.assigneeId === null ? '__unassigned__' : bulkEditData.assigneeId ?? ''}
                   onValueChange={(v) => setBulkEditData(prev => ({
@@ -748,10 +761,10 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                   }))}
                 >
                   <SelectTrigger id="bulk-assignee">
-                    <SelectValue placeholder="Keine Änderung" />
+                    <SelectValue placeholder="No change" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="__unassigned__">Nicht zugewiesen</SelectItem>
+                    <SelectItem value="__unassigned__">Unassigned</SelectItem>
                     {users.map(user => (
                       <SelectItem key={user.id} value={user.id}>
                         {getFullName(user)}
@@ -764,7 +777,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
 
             {/* Due Date */}
             <div className="grid gap-2">
-              <Label htmlFor="bulk-dueDate">Fälligkeitsdatum</Label>
+              <Label htmlFor="bulk-dueDate">Due date</Label>
               <div className="flex gap-2">
                 <Input
                   id="bulk-dueDate"
@@ -782,18 +795,18 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
                   size="sm"
                   onClick={() => setBulkEditData(prev => ({ ...prev, dueDate: null }))}
                 >
-                  Löschen
+                  Clear
                 </Button>
               </div>
               {bulkEditData.dueDate === null && (
-                <p className="text-xs text-muted-foreground">Das Fälligkeitsdatum wird gelöscht</p>
+                <p className="text-xs text-muted-foreground">Due date will be cleared</p>
               )}
             </div>
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setBulkEditOpen(false)}>
-              Abbrechen
+              Cancel
             </Button>
             <Button
               onClick={handleBulkEdit}
@@ -802,10 +815,10 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [] 
               {isBulkUpdating ? (
                 <>
                   <Loader2 className="size-4 animate-spin mr-2" />
-                  Aktualisiere...
+                  Updating...
                 </>
               ) : (
-                `${selectedIds.size} Issue${selectedIds.size > 1 ? 's' : ''} aktualisieren`
+                `Update ${selectedIds.size} issue${selectedIds.size > 1 ? 's' : ''}`
               )}
             </Button>
           </DialogFooter>
