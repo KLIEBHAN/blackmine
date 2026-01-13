@@ -8,7 +8,7 @@ WORKDIR /app
 FROM base AS deps
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json* ./
-RUN npm ci && npm install lightningcss-linux-x64-gnu @tailwindcss/oxide-linux-x64-gnu @libsql/linux-x64-gnu --ignore-scripts 2>/dev/null || true
+RUN npm install && npm install lightningcss-linux-x64-gnu @tailwindcss/oxide-linux-x64-gnu @libsql/linux-x64-gnu --ignore-scripts 2>/dev/null || true
 
 # --- Builder ---
 FROM base AS builder
