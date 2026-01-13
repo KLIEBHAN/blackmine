@@ -137,7 +137,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className={cn("mx-auto max-w-7xl p-6 lg:p-8", hideHeader && "pt-0")}>
+      <div className={cn("p-6 lg:p-8", hideHeader && "pt-0")}>
         {/* Page Header */}
         {!hideHeader && (
           <div className="mb-6 flex items-center justify-between">
@@ -247,13 +247,13 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
         </Card>
 
         {/* Issues Table */}
-        <Card className="opacity-0 animate-card-in delay-2">
+        <Card className="opacity-0 animate-card-in delay-2 overflow-hidden">
           <CardContent className="p-0">
-            <Table>
+            <Table className="table-fixed">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-12 pl-4"></TableHead>
-                  <TableHead className="font-semibold">
+                  <TableHead className="w-8 pl-4"></TableHead>
+                  <TableHead className="w-[40%] font-semibold">
                     <button
                       onClick={() => toggleSort('subject')}
                       className="flex items-center gap-1.5 hover:text-primary transition-colors"
@@ -337,11 +337,11 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
 
                         {/* Issue info */}
                         <TableCell>
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <Badge
                                 variant="secondary"
-                                className={cn('badge-tracker', `tracker-${issue.tracker}`)}
+                                className={cn('badge-tracker shrink-0', `tracker-${issue.tracker}`)}
                               >
                                 {trackerLabels[issue.tracker as IssueTracker]}
                               </Badge>
@@ -351,7 +351,8 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                             </div>
                             <Link
                               href={`/issues/${issue.id}`}
-                              className="font-medium hover:text-primary hover:underline"
+                              className="font-medium hover:text-primary hover:underline truncate"
+                              title={issue.subject}
                             >
                               {issue.subject}
                             </Link>
@@ -362,7 +363,8 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                         <TableCell>
                           <Link
                             href={`/projects/${issue.project.identifier}`}
-                            className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                            className="text-sm text-muted-foreground hover:text-primary hover:underline truncate block"
+                            title={issue.project.name}
                           >
                             {issue.project.name}
                           </Link>
@@ -398,13 +400,13 @@ export function IssuesList({ issues, totalCount, hideHeader = false }: Props) {
                         {/* Assignee */}
                         <TableCell>
                           {assigneeName ? (
-                            <div className="flex items-center gap-2">
-                              <Avatar className="size-6">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <Avatar className="size-6 shrink-0">
                                 <AvatarFallback className="bg-muted text-[10px] font-medium">
                                   {getInitials(assigneeName)}
                                 </AvatarFallback>
                               </Avatar>
-                              <span className="text-sm">{assigneeName}</span>
+                              <span className="text-sm truncate" title={assigneeName}>{assigneeName}</span>
                             </div>
                           ) : (
                             <span className="text-sm text-muted-foreground">Unassigned</span>
