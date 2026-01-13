@@ -2,6 +2,20 @@
 
 
 ## Letzte Iteration (2026-01-13)
+- **DRY: StatCard Komponenten konsolidiert**
+  - Problem: Zwei verschiedene `StatCard` Komponenten mit unterschiedlichen APIs:
+    - `src/components/ui/stat-card.tsx` (label, progress)
+    - `src/components/dashboard/stat-card.tsx` (title, variant, trend, subtitle)
+  - Lösung: Eine einheitliche Komponente in `ui/stat-card.tsx` mit allen Features:
+    - Unterstützt `label` UND `title` (backwards compatible)
+    - Unterstützt `progress`, `variant`, `trend`, `subtitle`
+    - Automatische Styling-Anpassung basierend auf verwendeten Props
+  - `dashboard/stat-card.tsx` gelöscht, Export aus `index.ts` entfernt
+  - `page.tsx` Import aktualisiert auf `ui/stat-card`
+  - **~50 Zeilen duplizierter Code entfernt** (94 Zeilen → 0, konsolidiert in 120 Zeilen)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+## Vorherige Iteration (2026-01-13)
 - **DRY: SortableTableHeader Komponente erstellt**
   - Neue wiederverwendbare Komponente: `src/components/ui/sortable-table-header.tsx`
   - Props: field, label, currentField, direction, onSort, align (optional), className (optional)
@@ -19,12 +33,8 @@
   - **213 Tests grün, Lint clean, Build erfolgreich**
 
 ## Vorherige Iteration (2026-01-13)
-- **DRY: StatCard Komponente erstellt**
-  - Neue wiederverwendbare Komponente: `src/components/ui/stat-card.tsx`
-  - Props: label, value, icon, iconClassName, progress (optional), delay
-  - 4 identische Card-Strukturen in `project-detail.tsx` konsolidiert
-  - **~32 Zeilen netto entfernt** (62 Zeilen entfernt, 30 Zeilen hinzugefügt)
-  - **213 Tests grün, Lint clean, Build erfolgreich**
+- **DRY: StatCard Komponente erstellt (später konsolidiert)**
+  - Wurde später mit dashboard/stat-card zusammengeführt (siehe oben)
 
 ## Vorherige Iteration (2026-01-13)
 - **Test Coverage: utils.ts von 18.75% auf 100% erhöht**
@@ -264,6 +274,7 @@
 - [x] DRY: StatCard Komponente erstellt (4 identische Cards konsolidiert)
 
 - [x] DRY: SortableTableHeader Komponente erstellt (10 Patterns konsolidiert)
+- [x] DRY: StatCard Komponenten konsolidiert (ui + dashboard → eine einheitliche Komponente)
 
 ## Bekannte TODOs im Code
 - `src/app/time/new/time-entry-form.tsx:106` - Get actual user ID from auth context
@@ -284,4 +295,4 @@
 - Administration (Settings) Implementieren
 
 ---
-Letzte Aktualisierung: 2026-01-13 (DRY: SortableTableHeader)
+Letzte Aktualisierung: 2026-01-13 (DRY: StatCard konsolidiert)

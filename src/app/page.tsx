@@ -1,5 +1,6 @@
 import { CircleDot, FolderKanban, Clock, AlertTriangle } from 'lucide-react'
-import { StatCard, IssuesTable, QuickActions } from '@/components/dashboard'
+import { IssuesTable, QuickActions } from '@/components/dashboard'
+import { StatCard } from '@/components/ui/stat-card'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
 import type { SerializedIssue } from '@/components/dashboard/issues-table'
