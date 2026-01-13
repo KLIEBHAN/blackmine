@@ -11,3 +11,7 @@ services:
 
 volumes:
   redmine-data:
+    # Named volume persists across container rebuilds.
+    # Data survives: docker compose build, up --build, down + up
+    # Data deleted: docker compose down -v (explicit volume removal)
+    # Backup: docker compose exec app cat /app/data/redmine.db > backup.db
