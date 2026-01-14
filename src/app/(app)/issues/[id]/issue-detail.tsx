@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useSyncExternalStore, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -31,28 +31,22 @@ function isValidFontSize(value: string | null): value is FontSize {
   return value !== null && FONT_SIZES.includes(value as FontSize)
 }
 
-function getStoredFontSize(): FontSize {
-  if (typeof window === 'undefined') return 'base'
-  const saved = localStorage.getItem(FONT_SIZE_KEY)
-  return isValidFontSize(saved) ? saved : 'base'
-}
+function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
+  const [fontSize, setFontSizeState] = useState<FontSize>('base')
 
-let fontSizeListeners: Set<() => void> = new Set()
-
-function useFontSizeStorage() {
-  const subscribe = useCallback((callback: () => void) => {
-    fontSizeListeners.add(callback)
-    return () => { fontSizeListeners.delete(callback) }
+  useEffect(() => {
+    const saved = localStorage.getItem(FONT_SIZE_KEY)
+    if (isValidFontSize(saved)) {
+      setFontSizeState(saved)
+    }
   }, [])
 
-  const fontSize = useSyncExternalStore(subscribe, getStoredFontSize, () => 'base' as FontSize)
-
-  const setFontSize = useCallback((size: FontSize) => {
+  const setFontSize = (size: FontSize) => {
+    setFontSizeState(size)
     localStorage.setItem(FONT_SIZE_KEY, size)
-    fontSizeListeners.forEach(listener => listener())
-  }, [])
+  }
 
-  return [fontSize, setFontSize] as const
+  return [fontSize, setFontSize]
 }
 
 // Serialized types for client component
