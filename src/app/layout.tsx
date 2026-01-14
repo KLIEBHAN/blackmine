@@ -21,20 +21,24 @@ export default function RootLayout({
             __html: `
               (function() {
                 var stored = null;
+                var preference = null;
                 try {
                   stored = localStorage.getItem('theme');
+                  preference = localStorage.getItem('themePreference');
                 } catch (e) {}
 
                 var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                var theme = stored === 'dark' || stored === 'light'
+                var useStored = preference === 'manual' && (stored === 'dark' || stored === 'light');
+                var theme = useStored
                   ? stored
                   : (prefersDark ? 'dark' : 'light');
 
-                try {
-                  if (stored !== theme) {
-                    localStorage.setItem('theme', theme);
-                  }
-                } catch (e) {}
+                if (!useStored) {
+                  try {
+                    localStorage.setItem('themePreference', 'system');
+                    localStorage.removeItem('theme');
+                  } catch (e) {}
+                }
 
                 document.documentElement.classList.toggle('dark', theme === 'dark');
               })();

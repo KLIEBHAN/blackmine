@@ -30,6 +30,7 @@ export function DashboardHeader() {
     document.documentElement.classList.toggle('dark', newIsDark)
     try {
       localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
+      localStorage.setItem('themePreference', 'manual')
     } catch {
       // localStorage not available
     }
