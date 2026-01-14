@@ -20,7 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
-import { ArrowLeft, Save, Loader2, Calendar } from 'lucide-react'
+import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
@@ -85,20 +85,6 @@ export function IssueEditForm({ issue, users, projects }: Props) {
   })
 
   const updateField = useFormField(setFormData, errors, setErrors)
-  const openDueDatePicker = () => {
-    const input = document.getElementById('dueDate')
-    if (!(input instanceof HTMLInputElement)) {
-      return
-    }
-
-    const pickerInput = input as HTMLInputElement & { showPicker?: () => void }
-    if (pickerInput.showPicker) {
-      pickerInput.showPicker()
-      return
-    }
-
-    input.click()
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -313,28 +299,15 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                 {/* Due Date */}
                 <div className="space-y-2">
                   <Label htmlFor="dueDate">Due Date</Label>
-                  <div className="relative">
-                    <Input
-                      id="dueDate"
-                      type="date"
-                      value={formData.dueDate || ''}
-                      onChange={(e) =>
-                        updateField('dueDate', e.target.value || null)
-                      }
-                      className="pr-10 font-mono"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      onClick={openDueDatePicker}
-                      aria-label="Open date picker"
-                      title="Open date picker"
-                    >
-                      <Calendar className="size-4" />
-                    </Button>
-                  </div>
+                  <Input
+                    id="dueDate"
+                    type="date"
+                    value={formData.dueDate || ''}
+                    onChange={(e) =>
+                      updateField('dueDate', e.target.value || null)
+                    }
+                    className="font-mono"
+                  />
                 </div>
 
                 {/* Estimated Hours */}
