@@ -79,7 +79,6 @@ export default async function DashboardPage() {
             subtitle="Currently being worked on"
             icon={Clock}
             variant="success"
-            trend={{ value: 12, isPositive: true }}
             delay={2}
           />
           <StatCard

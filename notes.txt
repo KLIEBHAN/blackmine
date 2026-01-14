@@ -1,16 +1,24 @@
 # Redmine Clone - Status Notes
 
 
-## Letzte Iteration (2026-01-13)
+## Letzte Iteration (2026-01-14)
+- **UX: Fake Trend-Indikator vom Dashboard entfernt**
+  - Problem: "In Progress" StatCard zeigte `trend={{ value: 12, isPositive: true }}`
+  - Dieser "+12%" Wert war hardcoded/fake - nicht aus echten historischen Daten
+  - Irreführend für User, die denken könnten, es sei ein echter Trend
+  - Lösung: `trend` Prop komplett entfernt (ohne historische Daten ist Trend sinnlos)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+  
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-13)
 - **UX: Issues-Liste zeigt standardmäßig nur offene Issues**
   - Problem: Issues-Liste hatte keinen Default-Filter, zeigte ALLE Issues (inkl. closed/rejected)
   - User musste manuell filtern, um aktuelle Issues zu sehen
   - Inkonsistent mit Projekte-Liste (die hat Default-Filter auf "active")
   - Lösung: Default-Status-Filter auf `['new', 'in_progress']` gesetzt
   - **213 Tests grün, Lint clean, Build erfolgreich**
-  
-  **Nächste Schritte:**
-  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
 
 ## Vorherige Iteration (2026-01-13)
 - **UX: Unnötiges Dropdown im Sidebar-Footer entfernt**
