@@ -57,10 +57,10 @@ function textileToMarkdown(text: string): string {
 }
 
 export const FONT_SIZE_CONFIG = {
-  sm: { class: 'prose-sm', label: 'Klein' },
+  sm: { class: 'prose-sm', label: 'Small' },
   base: { class: 'prose-base', label: 'Normal' },
-  lg: { class: 'prose-lg', label: 'Groß' },
-  xl: { class: 'prose-xl', label: 'Sehr groß' },
+  lg: { class: 'prose-lg', label: 'Large' },
+  xl: { class: 'prose-xl', label: 'Extra large' },
 } as const
 
 export type FontSize = keyof typeof FONT_SIZE_CONFIG

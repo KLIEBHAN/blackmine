@@ -2,19 +2,21 @@
 
 
 ## Letzte Iteration (2026-01-14)
-- **UX: Issue Detail View Verbesserungen**
-  - Collapsible Sidebar: Sidebar kann ein-/ausgeklappt werden, Zustand persistiert in localStorage
-  - Font Size Controls: Schriftgröße der Beschreibung anpassbar (sm/base/lg/xl)
-  - HTML Blockquote Support: Markdown-Komponente unterstützt jetzt `<blockquote>` Tags
-  - Hooks refaktoriert: `useFontSizeStorage` und `useSidebarVisibility` verwenden jetzt useState initializer statt useEffect (lint-konform)
+- **Bug Fix: Hydration Mismatch in Issue Detail View**
+  - Problem: `useFontSizeStorage` und `useSidebarVisibility` Hooks verursachten Hydration Errors
+  - Ursache: `useState` Initializer verwendete `typeof window !== 'undefined'` Check
+  - Server renderte mit Default-Werten, Client las aus localStorage → Mismatch
+  - Lösung: Refactoring zu `useSyncExternalStore` (React 18+ Pattern)
+    - `getServerSnapshot` für konsistenten Server-Render
+    - `getSnapshot` für Client mit localStorage-Zugriff
+    - StorageEvent dispatch für Re-Render bei Änderungen
   - **213 Tests grün, Lint clean, Build erfolgreich**
 
-- **UX: Time Entry Delete**
-  - Problem: Time Entries konnten nicht gelöscht werden (nur erstellt)
-  - Backend hatte bereits `deleteTimeEntry` Action mit Ownership-Check
-  - Lösung: Delete-Button zur Time Tracking Liste hinzugefügt
-  - Nur eigene Einträge löschbar (oder Admin)
-  - Hover-only sichtbar, konsistent mit Comment-Delete Pattern
+- **UX: UI-Texte auf Englisch vereinheitlicht**
+  - Problem: Deutsche Labels in ansonsten englischer UI
+  - Geändert: "Schrift verkleinern/vergrößern" → "Decrease/Increase font size"
+  - Geändert: "Seitenleiste ein-/ausblenden" → "Show/Hide sidebar"
+  - Geändert: Font-Size Labels "Klein/Normal/Groß/Sehr groß" → "Small/Normal/Large/Extra large"
 
   **Nächste Schritte:**
   - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)

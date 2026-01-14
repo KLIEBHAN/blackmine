@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -32,31 +32,51 @@ function isValidFontSize(value: string | null): value is FontSize {
   return value !== null && FONT_SIZES.includes(value as FontSize)
 }
 
+// useSyncExternalStore pattern for SSR-safe localStorage access
 function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
-  const [fontSize, setFontSizeState] = useState<FontSize>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem(FONT_SIZE_KEY) : null
-    return isValidFontSize(saved) ? saved : 'lg'
-  })
+  const subscribe = useCallback((callback: () => void) => {
+    window.addEventListener('storage', callback)
+    return () => window.removeEventListener('storage', callback)
+  }, [])
 
-  const setFontSize = (size: FontSize) => {
-    setFontSizeState(size)
+  const getSnapshot = useCallback(() => {
+    const saved = localStorage.getItem(FONT_SIZE_KEY)
+    return isValidFontSize(saved) ? saved : 'lg'
+  }, [])
+
+  const getServerSnapshot = useCallback((): FontSize => 'lg', [])
+
+  const fontSize = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+  const setFontSize = useCallback((size: FontSize) => {
     localStorage.setItem(FONT_SIZE_KEY, size)
-  }
+    // Trigger re-render by dispatching storage event
+    window.dispatchEvent(new StorageEvent('storage', { key: FONT_SIZE_KEY }))
+  }, [])
 
   return [fontSize, setFontSize]
 }
 
 function useSidebarVisibility(): [boolean, () => void] {
-  const [visible, setVisible] = useState<boolean>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem(SIDEBAR_KEY) : null
-    return saved === null ? true : saved === 'true'
-  })
+  const subscribe = useCallback((callback: () => void) => {
+    window.addEventListener('storage', callback)
+    return () => window.removeEventListener('storage', callback)
+  }, [])
 
-  const toggle = () => {
+  const getSnapshot = useCallback(() => {
+    const saved = localStorage.getItem(SIDEBAR_KEY)
+    return saved === null ? true : saved === 'true'
+  }, [])
+
+  const getServerSnapshot = useCallback(() => true, [])
+
+  const visible = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+  const toggle = useCallback(() => {
     const newValue = !visible
-    setVisible(newValue)
     localStorage.setItem(SIDEBAR_KEY, String(newValue))
-  }
+    window.dispatchEvent(new StorageEvent('storage', { key: SIDEBAR_KEY }))
+  }, [visible])
 
   return [visible, toggle]
 }
@@ -189,7 +209,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                   size="icon"
                   className="size-8 hidden lg:flex"
                   onClick={toggleSidebar}
-                  aria-label={sidebarVisible ? 'Seitenleiste ausblenden' : 'Seitenleiste einblenden'}
+                  aria-label={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
                 >
                   {sidebarVisible ? (
                     <PanelRightClose className="size-4" />
@@ -199,7 +219,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                {sidebarVisible ? 'Seitenleiste ausblenden' : 'Seitenleiste einblenden'}
+                {sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -261,12 +281,12 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                         className="size-7"
                         onClick={() => changeFontSize(-1)}
                         disabled={fontSize === 'sm'}
-                        aria-label="Schrift verkleinern"
+                        aria-label="Decrease font size"
                       >
                         <Minus className="size-3.5" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Schrift verkleinern</TooltipContent>
+                    <TooltipContent>Decrease font size</TooltipContent>
                   </Tooltip>
                   <span className="text-xs text-muted-foreground w-12 text-center">
                     {FONT_SIZE_CONFIG[fontSize].label}
@@ -279,12 +299,12 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                         className="size-7"
                         onClick={() => changeFontSize(1)}
                         disabled={fontSize === 'xl'}
-                        aria-label="Schrift vergrößern"
+                        aria-label="Increase font size"
                       >
                         <Plus className="size-3.5" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Schrift vergrößern</TooltipContent>
+                    <TooltipContent>Increase font size</TooltipContent>
                   </Tooltip>
                 </div>
               </CardHeader>
