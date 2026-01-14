@@ -244,6 +244,18 @@
   line-height: 1.625;
 }
 
+.prose-sm {
+  font-size: 0.8125rem;
+}
+
+.prose-base {
+  font-size: 0.9375rem;
+}
+
+.prose-lg {
+  font-size: 1.0625rem;
+}
+
 .prose p {
   margin-bottom: 0.75em;
 }
