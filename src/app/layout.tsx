@@ -20,13 +20,23 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                var stored = null;
                 try {
-                  var stored = localStorage.getItem('theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (stored === 'dark' || (!stored && prefersDark)) {
-                    document.documentElement.classList.add('dark');
+                  stored = localStorage.getItem('theme');
+                } catch (e) {}
+
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = stored === 'dark' || stored === 'light'
+                  ? stored
+                  : (prefersDark ? 'dark' : 'light');
+
+                try {
+                  if (stored !== theme) {
+                    localStorage.setItem('theme', theme);
                   }
                 } catch (e) {}
+
+                document.documentElement.classList.toggle('dark', theme === 'dark');
               })();
             `,
           }}
