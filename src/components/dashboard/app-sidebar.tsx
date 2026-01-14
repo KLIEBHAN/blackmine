@@ -5,7 +5,7 @@ import {
   FolderKanban,
   CircleDot,
   Clock,
-  Settings,
+  Users,
   Plus,
   Database,
 } from 'lucide-react'
@@ -121,7 +121,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/users')} tooltip="Users">
                     <Link href="/admin/users">
-                      <Settings className="size-4" />
+                      <Users className="size-4" />
                       <span>Users</span>
                     </Link>
                   </SidebarMenuButton>
