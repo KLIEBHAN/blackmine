@@ -84,7 +84,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
 
   return (
     <div className="grid-pattern min-h-full">
-      <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         {/* Page Header */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between opacity-0 animate-card-in">
           <div className="flex items-start gap-4 min-w-0">
@@ -174,9 +174,9 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
           </DialogContent>
         </Dialog>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             {/* Description Card */}
             <Card className="opacity-0 animate-card-in delay-1">
               <CardHeader>
