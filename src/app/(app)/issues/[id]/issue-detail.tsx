@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
@@ -25,6 +25,7 @@ import {
 import { deleteIssue } from '@/app/actions/issues'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
+const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
 const FONT_SIZES = Object.keys(FONT_SIZE_CONFIG) as FontSize[]
 
 function isValidFontSize(value: string | null): value is FontSize {
@@ -47,6 +48,25 @@ function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
   }
 
   return [fontSize, setFontSize]
+}
+
+function useSidebarVisibility(): [boolean, () => void] {
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const saved = localStorage.getItem(SIDEBAR_KEY)
+    if (saved !== null) {
+      setVisible(saved === 'true')
+    }
+  }, [])
+
+  const toggle = () => {
+    const newValue = !visible
+    setVisible(newValue)
+    localStorage.setItem(SIDEBAR_KEY, String(newValue))
+  }
+
+  return [visible, toggle]
 }
 
 // Serialized types for client component
@@ -89,6 +109,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [fontSize, setFontSize] = useFontSizeStorage()
+  const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
   const changeFontSize = (delta: -1 | 1) => {
     const currentIndex = FONT_SIZES.indexOf(fontSize)
@@ -169,6 +190,26 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
               <Trash2 className="size-3.5" />
               Delete
             </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8 hidden lg:flex"
+                  onClick={toggleSidebar}
+                  aria-label={sidebarVisible ? 'Seitenleiste ausblenden' : 'Seitenleiste einblenden'}
+                >
+                  {sidebarVisible ? (
+                    <PanelRightClose className="size-4" />
+                  ) : (
+                    <PanelRightOpen className="size-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {sidebarVisible ? 'Seitenleiste ausblenden' : 'Seitenleiste einblenden'}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
@@ -207,7 +248,12 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
           </DialogContent>
         </Dialog>
 
-        <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className={cn(
+          "grid gap-6 lg:gap-8",
+          sidebarVisible 
+            ? "lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]" 
+            : "lg:grid-cols-1"
+        )}>
           {/* Main Content */}
           <div className="space-y-6">
             {/* Description Card */}
@@ -271,7 +317,9 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
           </div>
 
           {/* Sidebar */}
-          <IssueSidebar issue={issue} overdue={overdue} />
+          {sidebarVisible && (
+            <IssueSidebar issue={issue} overdue={overdue} />
+          )}
         </div>
       </div>
     </div>
