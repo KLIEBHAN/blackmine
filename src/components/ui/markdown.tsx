@@ -47,17 +47,25 @@ function textileToMarkdown(text: string): string {
   return result
 }
 
+export const FONT_SIZE_CONFIG = {
+  sm: { class: 'prose-sm', label: 'Klein' },
+  base: { class: 'prose-base', label: 'Normal' },
+  lg: { class: 'prose-lg', label: 'Groß' },
+} as const
+
+export type FontSize = keyof typeof FONT_SIZE_CONFIG
+
 interface MarkdownProps {
   children: string
   className?: string
+  fontSize?: FontSize
 }
 
-export function Markdown({ children, className }: MarkdownProps) {
-  // Convert Textile to Markdown before rendering
+export function Markdown({ children, className, fontSize = 'base' }: MarkdownProps) {
   const markdown = textileToMarkdown(children)
 
   return (
-    <div className={cn('prose prose-sm max-w-none dark:prose-invert', className)}>
+    <div className={cn('prose max-w-none dark:prose-invert', FONT_SIZE_CONFIG[fontSize].class, className)}>
       <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{markdown}</ReactMarkdown>
     </div>
   )

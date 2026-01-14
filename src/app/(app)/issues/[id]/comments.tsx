@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { createComment, deleteComment } from '@/app/actions/comments'
 import { MessageSquare, Send, Trash2 } from 'lucide-react'
-import { Markdown } from '@/components/ui/markdown'
+import { Markdown, type FontSize } from '@/components/ui/markdown'
 import { getInitials, formatDate } from '@/lib/utils'
 import { getFullName } from '@/types'
 
@@ -28,6 +28,7 @@ interface CommentsProps {
   issueId: string
   comments: SerializedComment[]
   currentUserId: string
+  fontSize?: FontSize
 }
 
 function timeAgo(date: string): string {
@@ -45,7 +46,7 @@ function timeAgo(date: string): string {
   return formatDate(date, 'datetime')
 }
 
-export function Comments({ issueId, comments: initialComments, currentUserId }: CommentsProps) {
+export function Comments({ issueId, comments: initialComments, currentUserId, fontSize = 'base' }: CommentsProps) {
   const [comments, setComments] = useState(initialComments)
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -151,7 +152,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId }: 
                         </Button>
                       )}
                     </div>
-                    <Markdown>{comment.content}</Markdown>
+                    <Markdown fontSize={fontSize}>{comment.content}</Markdown>
                   </div>
                 </div>
               </div>

@@ -1,18 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2 } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
-import { Markdown } from '@/components/ui/markdown'
+import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
 import { IssueSidebar } from './issue-sidebar'
 import { cn, formatShortId } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,36 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { deleteIssue } from '@/app/actions/issues'
+
+const FONT_SIZE_KEY = 'issue-detail-font-size'
+const FONT_SIZES = Object.keys(FONT_SIZE_CONFIG) as FontSize[]
+
+function isValidFontSize(value: string | null): value is FontSize {
+  return value !== null && FONT_SIZES.includes(value as FontSize)
+}
+
+function useFontSizeStorage() {
+  const subscribe = useCallback((callback: () => void) => {
+    window.addEventListener('storage', callback)
+    return () => window.removeEventListener('storage', callback)
+  }, [])
+
+  const getSnapshot = useCallback(() => {
+    const saved = localStorage.getItem(FONT_SIZE_KEY)
+    return isValidFontSize(saved) ? saved : 'base'
+  }, [])
+
+  const getServerSnapshot = useCallback((): FontSize => 'base', [])
+
+  const fontSize = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+  const setFontSize = useCallback((size: FontSize) => {
+    localStorage.setItem(FONT_SIZE_KEY, size)
+    window.dispatchEvent(new StorageEvent('storage', { key: FONT_SIZE_KEY }))
+  }, [])
+
+  return [fontSize, setFontSize] as const
+}
 
 // Serialized types for client component
 export type SerializedIssue = {
@@ -62,6 +93,13 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const router = useRouter()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [fontSize, setFontSize] = useFontSizeStorage()
+
+  const changeFontSize = (delta: -1 | 1) => {
+    const currentIndex = FONT_SIZES.indexOf(fontSize)
+    const newIndex = Math.max(0, Math.min(FONT_SIZES.length - 1, currentIndex + delta))
+    setFontSize(FONT_SIZES[newIndex])
+  }
 
   const overdue = isOverdue(issue)
 
@@ -179,12 +217,47 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
           <div className="space-y-6">
             {/* Description Card */}
             <Card className="opacity-0 animate-card-in delay-1">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-lg">Description</CardTitle>
+                <div className="flex items-center gap-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => changeFontSize(-1)}
+                        disabled={fontSize === 'sm'}
+                        aria-label="Schrift verkleinern"
+                      >
+                        <Minus className="size-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Schrift verkleinern</TooltipContent>
+                  </Tooltip>
+                  <span className="text-xs text-muted-foreground w-12 text-center">
+                    {FONT_SIZE_CONFIG[fontSize].label}
+                  </span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => changeFontSize(1)}
+                        disabled={fontSize === 'lg'}
+                        aria-label="Schrift vergrößern"
+                      >
+                        <Plus className="size-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Schrift vergrößern</TooltipContent>
+                  </Tooltip>
+                </div>
               </CardHeader>
               <CardContent>
                 {issue.description ? (
-                  <Markdown>{issue.description}</Markdown>
+                  <Markdown fontSize={fontSize}>{issue.description}</Markdown>
                 ) : (
                   <p className="text-sm text-muted-foreground italic">
                     No description provided.
@@ -198,6 +271,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
               issueId={issue.id}
               comments={comments}
               currentUserId={currentUserId}
+              fontSize={fontSize}
             />
           </div>
 
