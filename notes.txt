@@ -2,11 +2,21 @@
 
 
 ## Letzte Iteration (2026-01-14)
-- **UX: Time Tracking Suchfeld Placeholder korrigiert**
-  - Problem: Suchfeld auf `/time` hatte Placeholder "Search comments..."
-  - Das war irreführend - Suche filtert nach comments UND issue.subject
-  - "Search comments..." suggeriert nur Kommentare
-  - Lösung: Placeholder geändert zu "Search..." (konsistent mit Issues-Liste)
+- **UX: Dashboard StatCards klickbar gemacht**
+  - Problem: StatCards auf dem Dashboard zeigten Statistiken (z.B. "5 Open Issues"), waren aber nicht klickbar
+  - User erwarten, dass Klick auf "Open Issues" zu den gefilterten Issues führt
+  - Lösung:
+    - `StatCard` Komponente erweitert mit optionaler `href` prop
+    - Bei Angabe von `href` wird die Card in einen Link gewrapped
+    - Hover-Effekt (shadow) für visuelle Feedback
+  - Dashboard-Verlinkungen:
+    - "Open Issues" → `/issues` (default zeigt new + in_progress)
+    - "In Progress" → `/issues?status=in_progress`
+    - "Due This Week" → `/issues`
+    - "Active Projects" → `/projects` (default zeigt active)
+  - Issues-Seite erweitert:
+    - Akzeptiert `status` URL-Parameter (comma-separated möglich)
+    - `IssuesList` erhält `initialStatuses` prop für URL-gesteuerte Filter
   - **213 Tests grün, Lint clean, Build erfolgreich**
 
   **Nächste Schritte:**

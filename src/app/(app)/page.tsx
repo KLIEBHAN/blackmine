@@ -72,6 +72,7 @@ export default async function DashboardPage() {
             icon={CircleDot}
             variant="default"
             delay={1}
+            href="/issues"
           />
           <StatCard
             title="In Progress"
@@ -80,6 +81,7 @@ export default async function DashboardPage() {
             icon={Clock}
             variant="success"
             delay={2}
+            href="/issues?status=in_progress"
           />
           <StatCard
             title="Due This Week"
@@ -88,6 +90,7 @@ export default async function DashboardPage() {
             icon={AlertTriangle}
             variant={dueSoon > 0 ? 'warning' : 'default'}
             delay={3}
+            href="/issues"
           />
           <StatCard
             title="Active Projects"
@@ -95,6 +98,7 @@ export default async function DashboardPage() {
             subtitle="Ongoing work streams"
             icon={FolderKanban}
             delay={4}
+            href="/projects"
           />
         </div>
 

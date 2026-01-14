@@ -1,6 +1,7 @@
 import { getIssues } from '@/app/actions/issues'
 import { getUsers } from '@/app/actions/users'
 import { IssuesList } from './issues-list'
+import type { IssueStatus } from '@/types'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
 export const dynamic = 'force-dynamic'
@@ -32,7 +33,12 @@ function serializeIssue(issue: Awaited<ReturnType<typeof getIssues>>[number]) {
   }
 }
 
-export default async function IssuesPage() {
+type Props = {
+  searchParams: Promise<{ status?: string }>
+}
+
+export default async function IssuesPage({ searchParams }: Props) {
+  const { status } = await searchParams
   const [issues, users] = await Promise.all([getIssues(), getUsers()])
   const serializedIssues = issues.map(serializeIssue)
   const serializedUsers = users.map(u => ({
@@ -41,11 +47,17 @@ export default async function IssuesPage() {
     lastName: u.lastName,
   }))
 
+  // Parse status param: single value or comma-separated
+  const initialStatuses: IssueStatus[] | undefined = status
+    ? (status.split(',') as IssueStatus[])
+    : undefined
+
   return (
     <IssuesList
       issues={serializedIssues}
       totalCount={issues.length}
       users={serializedUsers}
+      initialStatuses={initialStatuses}
     />
   )
 }

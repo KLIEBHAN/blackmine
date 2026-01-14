@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
+import Link from 'next/link'
 
 type StatCardVariant = 'default' | 'warning' | 'success' | 'danger'
 
@@ -26,6 +27,8 @@ interface StatCardProps {
   className?: string
   /** Animation delay (1-5) */
   delay?: number
+  /** Optional link - makes the card clickable */
+  href?: string
 }
 
 const variantStyles: Record<StatCardVariant, string> = {
@@ -54,23 +57,13 @@ export function StatCard({
   variant,
   className,
   delay = 0,
+  href,
 }: StatCardProps) {
   const displayLabel = label ?? title ?? ''
   const useVariantStyling = variant !== undefined || subtitle !== undefined || trend !== undefined
   
-  return (
-    <Card
-      className={cn(
-        'relative overflow-hidden opacity-0 animate-card-in',
-        useVariantStyling && 'border-l-4',
-        variant && variantStyles[variant],
-        delay === 1 && 'delay-1',
-        delay === 2 && 'delay-2',
-        delay === 3 && 'delay-3',
-        delay === 4 && 'delay-4',
-        className
-      )}
-    >
+  const cardContent = (
+    <>
       <CardContent className={cn('p-4', useVariantStyling && 'p-5')}>
         <div className={cn('flex items-center justify-between', useVariantStyling && 'items-start')}>
           <div className={useVariantStyling ? 'space-y-2' : undefined}>
@@ -126,6 +119,34 @@ export function StatCard({
           </div>
         )}
       </CardContent>
+    </>
+  )
+
+  const cardClasses = cn(
+    'relative overflow-hidden opacity-0 animate-card-in',
+    useVariantStyling && 'border-l-4',
+    variant && variantStyles[variant],
+    delay === 1 && 'delay-1',
+    delay === 2 && 'delay-2',
+    delay === 3 && 'delay-3',
+    delay === 4 && 'delay-4',
+    href && 'transition-shadow hover:shadow-md cursor-pointer',
+    className
+  )
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        <Card className={cardClasses}>
+          {cardContent}
+        </Card>
+      </Link>
+    )
+  }
+
+  return (
+    <Card className={cardClasses}>
+      {cardContent}
     </Card>
   )
 }

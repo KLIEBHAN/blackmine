@@ -114,11 +114,14 @@ type Props = {
   totalCount: number
   hideHeader?: boolean
   users?: SerializedUser[]
+  initialStatuses?: IssueStatus[]
 }
 
-export function IssuesList({ issues, totalCount, hideHeader = false, users = [] }: Props) {
+export function IssuesList({ issues, totalCount, hideHeader = false, users = [], initialStatuses }: Props) {
   const [search, setSearch] = useState('')
-  const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>(['new', 'in_progress'])
+  const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>(
+    initialStatuses ?? ['new', 'in_progress']
+  )
   const [selectedTrackers, setSelectedTrackers] = useState<IssueTracker[]>([])
   const [selectedPriorities, setSelectedPriorities] = useState<IssuePriority[]>([])
   const [sort, setSort] = useState<IssueSort>({ field: 'dueDate', direction: 'asc' })
