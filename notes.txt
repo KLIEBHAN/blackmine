@@ -2,15 +2,23 @@
 
 
 ## Letzte Iteration (2026-01-14)
+- **UX: Time Tracking Suchfeld Placeholder korrigiert**
+  - Problem: Suchfeld auf `/time` hatte Placeholder "Search comments..."
+  - Das war irreführend - Suche filtert nach comments UND issue.subject
+  - "Search comments..." suggeriert nur Kommentare
+  - Lösung: Placeholder geändert zu "Search..." (konsistent mit Issues-Liste)
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-14)
 - **UX: Sidebar Admin Icon korrigiert**
   - Problem: "Users" Menüpunkt im Admin-Bereich verwendete `Settings`-Icon (⚙️)
   - Das war semantisch falsch - Settings-Icon suggeriert Einstellungen, nicht Benutzerverwaltung
   - Lösung: `Settings` durch `Users` Icon ersetzt (👥)
   - Konsistenter mit der Funktion des Menüpunkts
   - **213 Tests grün, Lint clean, Build erfolgreich**
-
-  **Nächste Schritte:**
-  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
 
 ## Vorherige Iteration (2026-01-14)
 - **Bug Fix: Hydration Mismatch in Issue Detail View**
