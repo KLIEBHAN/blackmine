@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -33,14 +33,10 @@ function isValidFontSize(value: string | null): value is FontSize {
 }
 
 function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
-  const [fontSize, setFontSizeState] = useState<FontSize>('lg')
-
-  useEffect(() => {
-    const saved = localStorage.getItem(FONT_SIZE_KEY)
-    if (isValidFontSize(saved)) {
-      setFontSizeState(saved)
-    }
-  }, [])
+  const [fontSize, setFontSizeState] = useState<FontSize>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem(FONT_SIZE_KEY) : null
+    return isValidFontSize(saved) ? saved : 'lg'
+  })
 
   const setFontSize = (size: FontSize) => {
     setFontSizeState(size)
@@ -51,14 +47,10 @@ function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
 }
 
 function useSidebarVisibility(): [boolean, () => void] {
-  const [visible, setVisible] = useState(true)
-
-  useEffect(() => {
-    const saved = localStorage.getItem(SIDEBAR_KEY)
-    if (saved !== null) {
-      setVisible(saved === 'true')
-    }
-  }, [])
+  const [visible, setVisible] = useState<boolean>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem(SIDEBAR_KEY) : null
+    return saved === null ? true : saved === 'true'
+  })
 
   const toggle = () => {
     const newValue = !visible
