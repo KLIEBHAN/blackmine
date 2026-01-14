@@ -11,6 +11,7 @@ A modern project management application inspired by Redmine, built with Next.js 
 - **Comments** - Add comments to issues for collaboration
 - **Users** - User management with roles and assignments
 - **Dashboard** - Overview of recent activity and project statistics
+- **Font Size Control** - Adjustable text size in issue detail view (persisted in browser)
 
 ## Tech Stack
 
@@ -85,6 +86,10 @@ src/
 | `↑` `↓` | Navigate search results |
 | `Enter` | Open selected issue |
 | `Escape` | Close search dropdown |
+
+## Accessibility
+
+- **Font Size**: In the issue detail view, use the `−` / `+` buttons next to "Description" to adjust text size (Klein, Normal, Groß, Sehr groß). Your preference is saved in the browser.
 
 ## Testing
 
