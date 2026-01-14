@@ -50,10 +50,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border pb-4">
-        <div className="flex items-center gap-3 px-2">
+      <SidebarHeader className="border-b border-sidebar-border pb-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:pb-2">
+        <div className="flex items-center gap-3 px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           {/* Logo mark */}
-          <div className="flex size-9 items-center justify-center rounded-md bg-sidebar-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-sidebar-primary">
             <CircleDot className="size-5 text-sidebar-primary-foreground" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
@@ -140,9 +140,9 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border">
-        <div className="flex items-center gap-3 p-2 min-w-0">
-          <Avatar className="size-8 rounded-md">
+      <SidebarFooter className="border-t border-sidebar-border group-data-[collapsible=icon]:items-center">
+        <div className="flex items-center gap-3 p-2 min-w-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1">
+          <Avatar className="size-8 shrink-0 rounded-md">
             <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
               {session ? getInitials(session.firstName, session.lastName) : '??'}
             </AvatarFallback>
