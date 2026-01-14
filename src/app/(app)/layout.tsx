@@ -24,7 +24,7 @@ export default async function AppLayout({
 
   return (
     <SessionProvider session={clientSession}>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <AppSidebar />
         <SidebarInset>
           <DashboardHeader />
