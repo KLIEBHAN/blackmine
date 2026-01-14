@@ -2,17 +2,20 @@
 
 
 ## Letzte Iteration (2026-01-14)
-- **UX: Fake Trend-Indikator vom Dashboard entfernt**
-  - Problem: "In Progress" StatCard zeigte `trend={{ value: 12, isPositive: true }}`
-  - Dieser "+12%" Wert war hardcoded/fake - nicht aus echten historischen Daten
-  - Irreführend für User, die denken könnten, es sei ein echter Trend
-  - Lösung: `trend` Prop komplett entfernt (ohne historische Daten ist Trend sinnlos)
+- **UX: Comment Ownership aus echter Session**
+  - Problem: `/issues/[id]/page.tsx` verwendete `issue.author.id` als `currentUserId`
+  - Das war ein Workaround-Kommentar: "For now, use the first user as current user"
+  - Folge: Delete-Button für Kommentare wurde falsch berechnet:
+    - User A erstellt Issue, User B schreibt Kommentar
+    - User A sah fälschlich Delete-Button für User B's Kommentar
+    - User B sah seinen eigenen Delete-Button nicht
+  - Lösung: `getSession()` wird jetzt parallel geladen, `session?.id` für Ownership
   - **213 Tests grün, Lint clean, Build erfolgreich**
-  
+   
   **Nächste Schritte:**
   - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
 
-## Vorherige Iteration (2026-01-13)
+## Vorherige Iteration (2026-01-14)
 - **UX: Issues-Liste zeigt standardmäßig nur offene Issues**
   - Problem: Issues-Liste hatte keinen Default-Filter, zeigte ALLE Issues (inkl. closed/rejected)
   - User musste manuell filtern, um aktuelle Issues zu sehen

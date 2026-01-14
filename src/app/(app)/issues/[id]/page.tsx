@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getIssueById } from '@/app/actions/issues'
 import { getCommentsByIssue } from '@/app/actions/comments'
+import { getSession } from '@/lib/session'
 import { IssueDetail, type SerializedIssue } from './issue-detail'
 import { type SerializedComment } from './comments'
 
@@ -13,9 +14,10 @@ interface IssueDetailPageProps {
 
 export default async function IssueDetailPage({ params }: IssueDetailPageProps) {
   const { id } = await params
-  const [issue, comments] = await Promise.all([
+  const [issue, comments, session] = await Promise.all([
     getIssueById(id),
     getCommentsByIssue(id),
+    getSession(),
   ])
 
   if (!issue) {
@@ -65,8 +67,7 @@ export default async function IssueDetailPage({ params }: IssueDetailPageProps) 
     },
   }))
 
-  // For now, use the first user as current user (in real app, get from auth)
-  const currentUserId = issue.author.id
+  const currentUserId = session?.id ?? ''
 
   return (
     <IssueDetail
