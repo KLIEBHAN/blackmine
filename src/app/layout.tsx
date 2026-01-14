@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import { ThemeSync } from '@/components/theme-sync'
 
 export const metadata: Metadata = {
   title: 'Blackmine - Project Management',
@@ -47,6 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        <ThemeSync />
         {children}
         <Toaster position="bottom-right" richColors closeButton />
       </body>
