@@ -141,15 +141,19 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
-        <div className="flex items-center gap-3 p-2">
+        <div className="flex items-center gap-3 p-2 min-w-0">
           <Avatar className="size-8 rounded-md">
             <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
               {session ? getInitials(session.firstName, session.lastName) : '??'}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-medium">{session ? getFullName(session) : 'Unknown'}</span>
-            <span className="text-xs text-sidebar-foreground/60">{session?.email ?? ''}</span>
+          <div className="flex min-w-0 flex-col items-start group-data-[collapsible=icon]:hidden">
+            <span className="truncate text-sm font-medium">
+              {session ? getFullName(session) : 'Unknown'}
+            </span>
+            <span className="truncate text-xs text-sidebar-foreground/60">
+              {session?.email ?? ''}
+            </span>
           </div>
         </div>
       </SidebarFooter>
