@@ -298,7 +298,7 @@
 
 .prose pre {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.9em;
   background-color: var(--muted);
   padding: 0.75em 1em;
   border-radius: 0.375rem;
