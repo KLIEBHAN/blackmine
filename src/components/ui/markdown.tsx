@@ -41,6 +41,15 @@ function textileToMarkdown(text: string): string {
   // Blockquote: bq. text -> > text
   result = result.replace(/^bq\.\s+(.*)$/gm, '> $1')
 
+  // HTML blockquotes: <blockquote>...</blockquote> -> > prefixed lines
+  result = result.replace(/<blockquote>([\s\S]*?)<\/blockquote>/gi, (_, content) => {
+    return content
+      .trim()
+      .split('\n')
+      .map((line: string) => '> ' + line)
+      .join('\n')
+  })
+
   // Preformatted blocks: <pre>...</pre> -> ```...```
   result = result.replace(/<pre>([\s\S]*?)<\/pre>/gi, '```\n$1\n```')
 
