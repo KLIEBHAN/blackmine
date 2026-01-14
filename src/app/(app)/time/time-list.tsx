@@ -29,9 +29,13 @@ import {
   Calendar,
   User,
   Activity,
+  Trash2,
 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { getInitials, formatDate, staggerDelay } from '@/lib/utils'
+import { deleteTimeEntry } from '@/app/actions/time-entries'
+import { useSession } from '@/contexts/session-context'
 import { SortableTableHeader } from '@/components/ui/sortable-table-header'
 import { type SortDirection, type ActivityType, getFullName, activityTypeLabels, allActivityTypes } from '@/types'
 
@@ -87,6 +91,8 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
   const [fromDate, setFromDate] = useState<string>('')
   const [toDate, setToDate] = useState<string>('')
   const [sort, setSort] = useState<TimeSort>({ field: 'spentOn', direction: 'desc' })
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const { session, isAdmin } = useSession()
 
   // Apply filters and sorting
   const filteredEntries = useMemo(() => {
@@ -154,6 +160,21 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
       field,
       direction: prev.field === field && prev.direction === 'desc' ? 'asc' : 'desc',
     }))
+  }
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id)
+    const result = await deleteTimeEntry(id)
+    if (result.success) {
+      toast.success('Time entry deleted')
+    } else {
+      toast.error('error' in result ? result.error : 'Failed to delete time entry')
+    }
+    setDeletingId(null)
+  }
+
+  const canDelete = (entry: SerializedTimeEntry) => {
+    return session && (entry.userId === session.id || isAdmin)
   }
 
   return (
@@ -295,12 +316,13 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       align="right"
                     />
                   </TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredEntries.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-32 text-center">
+                    <TableCell colSpan={7} className="h-32 text-center">
                       <div className="flex flex-col items-center gap-2 text-muted-foreground">
                         <Clock className="size-8 opacity-50" />
                         <p>No time entries found</p>
@@ -372,13 +394,29 @@ export function TimeList({ timeEntries, users }: TimeListProps) {
                       </TableCell>
 
                       {/* Hours */}
-                      <TableCell className="pr-4 text-right">
+                      <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <Clock className="size-3.5 text-muted-foreground" />
                           <span className="font-mono text-sm font-semibold">
                             {entry.hours.toFixed(1)}h
                           </span>
                         </div>
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="pr-4">
+                        {canDelete(entry) && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleDelete(entry.id)}
+                            disabled={deletingId === entry.id}
+                            aria-label="Delete time entry"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))

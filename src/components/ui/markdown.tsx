@@ -51,6 +51,7 @@ export const FONT_SIZE_CONFIG = {
   sm: { class: 'prose-sm', label: 'Klein' },
   base: { class: 'prose-base', label: 'Normal' },
   lg: { class: 'prose-lg', label: 'Groß' },
+  xl: { class: 'prose-xl', label: 'Sehr groß' },
 } as const
 
 export type FontSize = keyof typeof FONT_SIZE_CONFIG
@@ -61,7 +62,7 @@ interface MarkdownProps {
   fontSize?: FontSize
 }
 
-export function Markdown({ children, className, fontSize = 'base' }: MarkdownProps) {
+export function Markdown({ children, className, fontSize = 'lg' }: MarkdownProps) {
   const markdown = textileToMarkdown(children)
 
   return (

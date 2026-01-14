@@ -32,7 +32,7 @@ function isValidFontSize(value: string | null): value is FontSize {
 }
 
 function useFontSizeStorage(): [FontSize, (size: FontSize) => void] {
-  const [fontSize, setFontSizeState] = useState<FontSize>('base')
+  const [fontSize, setFontSizeState] = useState<FontSize>('lg')
 
   useEffect(() => {
     const saved = localStorage.getItem(FONT_SIZE_KEY)
@@ -240,7 +240,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                         size="icon"
                         className="size-7"
                         onClick={() => changeFontSize(1)}
-                        disabled={fontSize === 'lg'}
+                        disabled={fontSize === 'xl'}
                         aria-label="Schrift vergrößern"
                       >
                         <Plus className="size-3.5" />
