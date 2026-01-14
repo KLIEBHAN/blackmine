@@ -31,24 +31,25 @@ function isValidFontSize(value: string | null): value is FontSize {
   return value !== null && FONT_SIZES.includes(value as FontSize)
 }
 
+function getStoredFontSize(): FontSize {
+  if (typeof window === 'undefined') return 'base'
+  const saved = localStorage.getItem(FONT_SIZE_KEY)
+  return isValidFontSize(saved) ? saved : 'base'
+}
+
+let fontSizeListeners: Set<() => void> = new Set()
+
 function useFontSizeStorage() {
   const subscribe = useCallback((callback: () => void) => {
-    window.addEventListener('storage', callback)
-    return () => window.removeEventListener('storage', callback)
+    fontSizeListeners.add(callback)
+    return () => { fontSizeListeners.delete(callback) }
   }, [])
 
-  const getSnapshot = useCallback(() => {
-    const saved = localStorage.getItem(FONT_SIZE_KEY)
-    return isValidFontSize(saved) ? saved : 'base'
-  }, [])
-
-  const getServerSnapshot = useCallback((): FontSize => 'base', [])
-
-  const fontSize = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  const fontSize = useSyncExternalStore(subscribe, getStoredFontSize, () => 'base' as FontSize)
 
   const setFontSize = useCallback((size: FontSize) => {
     localStorage.setItem(FONT_SIZE_KEY, size)
-    window.dispatchEvent(new StorageEvent('storage', { key: FONT_SIZE_KEY }))
+    fontSizeListeners.forEach(listener => listener())
   }, [])
 
   return [fontSize, setFontSize] as const
