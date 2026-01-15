@@ -120,6 +120,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
   })
   const [attachments, setAttachments] = useState(issue.attachments)
   const [isUploading, setIsUploading] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -158,48 +159,58 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     router.push(`/issues/${issue.id}`)
   }
 
-  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const uploadFiles = async (files: FileList) => {
     setUploadError(null)
 
-    const file = fileInputRef.current?.files?.[0]
-    if (!file) {
+    if (!files || files.length === 0) {
       setUploadError('Please choose a file to upload.')
       return
     }
 
     const formData = new FormData()
-    formData.append('file', file)
+    Array.from(files).forEach((file) => formData.append('file', file))
 
     setIsUploading(true)
     const result = await uploadAttachment(issue.id, formData)
 
-    if (result.success && result.attachment) {
+    if (result.success && result.attachments) {
       setAttachments((prev) => [
-        {
-          id: result.attachment.id,
-          filename: result.attachment.filename,
-          contentType: result.attachment.contentType,
-          size: result.attachment.size,
-          createdAt: result.attachment.createdAt.toISOString(),
+        ...result.attachments.map((attachment) => ({
+          id: attachment.id,
+          filename: attachment.filename,
+          contentType: attachment.contentType,
+          size: attachment.size,
+          createdAt: attachment.createdAt.toISOString(),
           author: {
-            id: result.attachment.author.id,
-            firstName: result.attachment.author.firstName,
-            lastName: result.attachment.author.lastName,
+            id: attachment.author.id,
+            firstName: attachment.author.firstName,
+            lastName: attachment.author.lastName,
           },
-        },
+        })),
         ...prev,
       ])
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
     } else if (result.errors) {
-      setUploadError(result.errors.file || result.errors.general || 'Upload failed.')
+      const message =
+        ('file' in result.errors && result.errors.file) ||
+        result.errors.general ||
+        'Upload failed.'
+      setUploadError(message)
     } else {
       setUploadError('Upload failed.')
     }
 
     setIsUploading(false)
+  }
+
+  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const files = fileInputRef.current?.files
+    if (files) {
+      await uploadFiles(files)
+    }
   }
 
   const handleDeleteAttachment = async (attachmentId: string) => {
@@ -488,27 +499,78 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                 )}
 
                 <Separator />
-                <form onSubmit={handleUpload} className="grid w-full max-w-lg gap-2">
-                  <Label
-                    htmlFor="attachment-upload"
-                    className="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+                <form onSubmit={handleUpload} className="w-full max-w-lg">
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault()
+                      setIsDragging(true)
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault()
+                      setIsDragging(false)
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault()
+                      setIsDragging(false)
+                      if (e.dataTransfer.files?.length) {
+                        uploadFiles(e.dataTransfer.files)
+                      }
+                    }}
+                    className={cn(
+                      'group relative grid gap-5 rounded-xl border-2 border-dashed p-6 transition-all duration-200 ease-in-out',
+                      isDragging
+                        ? 'border-primary bg-primary/5 scale-[1.01]'
+                        : 'border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-muted/20'
+                    )}
                   >
-                    Upload File
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    <Input
-                      id="attachment-upload"
-                      ref={fileInputRef}
-                      type="file"
-                      className="text-sm cursor-pointer file:cursor-pointer"
-                    />
-                    <Button type="submit" size="sm" className="gap-2" disabled={isUploading}>
-                      <Upload className="size-3.5" />
-                      {isUploading ? 'Uploading...' : 'Upload'}
-                    </Button>
+                    <div className="flex flex-col items-center justify-center gap-2 text-center">
+                      <div
+                        className={cn(
+                          'flex size-12 items-center justify-center rounded-full transition-colors',
+                          isDragging
+                            ? 'bg-primary/10 text-primary'
+                            : 'bg-muted text-muted-foreground group-hover:bg-background group-hover:shadow-sm'
+                        )}
+                      >
+                        <Upload className="size-6" />
+                      </div>
+                      <div className="space-y-1">
+                        <Label
+                          htmlFor="attachment-upload"
+                          className="cursor-pointer text-sm font-medium hover:underline"
+                        >
+                          Drag files here or click to upload
+                        </Label>
+                        <p className="text-xs text-muted-foreground">Max file size 100 MB</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Input
+                        id="attachment-upload"
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        className="flex-1 cursor-pointer text-sm file:cursor-pointer"
+                        onChange={() => setUploadError(null)}
+                      />
+                      <Button
+                        type="submit"
+                        size="sm"
+                        className="gap-2 shadow-none"
+                        disabled={isUploading}
+                      >
+                        <Upload className="size-3.5" />
+                        {isUploading ? 'Uploading...' : 'Upload'}
+                      </Button>
+                    </div>
+
+                    {uploadError && (
+                      <p className="animate-in slide-in-from-top-1 text-xs font-medium text-destructive">
+                        {uploadError}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground">Max file size 100 MB.</p>
-                  {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
                 </form>
               </div>
             </CardContent>

@@ -16,6 +16,11 @@ export type AttachmentFormErrors = {
   general?: string
 }
 
+type PendingAttachment = {
+  file: File
+  storagePath: string
+}
+
 async function ensureIssueExists(issueId: string) {
   const issue = await prisma.issue.findUnique({
     where: { id: issueId },
@@ -29,26 +34,34 @@ async function ensureIssueExists(issueId: string) {
   return { success: true }
 }
 
-export async function uploadAttachment(issueId: string, formData: FormData) {
-  const session = await requireAuth()
-
-  const file = formData.get('file')
-  if (!(file instanceof File)) {
-    return { success: false, errors: { file: 'Please choose a file to upload.' } }
-  }
-
+function validateFile(file: File): AttachmentFormErrors | null {
   if (!file.name) {
-    return { success: false, errors: { file: 'File name is missing.' } }
+    return { file: 'File name is missing.' }
   }
 
   if (file.size <= 0) {
-    return { success: false, errors: { file: 'File is empty.' } }
+    return { file: 'File is empty.' }
   }
 
   if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
-    return {
-      success: false,
-      errors: { file: 'File exceeds the 100 MB upload limit.' },
+    return { file: 'File exceeds the 100 MB upload limit.' }
+  }
+
+  return null
+}
+
+export async function uploadAttachment(issueId: string, formData: FormData) {
+  const session = await requireAuth()
+
+  const files = formData.getAll('file').filter((item): item is File => item instanceof File)
+  if (files.length === 0) {
+    return { success: false, errors: { file: 'Please choose a file to upload.' } }
+  }
+
+  for (const file of files) {
+    const error = validateFile(file)
+    if (error) {
+      return { success: false, errors: error }
     }
   }
 
@@ -57,25 +70,35 @@ export async function uploadAttachment(issueId: string, formData: FormData) {
     return { success: false, errors: { general: issueCheck.error } }
   }
 
-  try {
-    const storagePath = await saveAttachmentFile(file, issueId)
+  const pending: PendingAttachment[] = []
 
-    const attachment = await prisma.attachment.create({
-      data: {
-        issueId,
-        authorId: session.id,
-        filename: sanitizeFilename(file.name),
-        contentType: file.type || 'application/octet-stream',
-        size: file.size,
-        storagePath,
-      },
-      include: { author: true },
-    })
+  try {
+    for (const file of files) {
+      const storagePath = await saveAttachmentFile(file, issueId)
+      pending.push({ file, storagePath })
+    }
+
+    const created = await prisma.$transaction(
+      pending.map(({ file, storagePath }) =>
+        prisma.attachment.create({
+          data: {
+            issueId,
+            authorId: session.id,
+            filename: sanitizeFilename(file.name),
+            contentType: file.type || 'application/octet-stream',
+            size: file.size,
+            storagePath,
+          },
+          include: { author: true },
+        })
+      )
+    )
 
     revalidatePath(`/issues/${issueId}`)
 
-    return { success: true, attachment }
+    return { success: true, attachments: created }
   } catch (error) {
+    await Promise.all(pending.map((entry) => removeAttachmentFile(entry.storagePath)))
     return handleActionError(error, 'upload attachment', true)
   }
 }
