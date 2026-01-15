@@ -39,10 +39,6 @@ function textileToMarkdown(text: string): string {
     '#'.repeat(Number(level)) + ' ' + content
   )
 
-  // Bold: *text* -> **text** (Textile uses single asterisks)
-  result = result.replace(/(?<!\*)\*([^\s*][^*]*[^\s*])\*(?!\*)/g, '**$1**')
-  result = result.replace(/(?<!\*)\*([^\s*])\*(?!\*)/g, '**$1**')
-
   // Italic: _text_ -> *text* (skip snake_case identifiers)
   result = result.replace(/(?<![a-zA-Z0-9])_([^_\s][^_]*[^_\s])_(?![a-zA-Z0-9])/g, '*$1*')
   result = result.replace(/(?<![a-zA-Z0-9])_([^_\s])_(?![a-zA-Z0-9])/g, '*$1*')
