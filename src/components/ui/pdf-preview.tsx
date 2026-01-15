@@ -9,124 +9,204 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
-// Configure PDF.js worker
+// PDF.js requires a web worker for parsing - we load it from CDN to avoid bundling issues
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
+// ============================================================================
+// Types & Constants
+// ============================================================================
+
 interface PdfPreviewProps {
+  /** URL to the PDF file (can be a relative path or absolute URL) */
   url: string
 }
 
+/** Determines how the PDF page is sized within the container */
 type ZoomMode = 'scale' | 'fitWidth' | 'fitPage'
 
-const ZOOM_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0]
-const DEFAULT_SCALE = 1.0
+/** Predefined zoom levels for consistent stepping (50% to 300%) */
+const ZOOM_LEVELS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0] as const
+const INITIAL_ZOOM = 1.0
 
+/** Padding inside the PDF content area (used for size calculations) */
+const CONTENT_PADDING = 32 // 16px on each side
+
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Renders a PDF with toolbar controls for zoom, fit modes, fullscreen, and pagination.
+ * Uses react-pdf (PDF.js) for cross-browser compatibility.
+ */
 export function PdfPreview({ url }: PdfPreviewProps) {
-  const [numPages, setNumPages] = useState<number | null>(null)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [error, setError] = useState(false)
-  const [scale, setScale] = useState(DEFAULT_SCALE)
+  // --- Document State ---
+  const [totalPages, setTotalPages] = useState<number | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasError, setHasError] = useState(false)
+
+  // --- Zoom State ---
+  const [manualZoom, setManualZoom] = useState(INITIAL_ZOOM)
   const [zoomMode, setZoomMode] = useState<ZoomMode>('fitPage')
-  const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(null)
+
+  // --- Layout State ---
+  const [contentDimensions, setContentDimensions] = useState<{ width: number; height: number } | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
 
-  const observerRef = useRef<ResizeObserver | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  // --- Refs ---
+  const rootContainerRef = useRef<HTMLDivElement>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
-  // Sync fullscreen state with browser
+  // ============================================================================
+  // Effects
+  // ============================================================================
+
+  // Keep React state in sync with browser's fullscreen state
+  // (User can exit fullscreen via ESC key, which bypasses our toggle function)
   useEffect(() => {
-    function handleFullscreenChange() {
-      setIsFullscreen(document.fullscreenElement === containerRef.current)
+    function syncFullscreenState() {
+      setIsFullscreen(document.fullscreenElement === rootContainerRef.current)
     }
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('fullscreenchange', syncFullscreenState)
+    return () => document.removeEventListener('fullscreenchange', syncFullscreenState)
   }, [])
 
-  // Measure container on mount and resize (callback ref with proper cleanup)
-  const measureContainer = useCallback((node: HTMLDivElement | null) => {
-    // Cleanup previous observer when node changes or unmounts
-    if (observerRef.current) {
-      observerRef.current.disconnect()
-      observerRef.current = null
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
+
+  /**
+   * Callback ref that sets up a ResizeObserver on the content container.
+   * We need to measure the container to calculate fit-to-width/page dimensions.
+   */
+  const contentContainerRef = useCallback((node: HTMLDivElement | null) => {
+    // Cleanup any existing observer before setting up a new one
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect()
+      resizeObserverRef.current = null
     }
 
     if (!node) return
 
-    const updateSize = () => {
-      setContainerSize({
-        width: node.clientWidth - 32, // 16px padding each side
-        height: node.clientHeight - 32,
+    const measureAndUpdateDimensions = () => {
+      setContentDimensions({
+        width: node.clientWidth - CONTENT_PADDING,
+        height: node.clientHeight - CONTENT_PADDING,
       })
     }
-    updateSize()
 
-    observerRef.current = new ResizeObserver(updateSize)
-    observerRef.current.observe(node)
+    // Measure immediately and observe for future changes
+    measureAndUpdateDimensions()
+    resizeObserverRef.current = new ResizeObserver(measureAndUpdateDimensions)
+    resizeObserverRef.current.observe(node)
   }, [])
 
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    setNumPages(numPages)
-    setError(false)
+  // ============================================================================
+  // Event Handlers
+  // ============================================================================
+
+  function handleDocumentLoad({ numPages }: { numPages: number }) {
+    setTotalPages(numPages)
+    setHasError(false)
   }
 
-  function onDocumentLoadError() {
-    setError(true)
+  function handleDocumentError() {
+    setHasError(true)
   }
+
+  // ============================================================================
+  // Zoom Controls
+  // ============================================================================
 
   function zoomIn() {
+    // Switch to manual zoom mode when user explicitly zooms
     setZoomMode('scale')
-    setScale(prev => {
-      const nextIdx = ZOOM_STEPS.findIndex(s => s > prev)
-      return nextIdx >= 0 ? ZOOM_STEPS[nextIdx] : prev
+    setManualZoom(current => {
+      const nextLevelIndex = ZOOM_LEVELS.findIndex(level => level > current)
+      return nextLevelIndex >= 0 ? ZOOM_LEVELS[nextLevelIndex] : current
     })
   }
 
   function zoomOut() {
     setZoomMode('scale')
-    setScale(prev => {
-      const prevIdx = ZOOM_STEPS.findLastIndex(s => s < prev)
-      return prevIdx >= 0 ? ZOOM_STEPS[prevIdx] : prev
+    setManualZoom(current => {
+      const prevLevelIndex = ZOOM_LEVELS.findLastIndex(level => level < current)
+      return prevLevelIndex >= 0 ? ZOOM_LEVELS[prevLevelIndex] : current
     })
   }
 
-  function fitToWidth() {
+  function setFitToWidth() {
     setZoomMode('fitWidth')
   }
 
-  function fitToPage() {
+  function setFitToPage() {
     setZoomMode('fitPage')
   }
 
+  // ============================================================================
+  // Fullscreen
+  // ============================================================================
+
   function toggleFullscreen() {
-    if (!containerRef.current) return
+    if (!rootContainerRef.current) return
+
     if (isFullscreen) {
       document.exitFullscreen()
     } else {
-      containerRef.current.requestFullscreen()
+      rootContainerRef.current.requestFullscreen()
     }
   }
 
+  // ============================================================================
+  // Pagination
+  // ============================================================================
+
+  function goToPreviousPage() {
+    setCurrentPage(page => Math.max(1, page - 1))
+  }
+
+  function goToNextPage() {
+    if (!totalPages) return
+    setCurrentPage(page => Math.min(totalPages, page + 1))
+  }
+
+  // ============================================================================
+  // Derived Values
+  // ============================================================================
+
+  /** Human-readable zoom label for the toolbar */
   function getZoomLabel(): string {
     switch (zoomMode) {
-      case 'scale': return `${Math.round(scale * 100)}%`
+      case 'scale': return `${Math.round(manualZoom * 100)}%`
       case 'fitWidth': return 'Width'
       case 'fitPage': return 'Page'
     }
   }
 
-  // Calculate Page props based on zoom mode
-  function getPageProps() {
-    if (zoomMode === 'fitWidth' && containerSize) {
-      return { width: containerSize.width }
+  /** Props passed to react-pdf's Page component to control sizing */
+  function getPageSizeProps(): { scale?: number; width?: number; height?: number } {
+    if (zoomMode === 'fitWidth' && contentDimensions) {
+      return { width: contentDimensions.width }
     }
-    if (zoomMode === 'fitPage' && containerSize) {
-      // Use height constraint, let width be proportional
-      return { height: containerSize.height }
+    if (zoomMode === 'fitPage' && contentDimensions) {
+      return { height: contentDimensions.height }
     }
-    return { scale }
+    return { scale: manualZoom }
   }
 
-  if (error) {
+  // Zoom buttons should always be enabled in fit modes (allows switching to manual zoom)
+  const canZoomIn = zoomMode === 'scale' ? manualZoom < ZOOM_LEVELS[ZOOM_LEVELS.length - 1] : true
+  const canZoomOut = zoomMode === 'scale' ? manualZoom > ZOOM_LEVELS[0] : true
+
+  const isMultiPage = totalPages !== null && totalPages > 1
+  const isFirstPage = currentPage <= 1
+  const isLastPage = totalPages !== null && currentPage >= totalPages
+
+  // ============================================================================
+  // Render
+  // ============================================================================
+
+  if (hasError) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-2">
         <p className="text-sm text-muted-foreground">PDF preview not available.</p>
@@ -137,14 +217,11 @@ export function PdfPreview({ url }: PdfPreviewProps) {
     )
   }
 
-  const canZoomIn = zoomMode === 'scale' ? scale < ZOOM_STEPS[ZOOM_STEPS.length - 1] : true
-  const canZoomOut = zoomMode === 'scale' ? scale > ZOOM_STEPS[0] : true
-
   return (
-    <div ref={containerRef} className="flex flex-col h-full bg-background">
+    <div ref={rootContainerRef} className="flex flex-col h-full bg-background">
       {/* Toolbar */}
       <div className="flex items-center justify-center gap-1 py-1.5 px-2 border-b bg-muted/30">
-        {/* Zoom controls */}
+        {/* Zoom Controls */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="size-8" onClick={zoomOut} disabled={!canZoomOut}>
@@ -167,15 +244,16 @@ export function PdfPreview({ url }: PdfPreviewProps) {
           <TooltipContent>Zoom in</TooltipContent>
         </Tooltip>
 
-        <div className="w-px h-4 bg-border mx-1" />
+        <ToolbarDivider />
 
+        {/* Fit Mode Controls */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
               variant={zoomMode === 'fitWidth' ? 'secondary' : 'ghost'}
               size="icon"
               className="size-8"
-              onClick={fitToWidth}
+              onClick={setFitToWidth}
             >
               <MoveHorizontal className="size-4" />
             </Button>
@@ -189,7 +267,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
               variant={zoomMode === 'fitPage' ? 'secondary' : 'ghost'}
               size="icon"
               className="size-8"
-              onClick={fitToPage}
+              onClick={setFitToPage}
             >
               <Maximize className="size-4" />
             </Button>
@@ -197,8 +275,9 @@ export function PdfPreview({ url }: PdfPreviewProps) {
           <TooltipContent>Fit to page</TooltipContent>
         </Tooltip>
 
-        <div className="w-px h-4 bg-border mx-1" />
+        <ToolbarDivider />
 
+        {/* Fullscreen Toggle */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="size-8" onClick={toggleFullscreen}>
@@ -208,28 +287,28 @@ export function PdfPreview({ url }: PdfPreviewProps) {
           <TooltipContent>{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
         </Tooltip>
 
-        {/* Page navigation (if multi-page) */}
-        {numPages && numPages > 1 && (
+        {/* Page Navigation (only shown for multi-page PDFs) */}
+        {isMultiPage && (
           <>
-            <div className="w-px h-4 bg-border mx-1" />
+            <ToolbarDivider />
             <Button
               variant="ghost"
               size="icon"
               className="size-8"
-              onClick={() => setPageNumber(p => Math.max(1, p - 1))}
-              disabled={pageNumber <= 1}
+              onClick={goToPreviousPage}
+              disabled={isFirstPage}
             >
               <ChevronLeft className="size-4" />
             </Button>
             <span className="text-xs text-muted-foreground">
-              {pageNumber} / {numPages}
+              {currentPage} / {totalPages}
             </span>
             <Button
               variant="ghost"
               size="icon"
               className="size-8"
-              onClick={() => setPageNumber(p => Math.min(numPages, p + 1))}
-              disabled={pageNumber >= numPages}
+              onClick={goToNextPage}
+              disabled={isLastPage}
             >
               <ChevronRight className="size-4" />
             </Button>
@@ -238,11 +317,11 @@ export function PdfPreview({ url }: PdfPreviewProps) {
       </div>
 
       {/* PDF Content */}
-      <div ref={measureContainer} className="flex-1 overflow-auto p-4">
+      <div ref={contentContainerRef} className="flex-1 overflow-auto p-4">
         <Document
           file={url}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
+          onLoadSuccess={handleDocumentLoad}
+          onLoadError={handleDocumentError}
           loading={
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-muted-foreground">Loading PDF...</p>
@@ -251,12 +330,21 @@ export function PdfPreview({ url }: PdfPreviewProps) {
           className="flex justify-center"
         >
           <Page
-            pageNumber={pageNumber}
+            pageNumber={currentPage}
             className="shadow-lg"
-            {...getPageProps()}
+            {...getPageSizeProps()}
           />
         </Document>
       </div>
     </div>
   )
+}
+
+// ============================================================================
+// Helper Components
+// ============================================================================
+
+/** Visual separator between toolbar button groups */
+function ToolbarDivider() {
+  return <div className="w-px h-4 bg-border mx-1" />
 }
