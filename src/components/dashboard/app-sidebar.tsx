@@ -21,6 +21,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
@@ -30,12 +31,25 @@ import { Button } from '@/components/ui/button'
 import { IssueSearch } from './issue-search'
 import { useSession } from '@/contexts/session-context'
 import { getFullName } from '@/types'
-import { getInitials } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 
-const mainNavItems = [
+export type SidebarCounts = {
+  openIssues?: number
+  overdueIssues?: number
+}
+
+type NavItem = {
+  title: string
+  icon: typeof LayoutDashboard
+  href: string
+  countKey?: keyof SidebarCounts
+  showOverdueBadge?: boolean
+}
+
+const mainNavItems: NavItem[] = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { title: 'Projects', icon: FolderKanban, href: '/projects' },
-  { title: 'Issues', icon: CircleDot, href: '/issues' },
+  { title: 'Issues', icon: CircleDot, href: '/issues', countKey: 'openIssues', showOverdueBadge: true },
   { title: 'Time Tracking', icon: Clock, href: '/time' },
 ]
 
@@ -44,7 +58,11 @@ function isActiveRoute(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + '/')
 }
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  counts?: SidebarCounts
+}
+
+export function AppSidebar({ counts }: AppSidebarProps) {
   const pathname = usePathname()
   const { session, isAdmin } = useSession()
 
@@ -94,16 +112,29 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActiveRoute(pathname, item.href)} tooltip={item.title}>
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {mainNavItems.map((item) => {
+                const count = item.countKey ? counts?.[item.countKey] : undefined
+                const hasOverdue = item.showOverdueBadge && counts?.overdueIssues && counts.overdueIssues > 0
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={isActiveRoute(pathname, item.href)} tooltip={item.title}>
+                      <Link href={item.href}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                    {count !== undefined && count > 0 && (
+                      <SidebarMenuBadge className={cn(
+                        'text-[10px]',
+                        hasOverdue && 'bg-red-500 text-white'
+                      )}>
+                        {count}
+                      </SidebarMenuBadge>
+                    )}
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

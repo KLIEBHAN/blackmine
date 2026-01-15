@@ -2,6 +2,24 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: Sidebar Navigation Badge für offene Issues**
+  - Problem: Sidebar Navigation zeigte keine visuelle Indikation für offene/überfällige Issues
+  - User mussten zur Issues-Seite navigieren um den aktuellen Stand zu sehen
+  - Lösung:
+    - `AppSidebar` Komponente erweitert um optionale `counts` Props (`SidebarCounts` Type)
+    - Layout lädt Issues parallel zur Session und berechnet Counts
+    - "Issues" Link zeigt jetzt Badge mit Anzahl offener Issues (new + in_progress)
+    - Bei überfälligen Issues wird Badge rot eingefärbt (`bg-red-500 text-white`)
+    - Nutzt bestehende `SidebarMenuBadge` Komponente aus shadcn/ui
+  - Dateien geändert:
+    - `src/components/dashboard/app-sidebar.tsx`: SidebarCounts Type, Badge-Rendering
+    - `src/app/(app)/layout.tsx`: Issues laden, Counts berechnen und übergeben
+  - **223 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **Security/UX: Attachment Delete Ownership Check**
   - Problem 1: `deleteAttachment` Server Action erlaubte JEDEM eingeloggten User das Löschen jedes Attachments
   - Problem 2: Delete-Button war für alle User sichtbar, nicht nur für Autor/Admin
