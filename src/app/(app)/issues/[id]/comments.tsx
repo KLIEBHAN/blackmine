@@ -31,6 +31,7 @@ const MarkdownEditor = dynamic(
 export type SerializedComment = {
   id: string
   content: string
+  contentFormat: 'markdown' | 'textile'
   createdAt: string
   updatedAt: string
   author: {
@@ -83,6 +84,7 @@ export function Comments({ issueId, comments: initialComments, currentUserId, fo
       const serializedComment: SerializedComment = {
         id: result.comment.id,
         content: result.comment.content,
+        contentFormat: result.comment.contentFormat as 'markdown' | 'textile',
         createdAt: result.comment.createdAt.toISOString(),
         updatedAt: result.comment.updatedAt.toISOString(),
         author: {
@@ -168,7 +170,9 @@ export function Comments({ issueId, comments: initialComments, currentUserId, fo
                         </Button>
                       )}
                     </div>
-                    <Markdown fontSize={fontSize}>{comment.content}</Markdown>
+                    <Markdown fontSize={fontSize} format={comment.contentFormat}>
+                      {comment.content}
+                    </Markdown>
                   </div>
                 </div>
               </div>

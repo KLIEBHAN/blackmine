@@ -130,6 +130,7 @@ export async function createIssue(data: IssueFormData) {
         tracker: data.tracker,
         subject: data.subject.trim(),
         description: data.description?.trim() || '',
+        descriptionFormat: 'markdown',
         priority: data.priority,
         authorId: session.id,
         assigneeId: data.assigneeId || null,
@@ -161,6 +162,7 @@ export async function updateIssue(id: string, data: Partial<IssueFormData> & { s
   }
   if (data.description !== undefined) {
     updateData.description = data.description.trim()
+    updateData.descriptionFormat = 'markdown'
   }
   if (data.tracker !== undefined) {
     updateData.tracker = data.tracker

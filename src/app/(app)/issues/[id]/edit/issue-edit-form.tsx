@@ -6,6 +6,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { textileToMarkdown } from '@/lib/textile'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -67,6 +68,7 @@ type SerializedIssue = {
   id: string
   subject: string
   description: string
+  descriptionFormat: 'markdown' | 'textile'
   tracker: string
   status: string
   priority: string
@@ -89,11 +91,14 @@ export function IssueEditForm({ issue, users, projects }: Props) {
 
   const activeProjects = projects.filter((p) => p.status === 'active')
 
+  const initialDescription =
+    issue.descriptionFormat === 'textile' ? textileToMarkdown(issue.description) : issue.description
+
   const [formData, setFormData] = useState<FormData>({
     projectId: issue.projectId,
     tracker: issue.tracker as IssueTracker,
     subject: issue.subject,
-    description: issue.description,
+    description: initialDescription,
     priority: issue.priority as IssuePriority,
     assigneeId: issue.assigneeId,
     dueDate: issue.dueDate,

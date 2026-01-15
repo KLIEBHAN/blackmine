@@ -4,10 +4,15 @@ import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/lib/session'
 import { handleActionError } from './utils'
+import type { Prisma } from '@/generated/prisma/client'
 
 export type CommentFormData = {
   content: string
 }
+
+export type CommentWithAuthor = Prisma.CommentGetPayload<{
+  include: { author: true }
+}>
 
 export type CommentFormErrors = {
   content?: string
@@ -62,16 +67,18 @@ export async function createComment(
   }
 
   try {
-    const comment = await prisma.comment.create({
+    const comment = (await prisma.comment.create({
       data: {
         issueId,
         authorId: session.id,
         content: data.content.trim(),
+        contentFormat: 'markdown',
       },
       include: {
         author: true,
       },
-    })
+    })) as CommentWithAuthor
+
 
     revalidatePath(`/issues/${issueId}`)
 
@@ -102,9 +109,11 @@ export async function updateComment(id: string, data: CommentFormData) {
   try {
     const comment = await prisma.comment.update({
       where: { id },
-      data: {
-        content: data.content.trim(),
-      },
+        data: {
+          content: data.content.trim(),
+          contentFormat: 'markdown',
+        },
+
       include: {
         issue: true,
       },

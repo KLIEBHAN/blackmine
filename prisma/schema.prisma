@@ -43,6 +43,7 @@ model Issue {
   tracker        String    // bug, feature, support, task
   subject        String
   description    String    @default("")
+  descriptionFormat String @default("markdown")
   status         String    @default("new") // new, in_progress, resolved, closed, rejected
   priority       String    @default("normal") // low, normal, high, urgent, immediate
   dueDate        DateTime?
@@ -87,6 +88,7 @@ model TimeEntry {
 model Comment {
   id        String   @id @default(cuid())
   content   String
+  contentFormat String @default("markdown")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -29,6 +29,7 @@ export default async function IssueDetailPage({ params }: IssueDetailPageProps) 
     id: issue.id,
     subject: issue.subject,
     description: issue.description,
+    descriptionFormat: issue.descriptionFormat as 'markdown' | 'textile',
     tracker: issue.tracker,
     status: issue.status,
     priority: issue.priority,
@@ -58,6 +59,7 @@ export default async function IssueDetailPage({ params }: IssueDetailPageProps) 
   const serializedComments: SerializedComment[] = comments.map((c) => ({
     id: c.id,
     content: c.content,
+    contentFormat: c.contentFormat as 'markdown' | 'textile',
     createdAt: c.createdAt.toISOString(),
     updatedAt: c.updatedAt.toISOString(),
     author: {

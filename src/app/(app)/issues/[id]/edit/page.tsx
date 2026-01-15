@@ -29,6 +29,7 @@ export default async function EditIssuePage({ params }: Props) {
     id: issue.id,
     subject: issue.subject,
     description: issue.description,
+    descriptionFormat: issue.descriptionFormat as 'markdown' | 'textile',
     tracker: issue.tracker,
     status: issue.status,
     priority: issue.priority,

@@ -86,6 +86,7 @@ export type SerializedIssue = {
   id: string
   subject: string
   description: string
+  descriptionFormat: 'markdown' | 'textile'
   tracker: string
   status: string
   priority: string
@@ -310,7 +311,9 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
               </CardHeader>
               <CardContent>
                 {issue.description ? (
-                  <Markdown fontSize={fontSize}>{issue.description}</Markdown>
+                  <Markdown fontSize={fontSize} format={issue.descriptionFormat}>
+                    {issue.description}
+                  </Markdown>
                 ) : (
                   <p className="text-sm text-muted-foreground italic">
                     No description provided.
