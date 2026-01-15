@@ -7,10 +7,8 @@
   - Problem 2: Leere Listen zeigten "No X found" + "Clear filters" Button, aber User verstanden nicht, warum keine Ergebnisse angezeigt wurden
   - Lösung:
     - `aria-label="Delete user"` zum Delete-Button in `users-list.tsx` hinzugefügt
-    - Erklärender Hinweis "Try adjusting your X active filter(s)" in 3 Dateien:
-      - `src/app/(app)/issues/issues-list.tsx` - zeigt Anzahl aktiver Filter
-      - `src/app/(app)/projects/projects-list.tsx` - erwähnt auch "search term" wenn relevant
-      - `src/app/(app)/admin/users/users-list.tsx` - erwähnt auch "search term" wenn relevant
+    - Erklärender Hinweis "Try adjusting your filters or search term" in 3 Dateien (konsistentes Pattern)
+  - Bugfix: Issues-Liste zeigte Hinweis nicht wenn nur Suche aktiv war (jetzt behoben)
   - **223 Tests grün, Lint clean, Build erfolgreich**
 
   **Nächste Schritte:**
