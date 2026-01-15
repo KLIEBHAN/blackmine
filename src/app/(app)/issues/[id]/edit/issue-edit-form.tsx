@@ -237,6 +237,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                   id="description"
                   placeholder="Detailed description of the issue..."
                   rows={5}
+                  className="max-h-80 overflow-y-auto"
                   value={formData.description}
                   onChange={(e) => updateField('description', e.target.value)}
                 />
