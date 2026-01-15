@@ -99,30 +99,19 @@ export function UsersList({ initialUsers }: UsersListProps) {
   const [userToDelete, setUserToDelete] = useState<SerializedUser | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // Build filters
   const filters: UserFilters = useMemo(() => ({
-    role: (selectedRole as UserRole) || undefined,
+    role: selectedRole as UserRole || undefined,
     search: search || undefined,
   }), [search, selectedRole])
 
-  // Convert serialized users to format expected by filterUsers/sortUsers
-  const usersForFiltering = useMemo(() => 
-    users.map(u => ({
-      ...u,
-      createdAt: new Date(u.createdAt),
-    })), 
-    [users]
-  )
+  const usersForFiltering = useMemo(() => users.map(u => ({
+    ...u,
+    createdAt: new Date(u.createdAt),
+  })), [users])
 
-  // Apply filters and sorting
   const filteredUsers = useMemo(() => {
-    const filtered = filterUsers(usersForFiltering, filters)
-    const sorted = sortUsers(filtered, sort.field, sort.direction)
-    // Convert back to serialized format
-    return sorted.map(u => ({
-      ...u,
-      createdAt: u.createdAt.toISOString(),
-    }))
+    const sorted = sortUsers(filterUsers(usersForFiltering, filters), sort.field, sort.direction)
+    return sorted.map(u => ({ ...u, createdAt: u.createdAt.toISOString() }))
   }, [usersForFiltering, filters, sort])
 
   const hasFilters = selectedRole || search
