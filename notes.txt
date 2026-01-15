@@ -1,7 +1,20 @@
 # Redmine Clone - Status Notes
 
 
-## Letzte Iteration (2026-01-14)
+## Letzte Iteration (2026-01-15)
+- **UX: Header-Buttons mit Tooltips versehen**
+  - Problem: Theme-Toggle und Logout-Button im Header hatten nur Icons ohne visuelle Erklärung
+  - User mussten raten, was die Buttons tun - schlechte UX für Icon-only Buttons
+  - Lösung: Radix UI Tooltips zu beiden Buttons hinzugefügt
+    - Theme-Toggle: Zeigt "Light mode" oder "Dark mode" je nach aktuellem Zustand
+    - Logout-Button: Zeigt "Sign out"
+  - Konsistent mit issue-detail.tsx, wo Tooltips bereits für Font-Size-Buttons verwendet werden
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-14)
 - **UX: Dashboard StatCards klickbar gemacht**
   - Problem: StatCards auf dem Dashboard zeigten Statistiken (z.B. "5 Open Issues"), waren aber nicht klickbar
   - User erwarten, dass Klick auf "Open Issues" zu den gefilterten Issues führt

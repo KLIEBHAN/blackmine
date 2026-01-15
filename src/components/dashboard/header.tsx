@@ -3,6 +3,7 @@
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Moon, Sun, LogOut } from 'lucide-react'
 import { useSyncExternalStore } from 'react'
 import { Breadcrumbs } from './breadcrumbs'
@@ -51,26 +52,36 @@ export function DashboardHeader() {
 
       {/* Actions */}
       <div className="flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-        >
-          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{isDark ? 'Light mode' : 'Dark mode'}</TooltipContent>
+        </Tooltip>
         
         <form action={logout}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8"
-            type="submit"
-            aria-label="Sign out"
-          >
-            <LogOut className="size-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                type="submit"
+                aria-label="Sign out"
+              >
+                <LogOut className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Sign out</TooltipContent>
+          </Tooltip>
         </form>
       </div>
     </header>
