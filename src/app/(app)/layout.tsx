@@ -24,14 +24,9 @@ export default async function AppLayout({
   const issues = await getIssues()
 
   // Calculate sidebar counts
-  const openIssues = issues.filter(
-    (i) => i.status === 'new' || i.status === 'in_progress'
-  ).length
-  const overdueIssues = issues.filter(isOverdue).length
-
   const sidebarCounts: SidebarCounts = {
-    openIssues,
-    overdueIssues,
+    openIssues: issues.filter((i) => i.status === 'new' || i.status === 'in_progress').length,
+    overdueIssues: issues.filter(isOverdue).length,
   }
 
   const clientSession: ClientSession = {

@@ -114,7 +114,7 @@ export function AppSidebar({ counts }: AppSidebarProps) {
             <SidebarMenu>
               {mainNavItems.map((item) => {
                 const count = item.countKey ? counts?.[item.countKey] : undefined
-                const hasOverdue = item.showOverdueBadge && counts?.overdueIssues && counts.overdueIssues > 0
+                const hasOverdue = item.showOverdueBadge && (counts?.overdueIssues ?? 0) > 0
 
                 return (
                   <SidebarMenuItem key={item.title}>
@@ -125,10 +125,7 @@ export function AppSidebar({ counts }: AppSidebarProps) {
                       </Link>
                     </SidebarMenuButton>
                     {count !== undefined && count > 0 && (
-                      <SidebarMenuBadge className={cn(
-                        'text-[10px]',
-                        hasOverdue && 'bg-red-500 text-white'
-                      )}>
+                      <SidebarMenuBadge className={cn('text-[10px]', hasOverdue && 'bg-red-500 text-white')}>
                         {count}
                       </SidebarMenuBadge>
                     )}
