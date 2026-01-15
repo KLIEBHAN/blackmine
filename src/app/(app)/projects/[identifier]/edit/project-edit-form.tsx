@@ -276,11 +276,11 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           </Card>
 
           {/* Actions */}
-          <div className="mt-6 flex items-center justify-end gap-3 opacity-0 animate-card-in delay-2">
-            <Button type="button" variant="outline" asChild>
+          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end opacity-0 animate-card-in delay-2">
+            <Button type="button" variant="outline" asChild className="w-full sm:w-auto">
               <Link href={`/projects/${project.identifier}`}>Cancel</Link>
             </Button>
-            <Button type="submit" disabled={isPending || identifierExists} className="gap-2">
+            <Button type="submit" disabled={isPending || identifierExists} className="gap-2 w-full sm:w-auto">
               {isPending ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />

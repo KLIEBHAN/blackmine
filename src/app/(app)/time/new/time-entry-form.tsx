@@ -252,11 +252,11 @@ export function TimeEntryForm({ issues, projects, preselectedIssueId }: Props) {
           </Card>
 
           {/* Actions */}
-          <div className="mt-6 flex items-center justify-end gap-3 opacity-0 animate-card-in delay-2">
-            <Button type="button" variant="outline" asChild>
+          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end opacity-0 animate-card-in delay-2">
+            <Button type="button" variant="outline" asChild className="w-full sm:w-auto">
               <Link href="/time">Cancel</Link>
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-2">
+            <Button type="submit" disabled={isSubmitting} className="gap-2 w-full sm:w-auto">
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
