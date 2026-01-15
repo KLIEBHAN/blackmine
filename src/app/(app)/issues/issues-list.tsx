@@ -401,10 +401,10 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Search className="size-8 opacity-50 text-muted-foreground mb-2" />
               <p className="text-muted-foreground">No issues found</p>
-              {activeFilterCount > 0 && (
+              {(activeFilterCount > 0 || search) && (
                 <>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Try adjusting your {activeFilterCount} active filter{activeFilterCount > 1 ? 's' : ''}
+                    Try adjusting your filters{search ? ' or search term' : ''}
                   </p>
                   <Button variant="link" size="sm" onClick={clearFilters}>
                     Clear filters
