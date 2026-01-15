@@ -13,9 +13,6 @@ export function Breadcrumbs() {
     return <span className="text-sm font-semibold">Dashboard</span>
   }
 
-  // On mobile, only show Home + last segment to save space
-  const showOnMobile = (index: number) => index === segments.length - 1
-
   return (
     <nav className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium">
       <Link
@@ -35,12 +32,13 @@ export function Breadcrumbs() {
           ? `#${formatShortId(segment)}`
           : segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ')
 
+        // On mobile, only show last segment (Home + last) to save space
         return (
           <div
             key={href}
             className={cn(
               'flex items-center gap-1 sm:gap-1.5',
-              !showOnMobile(index) && 'hidden sm:flex'
+              !isLast && 'hidden sm:flex'
             )}
           >
             <ChevronRight className="size-3 sm:size-3.5 text-muted-foreground/50" />
