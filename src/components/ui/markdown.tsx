@@ -1,6 +1,8 @@
 'use client'
 
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown, { type Components } from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import { cn } from '@/lib/utils'
@@ -71,12 +73,42 @@ interface MarkdownProps {
   fontSize?: FontSize
 }
 
+const components: Components = {
+  code({ className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className || '')
+    const codeString = String(children).replace(/\n$/, '')
+    
+    // Block code (with language or multi-line)
+    if (match || codeString.includes('\n')) {
+      return (
+        <SyntaxHighlighter
+          style={oneDark}
+          language={match?.[1] || 'text'}
+          PreTag="div"
+          className="rounded-md text-sm"
+        >
+          {codeString}
+        </SyntaxHighlighter>
+      )
+    }
+    
+    // Inline code
+    return (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    )
+  },
+}
+
 export function Markdown({ children, className, fontSize = 'lg' }: MarkdownProps) {
   const markdown = textileToMarkdown(children)
 
   return (
     <div className={cn('prose max-w-none dark:prose-invert', FONT_SIZE_CONFIG[fontSize].class, className)}>
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{markdown}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
+        {markdown}
+      </ReactMarkdown>
     </div>
   )
 }
