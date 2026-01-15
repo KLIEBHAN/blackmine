@@ -54,6 +54,18 @@ export default async function IssueDetailPage({ params }: IssueDetailPageProps) 
           lastName: issue.assignee.lastName,
         }
       : null,
+    attachments: issue.attachments.map((attachment) => ({
+      id: attachment.id,
+      filename: attachment.filename,
+      contentType: attachment.contentType,
+      size: attachment.size,
+      createdAt: attachment.createdAt.toISOString(),
+      author: {
+        id: attachment.author.id,
+        firstName: attachment.author.firstName,
+        lastName: attachment.author.lastName,
+      },
+    })),
   }
 
   const serializedComments: SerializedComment[] = comments.map((c) => ({

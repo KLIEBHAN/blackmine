@@ -54,7 +54,7 @@ COPY --from=builder /app/node_modules/tslib ./node_modules/tslib
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./
 RUN chmod +x docker-entrypoint.sh
 
-RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+RUN mkdir -p /app/data/uploads && chown -R nextjs:nodejs /app/data
 
 USER nextjs
 

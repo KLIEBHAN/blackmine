@@ -49,6 +49,10 @@ export async function getIssueById(id: string) {
         include: { user: true },
         orderBy: { spentOn: 'desc' },
       },
+      attachments: {
+        include: { author: true },
+        orderBy: { createdAt: 'desc' },
+      },
     },
   })
 }

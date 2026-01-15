@@ -23,6 +23,7 @@ model User {
   assignedIssues  Issue[]     @relation("IssueAssignee")
   timeEntries     TimeEntry[]
   comments        Comment[]
+  attachments     Attachment[]
 }
 
 model Project {
@@ -60,10 +61,28 @@ model Issue {
   assigneeId String?
   timeEntries TimeEntry[]
   comments    Comment[]
+  attachments Attachment[]
 
   @@index([projectId])
   @@index([status])
   @@index([assigneeId])
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  filename    String
+  contentType String
+  size        Int
+  storagePath String
+  createdAt   DateTime @default(now())
+
+  issue   Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId String
+  author  User   @relation(fields: [authorId], references: [id])
+  authorId String
+
+  @@index([issueId])
+  @@index([authorId])
 }
 
 model TimeEntry {

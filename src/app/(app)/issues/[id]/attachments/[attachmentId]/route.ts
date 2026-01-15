@@ -1,0 +1,42 @@
+import { createReadStream } from 'node:fs'
+import { stat } from 'node:fs/promises'
+import { prisma } from '@/lib/db'
+import { requireAuth } from '@/lib/session'
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string; attachmentId: string }> }
+) {
+  try {
+    await requireAuth()
+  } catch {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const { id, attachmentId } = await params
+
+  const attachment = await prisma.attachment.findFirst({
+    where: { id: attachmentId, issueId: id },
+  })
+
+  if (!attachment) {
+    return new Response('Not found', { status: 404 })
+  }
+
+  try {
+    await stat(attachment.storagePath)
+  } catch {
+    return new Response('File missing', { status: 410 })
+  }
+
+  const stream = createReadStream(attachment.storagePath)
+  const encoded = encodeURIComponent(attachment.filename)
+
+  return new Response(stream as unknown as BodyInit, {
+    headers: {
+      'Content-Type': attachment.contentType,
+      'Content-Length': String(attachment.size),
+      'Content-Disposition': `attachment; filename="${encoded}"; filename*=UTF-8''${encoded}`,
+    },
+  })
+}

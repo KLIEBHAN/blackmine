@@ -24,7 +24,7 @@ import {
   Heading3,
   Minus,
   CheckSquare,
-  Image,
+  Image as ImageIcon,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -342,7 +342,7 @@ const toolbarActions: ToolbarAction[] = [
     fullOnly: true,
   },
   {
-    icon: <Image className="size-4" />,
+    icon: <ImageIcon className="size-4" />,
     label: 'Image',
     action: imageAction,
     fullOnly: true,
