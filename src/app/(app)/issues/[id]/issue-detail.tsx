@@ -22,7 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { deleteIssue } from '@/app/actions/issues'
+import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
@@ -121,6 +121,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const router = useRouter()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isConverting, setIsConverting] = useState(false)
   const [fontSize, setFontSize] = useFontSizeStorage()
   const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
@@ -144,6 +145,22 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
       toast.error('error' in result ? result.error : 'Failed to delete issue')
       setIsDeleting(false)
     }
+  }
+
+  const handleConvertDescription = async () => {
+    setIsConverting(true)
+    const result = await convertIssueDescriptionToMarkdown(issue.id)
+    if (result.success) {
+      if (result.updated) {
+        toast.success('Converted to Markdown', {
+          description: 'The description is now stored as Markdown.',
+        })
+      }
+      router.refresh()
+    } else {
+      toast.error('error' in result ? result.error : 'Failed to convert description')
+    }
+    setIsConverting(false)
   }
 
   const tracker = issue.tracker as keyof typeof trackerLabels
@@ -272,41 +289,60 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
             {/* Description Card */}
             <Card className="opacity-0 animate-card-in delay-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-lg">Description</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7"
-                        onClick={() => changeFontSize(-1)}
-                        disabled={fontSize === 'sm'}
-                        aria-label="Decrease font size"
-                      >
-                        <Minus className="size-3.5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Decrease font size</TooltipContent>
-                  </Tooltip>
-                  <span className="text-xs text-muted-foreground w-12 text-center">
-                    {FONT_SIZE_CONFIG[fontSize].label}
-                  </span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7"
-                        onClick={() => changeFontSize(1)}
-                        disabled={fontSize === 'xl'}
-                        aria-label="Increase font size"
-                      >
-                        <Plus className="size-3.5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Increase font size</TooltipContent>
-                  </Tooltip>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-lg">Description</CardTitle>
+                  {issue.descriptionFormat === 'textile' && (
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      Legacy Textile
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {issue.descriptionFormat === 'textile' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleConvertDescription}
+                      disabled={isConverting}
+                    >
+                      {isConverting ? 'Converting...' : 'Convert to Markdown'}
+                    </Button>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7"
+                          onClick={() => changeFontSize(-1)}
+                          disabled={fontSize === 'sm'}
+                          aria-label="Decrease font size"
+                        >
+                          <Minus className="size-3.5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Decrease font size</TooltipContent>
+                    </Tooltip>
+                    <span className="text-xs text-muted-foreground w-12 text-center">
+                      {FONT_SIZE_CONFIG[fontSize].label}
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7"
+                          onClick={() => changeFontSize(1)}
+                          disabled={fontSize === 'xl'}
+                          aria-label="Increase font size"
+                        >
+                          <Plus className="size-3.5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Increase font size</TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>

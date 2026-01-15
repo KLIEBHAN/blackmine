@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/lib/session'
+import { textileToMarkdown } from '@/lib/textile'
 import { handleActionError } from './utils'
 
 export type IssueFormData = {
@@ -197,6 +198,42 @@ export async function updateIssue(id: string, data: Partial<IssueFormData> & { s
     return { success: true, issue }
   } catch (error) {
     return handleActionError(error, 'update issue', true)
+  }
+}
+
+export async function convertIssueDescriptionToMarkdown(id: string) {
+  await requireAuth()
+
+  try {
+    const issue = await prisma.issue.findUnique({
+      where: { id },
+      select: { description: true, descriptionFormat: true },
+    })
+
+    if (!issue) {
+      return { success: false, error: 'Issue not found' }
+    }
+
+    if (issue.descriptionFormat === 'markdown') {
+      return { success: true, updated: false }
+    }
+
+    const updated = await prisma.issue.update({
+      where: { id },
+      data: {
+        description: textileToMarkdown(issue.description),
+        descriptionFormat: 'markdown',
+      },
+      include: { project: true },
+    })
+
+    revalidatePath('/issues')
+    revalidatePath(`/issues/${id}`)
+    revalidatePath(`/projects/${updated.project.identifier}`)
+
+    return { success: true, updated: true }
+  } catch (error) {
+    return handleActionError(error, 'convert issue description', true)
   }
 }
 
