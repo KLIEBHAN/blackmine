@@ -18,6 +18,7 @@ import {
   List,
   ListOrdered,
   FileCode,
+  Quote,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -136,6 +137,32 @@ function insertCodeBlock(
   return { text: newText, cursorPos }
 }
 
+function toggleBlockquote(
+  text: string,
+  start: number,
+  end: number
+): { text: string; cursorPos: number } {
+  const before = text.slice(0, start)
+  const selected = text.slice(start, end)
+  const after = text.slice(end)
+
+  const needsNewline = before.length > 0 && !before.endsWith('\n')
+  const selection = selected || ''
+  const lines = selection ? selection.split('\n') : ['']
+
+  const allQuoted = lines.every((line) => line.trim() === '' || line.startsWith('> '))
+  const updatedLines = allQuoted
+    ? lines.map((line) => (line.startsWith('> ') ? line.slice(2) : line))
+    : lines.map((line) => (line.trim() === '' ? line : `> ${line}`))
+
+  const updatedSelection = updatedLines.join('\n')
+  const prefix = needsNewline ? '\n' : ''
+  const newText = `${before}${prefix}${updatedSelection}${after}`
+
+  const cursorPos = before.length + prefix.length + updatedSelection.length
+  return { text: newText, cursorPos }
+}
+
 function applyActionToView(view: EditorView, action: TextAction): boolean {
   const text = view.state.doc.toString()
   const { from, to } = view.state.selection.main
@@ -152,6 +179,7 @@ const boldAction: TextAction = (text, start, end) => wrapSelection(text, start, 
 const italicAction: TextAction = (text, start, end) => wrapSelection(text, start, end, '*')
 const codeAction: TextAction = (text, start, end) => wrapSelection(text, start, end, '`')
 const linkAction: TextAction = insertLink
+const blockquoteAction: TextAction = toggleBlockquote
 
 const markdownKeymap = keymap.of([
   { key: 'Mod-b', run: (view) => applyActionToView(view, boldAction) },
@@ -207,6 +235,12 @@ const toolbarActions: ToolbarAction[] = [
     icon: <ListOrdered className="size-4" />,
     label: 'Numbered List',
     action: (text, start, end) => insertList(text, start, end, true),
+    fullOnly: true,
+  },
+  {
+    icon: <Quote className="size-4" />,
+    label: 'Block Quote',
+    action: blockquoteAction,
     fullOnly: true,
   },
 ]

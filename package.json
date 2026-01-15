@@ -13,6 +13,7 @@
     "test:e2e:ui": "playwright test --ui",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:backfill:format": "node --import tsx prisma/backfill-format.ts",
+    "db:health": "./scripts/db-health.sh",
     "db:reset": "npx prisma migrate reset --force && npm run db:seed"
   },
   "dependencies": {
