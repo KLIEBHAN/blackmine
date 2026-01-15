@@ -438,7 +438,7 @@ export function MarkdownEditor({
       )}
     >
       <TooltipProvider delayDuration={300}>
-        <div className="flex items-center gap-0.5 border-b border-input px-2 py-1.5">
+        <div className="flex flex-wrap items-center gap-0.5 border-b border-input px-1.5 py-1">
           {visibleActions.map((action) => (
             <Tooltip key={action.label}>
               <TooltipTrigger asChild>
@@ -446,7 +446,7 @@ export function MarkdownEditor({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="size-7 text-muted-foreground hover:text-foreground"
+                  className="size-7 shrink-0 text-muted-foreground hover:text-foreground"
                   onClick={() => handleToolbarAction(action.action)}
                   disabled={disabled}
                   aria-label={action.label}
