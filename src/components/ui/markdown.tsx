@@ -74,12 +74,17 @@ interface MarkdownProps {
 }
 
 const components: Components = {
+  pre({ children }) {
+    return <div className="not-prose">{children}</div>
+  },
   code({ className, children, ...props }) {
     const match = /language-(\w+)/.exec(className || '')
     const codeString = String(children).replace(/\n$/, '')
     
-    // Block code (with language or multi-line)
-    if (match || codeString.includes('\n')) {
+    // Fenced code blocks have className set (even if empty) or are multi-line
+    const isFencedBlock = className !== undefined || codeString.includes('\n')
+    
+    if (isFencedBlock) {
       return (
         <SyntaxHighlighter
           style={oneDark}
@@ -92,7 +97,6 @@ const components: Components = {
       )
     }
     
-    // Inline code
     return (
       <code className={className} {...props}>
         {children}
