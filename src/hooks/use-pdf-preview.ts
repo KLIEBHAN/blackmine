@@ -8,11 +8,8 @@ export function useAttachmentPreview() {
   const [previewAttachmentId, setPreviewAttachmentId] = useState<string | null>(null)
 
   const togglePreview = useCallback((attachmentId: string) => {
-    setPreviewAttachmentId(prev => prev === attachmentId ? null : attachmentId)
+    setPreviewAttachmentId((prev) => (prev === attachmentId ? null : attachmentId))
   }, [])
 
   return { previewAttachmentId, togglePreview }
 }
-
-/** @deprecated Use useAttachmentPreview instead */
-export const usePdfPreview = useAttachmentPreview
