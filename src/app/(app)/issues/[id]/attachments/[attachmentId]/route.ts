@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 import { requireAuth } from '@/lib/session'
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string; attachmentId: string }> }
 ) {
   try {
@@ -14,6 +14,8 @@ export async function GET(
   }
 
   const { id, attachmentId } = await params
+  const url = new URL(request.url)
+  const preview = url.searchParams.get('preview') === '1'
 
   const attachment = await prisma.attachment.findFirst({
     where: { id: attachmentId, issueId: id },
@@ -31,12 +33,17 @@ export async function GET(
 
   const stream = createReadStream(attachment.storagePath)
   const encoded = encodeURIComponent(attachment.filename)
+  const isPdf = attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
+  const disposition = preview && isPdf
+    ? `inline; filename="${encoded}"; filename*=UTF-8''${encoded}`
+    : `attachment; filename="${encoded}"; filename*=UTF-8''${encoded}`
 
   return new Response(stream as unknown as BodyInit, {
     headers: {
       'Content-Type': attachment.contentType,
       'Content-Length': String(attachment.size),
-      'Content-Disposition': `attachment; filename="${encoded}"; filename*=UTF-8''${encoded}`,
+      'Content-Disposition': disposition,
+      'X-Content-Type-Options': 'nosniff',
     },
   })
 }

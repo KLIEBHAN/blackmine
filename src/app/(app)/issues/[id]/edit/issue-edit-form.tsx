@@ -24,7 +24,17 @@ import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
-import { ArrowLeft, Save, Loader2, Paperclip, Upload, Download, Trash2 } from 'lucide-react'
+import {
+  ArrowLeft,
+  Save,
+  Loader2,
+  Paperclip,
+  Upload,
+  Download,
+  Trash2,
+  Eye,
+  EyeOff,
+} from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
@@ -123,7 +133,9 @@ export function IssueEditForm({ issue, users, projects }: Props) {
   const [isDragging, setIsDragging] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
+  const [previewAttachmentId, setPreviewAttachmentId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+
 
   const updateField = useFormField(setFormData, errors, setErrors)
 
@@ -205,8 +217,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     setIsUploading(false)
   }
 
-  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleUploadClick = async () => {
     const files = fileInputRef.current?.files
     if (files) {
       await uploadFiles(files)
@@ -453,53 +464,76 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                     {attachments.map((attachment, index) => (
                       <div key={attachment.id}>
                         {index > 0 && <Separator className="my-3" />}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <Button
-                              variant="link"
-                              asChild
-                              className="h-auto p-0 text-sm font-medium"
-                            >
-                              <Link
-                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                aria-label={`Download ${attachment.filename}`}
-                              >
-                                {attachment.filename}
-                              </Link>
-                            </Button>
-                            <div className="text-xs text-muted-foreground">
-                              {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
-                              {attachment.author.firstName} {attachment.author.lastName} ·{' '}
-                              {formatDate(attachment.createdAt, 'datetime')}
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <Button
+                                  variant="link"
+                                  asChild
+                                  className="h-auto p-0 text-sm font-medium"
+                                >
+                                  <Link
+                                    href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                    aria-label={`Download ${attachment.filename}`}
+                                  >
+                                    {attachment.filename}
+                                  </Link>
+                                </Button>
+                                <div className="text-xs text-muted-foreground">
+                                  {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
+                                  {attachment.author.firstName} {attachment.author.lastName} ·{' '}
+                                  {formatDate(attachment.createdAt, 'datetime')}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setPreviewAttachmentId(previewAttachmentId === attachment.id ? null : attachment.id)}
+                                    aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
+                                  >
+                                    {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                  </Button>
+                                )}
+                                <Button variant="ghost" size="icon" asChild>
+                                  <Link
+                                    href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                    aria-label={`Download ${attachment.filename}`}
+                                  >
+                                    <Download className="size-4" />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleDeleteAttachment(attachment.id)}
+                                  disabled={deletingAttachmentId === attachment.id}
+                                  aria-label={`Delete ${attachment.filename}`}
+                                >
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              </div>
                             </div>
+                            {previewAttachmentId === attachment.id && (
+                              <div className="w-full h-[600px] rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                <iframe
+                                  src={`/issues/${issue.id}/attachments/${attachment.id}?preview=1`}
+                                  className="w-full h-full"
+                                  title={`Preview of ${attachment.filename}`}
+                                />
+                              </div>
+                            )}
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" asChild>
-                              <Link
-                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                aria-label={`Download ${attachment.filename}`}
-                              >
-                                <Download className="size-4" />
-                              </Link>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDeleteAttachment(attachment.id)}
-                              disabled={deletingAttachmentId === attachment.id}
-                              aria-label={`Delete ${attachment.filename}`}
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          </div>
-                        </div>
                       </div>
                     ))}
                   </div>
                 )}
 
                 <Separator />
-                <form onSubmit={handleUpload} className="w-full max-w-lg">
+                <div className="w-full max-w-lg">
                   <div
                     onDragOver={(e) => {
                       e.preventDefault()
@@ -555,10 +589,11 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                         onChange={() => setUploadError(null)}
                       />
                       <Button
-                        type="submit"
+                        type="button"
                         size="sm"
                         className="gap-2 shadow-none"
                         disabled={isUploading}
+                        onClick={handleUploadClick}
                       >
                         <Upload className="size-3.5" />
                         {isUploading ? 'Uploading...' : 'Upload'}
@@ -571,7 +606,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                       </p>
                     )}
                   </div>
-                </form>
+                </div>
               </div>
             </CardContent>
           </Card>

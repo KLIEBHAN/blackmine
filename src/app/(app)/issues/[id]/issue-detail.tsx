@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download, Eye, EyeOff } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
@@ -140,6 +140,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [isConverting, setIsConverting] = useState(false)
   const [attachments, setAttachments] = useState(issue.attachments)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
+  const [previewAttachmentId, setPreviewAttachmentId] = useState<string | null>(null)
   const [fontSize, setFontSize] = useFontSizeStorage()
   const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
@@ -406,47 +407,68 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                     {attachments.map((attachment, index) => (
                       <div key={attachment.id}>
                         {index > 0 && <Separator className="my-3" />}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <Button
-                              variant="link"
-                              asChild
-                              className="h-auto p-0 text-sm font-medium"
-                            >
-                              <Link
-                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                aria-label={`Download ${attachment.filename}`}
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <Button
+                                variant="link"
+                                asChild
+                                className="h-auto p-0 text-sm font-medium"
                               >
-                                {attachment.filename}
-                              </Link>
-                            </Button>
-                            <div className="text-xs text-muted-foreground">
-                              {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
-                              {attachment.author.firstName} {attachment.author.lastName} ·{' '}
-                              {formatDate(attachment.createdAt, 'datetime')}
+                                <Link
+                                  href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  aria-label={`Download ${attachment.filename}`}
+                                >
+                                  {attachment.filename}
+                                </Link>
+                              </Button>
+                              <div className="text-xs text-muted-foreground">
+                                {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
+                                {attachment.author.firstName} {attachment.author.lastName} ·{' '}
+                                {formatDate(attachment.createdAt, 'datetime')}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => setPreviewAttachmentId(previewAttachmentId === attachment.id ? null : attachment.id)}
+                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
+                                >
+                                  {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                </Button>
+                              )}
+                              <Button variant="ghost" size="icon" asChild>
+                                <Link
+                                  href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  aria-label={`Download ${attachment.filename}`}
+                                >
+                                  <Download className="size-4" />
+                                </Link>
+                              </Button>
+                              {currentUserId && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleDeleteAttachment(attachment.id)}
+                                  disabled={deletingAttachmentId === attachment.id}
+                                  aria-label={`Delete ${attachment.filename}`}
+                                >
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" asChild>
-                              <Link
-                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                aria-label={`Download ${attachment.filename}`}
-                              >
-                                <Download className="size-4" />
-                              </Link>
-                            </Button>
-                            {currentUserId && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteAttachment(attachment.id)}
-                                disabled={deletingAttachmentId === attachment.id}
-                                aria-label={`Delete ${attachment.filename}`}
-                              >
-                                <Trash2 className="size-4" />
-                              </Button>
-                            )}
-                          </div>
+                          {previewAttachmentId === attachment.id && (
+                            <div className="w-full h-[600px] rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                              <iframe
+                                src={`/issues/${issue.id}/attachments/${attachment.id}?preview=1`}
+                                className="w-full h-full"
+                                title={`Preview of ${attachment.filename}`}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
