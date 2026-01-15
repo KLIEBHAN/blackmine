@@ -14,12 +14,13 @@ A modern project management application inspired by Redmine, built with Next.js 
 - **Font Size Control** - Adjustable text size in issue detail view (persisted in browser)
 - **Markdown Support** - Full Markdown in descriptions and comments with syntax highlighting for code blocks
 - **Markdown Editor** - CodeMirror-based editor with toolbar for formatting (Headings, Lists, Quote, Code, Links, Images, Tasks)
-- **Attachments** - Upload files to issues (drag & drop, multi-file) with inline PDF previews
+- **Attachments** - Upload files to issues (drag & drop, multi-file) with full-featured PDF viewer
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
 - **UI:** React 19, Tailwind CSS 4, Radix UI
+- **Editor:** CodeMirror 6 (Markdown), react-pdf (PDF viewer)
 - **Database:** SQLite via libSQL/Turso with Prisma ORM
 - **Testing:** Vitest (98%+ coverage), Playwright for E2E
 - **Linting:** ESLint 9
@@ -105,8 +106,21 @@ src/
 
 - Upload files from the issue edit view (drag & drop or click)
 - Multiple files per upload
-- Inline PDF preview in issue detail and edit views
 - Storage location: `/app/data/uploads` (Docker)
+
+### PDF Viewer
+
+PDF attachments can be previewed inline with a full-featured viewer (powered by react-pdf):
+
+| Feature | Description |
+|---------|-------------|
+| **Zoom** | Step through predefined levels (50% – 300%) with `−` / `+` buttons |
+| **Fit to Width** | Scale PDF to container width |
+| **Fit to Page** | Scale PDF to fit entire page in view (default) |
+| **Fullscreen** | View PDF in browser fullscreen mode (ESC to exit) |
+| **Pagination** | Navigate multi-page PDFs with `←` / `→` buttons |
+
+Click the eye icon (👁) next to a PDF attachment to open the preview.
 
 ## Accessibility
 
