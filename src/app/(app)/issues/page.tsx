@@ -34,11 +34,11 @@ function serializeIssue(issue: Awaited<ReturnType<typeof getIssues>>[number]) {
 }
 
 type Props = {
-  searchParams: Promise<{ status?: string; due?: string }>
+  searchParams: Promise<{ status?: string; due?: string; project?: string }>
 }
 
 export default async function IssuesPage({ searchParams }: Props) {
-  const { status, due } = await searchParams
+  const { status, due, project } = await searchParams
   const [issues, users] = await Promise.all([getIssues(), getUsers()])
   const serializedIssues = issues.map(serializeIssue)
   const serializedUsers = users.map(u => ({
@@ -55,6 +55,9 @@ export default async function IssuesPage({ searchParams }: Props) {
   // Parse due param for date-based filtering (only valid values pass through)
   const initialDueFilter = due === 'this_week' || due === 'overdue' ? due : undefined
 
+  // Parse project param for project filtering
+  const initialProject = project || undefined
+
   return (
     <IssuesList
       issues={serializedIssues}
@@ -62,6 +65,7 @@ export default async function IssuesPage({ searchParams }: Props) {
       users={serializedUsers}
       initialStatuses={initialStatuses}
       initialDueFilter={initialDueFilter}
+      initialProject={initialProject}
     />
   )
 }
