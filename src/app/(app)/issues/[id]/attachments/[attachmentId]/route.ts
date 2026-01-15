@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db'
 import { requireAuth } from '@/lib/session'
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string; attachmentId: string }> }
 ) {
   try {
@@ -15,8 +15,6 @@ export async function GET(
   }
 
   const { id, attachmentId } = await params
-  const url = new URL(request.url)
-  const preview = url.searchParams.get('preview') === '1'
 
   const attachment = await prisma.attachment.findFirst({
     where: { id: attachmentId, issueId: id },
@@ -32,20 +30,14 @@ export async function GET(
     return new Response('File missing', { status: 410 })
   }
 
-  const nodeStream = createReadStream(attachment.storagePath)
-  // Node.js stream/web.ReadableStream is runtime-compatible with Web ReadableStream
-  const webStream = Readable.toWeb(nodeStream) as unknown as ReadableStream
-  const encoded = encodeURIComponent(attachment.filename)
-  const isPdf = attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
-  const disposition = preview && isPdf
-    ? `inline; filename="${encoded}"; filename*=UTF-8''${encoded}`
-    : `attachment; filename="${encoded}"; filename*=UTF-8''${encoded}`
+  const stream = Readable.toWeb(createReadStream(attachment.storagePath)) as unknown as ReadableStream
+  const encodedFilename = encodeURIComponent(attachment.filename)
 
-  return new Response(webStream, {
+  return new Response(stream, {
     headers: {
       'Content-Type': attachment.contentType,
       'Content-Length': String(attachment.size),
-      'Content-Disposition': disposition,
+      'Content-Disposition': `attachment; filename="${encodedFilename}"; filename*=UTF-8''${encodedFilename}`,
       'X-Content-Type-Options': 'nosniff',
     },
   })

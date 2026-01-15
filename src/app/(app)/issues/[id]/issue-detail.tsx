@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/dialog'
 import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
 import { deleteAttachment } from '@/app/actions/attachments'
+import { usePdfPreview } from '@/hooks/use-pdf-preview'
+import { PdfPreview } from '@/components/ui/pdf-preview'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
@@ -140,7 +142,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [isConverting, setIsConverting] = useState(false)
   const [attachments, setAttachments] = useState(issue.attachments)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
-  const [previewAttachmentId, setPreviewAttachmentId] = useState<string | null>(null)
+  const { previewAttachmentId, togglePreview } = usePdfPreview()
   const [fontSize, setFontSize] = useFontSizeStorage()
   const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
@@ -433,7 +435,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  onClick={() => setPreviewAttachmentId(previewAttachmentId === attachment.id ? null : attachment.id)}
+                                  onClick={() => togglePreview(attachment.id)}
                                   aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
                                 >
                                   {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -462,11 +464,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                           </div>
                           {previewAttachmentId === attachment.id && (
                             <div className="w-full h-[600px] rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                              <iframe
-                                src={`/issues/${issue.id}/attachments/${attachment.id}?preview=1`}
-                                className="w-full h-full"
-                                title={`Preview of ${attachment.filename}`}
-                              />
+                              <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
                             </div>
                           )}
                         </div>
