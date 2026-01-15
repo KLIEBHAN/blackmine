@@ -12,6 +12,7 @@ A modern project management application inspired by Redmine, built with Next.js 
 - **Users** - User management with roles and assignments
 - **Dashboard** - Overview of recent activity and project statistics
 - **Font Size Control** - Adjustable text size in issue detail view (persisted in browser)
+- **Markdown Support** - Full Markdown in descriptions and comments with syntax highlighting for code blocks
 
 ## Tech Stack
 
@@ -90,6 +91,58 @@ src/
 ## Accessibility
 
 - **Font Size**: In the issue detail view, use the `−` / `+` buttons next to "Description" to adjust text size (Klein, Normal, Groß, Sehr groß). Your preference is saved in the browser.
+
+## Markdown in Descriptions
+
+Issue descriptions and comments support full Markdown with syntax highlighting for code blocks.
+
+### Supported Formatting
+
+- **Bold**: `**text**`
+- *Italic*: `*text*`
+- ~~Strikethrough~~: `~~text~~`
+- `Inline code`: `` `code` ``
+- [Links](https://example.com): `[text](url)`
+- Lists, blockquotes, tables (GFM)
+
+### Code Blocks with Syntax Highlighting
+
+Use fenced code blocks with a language identifier for syntax highlighting:
+
+````markdown
+```javascript
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+```
+````
+
+Supported languages include: `javascript`, `typescript`, `python`, `java`, `go`, `rust`, `sql`, `bash`, `json`, `yaml`, `html`, `css`, and many more.
+
+### Example Issue Description
+
+````markdown
+## Bug Description
+
+The login form crashes when submitting empty credentials.
+
+## Steps to Reproduce
+
+1. Open `/login`
+2. Leave fields empty
+3. Click "Submit"
+
+## Error
+
+```javascript
+TypeError: Cannot read property 'email' of undefined
+    at validateForm (auth.js:42)
+```
+
+## Expected Behavior
+
+Show validation error message.
+````
 
 ## Testing
 
