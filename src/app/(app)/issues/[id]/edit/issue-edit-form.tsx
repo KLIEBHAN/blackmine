@@ -23,7 +23,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
-import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
+import { useAttachmentPreview } from '@/hooks/use-attachment-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
 import { isPdf, hasPreview } from '@/lib/attachment-preview'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'

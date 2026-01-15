@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dialog'
 import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
 import { deleteAttachment } from '@/app/actions/attachments'
-import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
+import { useAttachmentPreview } from '@/hooks/use-attachment-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
 import { useSession } from '@/contexts/session-context'
 import { isPdf, hasPreview } from '@/lib/attachment-preview'
