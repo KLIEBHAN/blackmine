@@ -20,6 +20,7 @@
 ### UX verbessern
 
 - Weitere UX-Verbesserungen identifizieren und umsetzen
+- cursor-pointer Klassen für alle klickbaren Icons und Buttons umsetzen
 
 ### Administration (Settings) Implementieren
 

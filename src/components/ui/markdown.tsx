@@ -41,14 +41,18 @@ const components: Components = {
       return (
         <SyntaxHighlighter
           style={oneDark}
-          language={match?.[1] || 'text'}
+          language={match ? match[1] : 'text'}
           PreTag="div"
-          className="rounded-md text-sm"
+          className="rounded-md"
+          customStyle={{ overflowX: 'auto' }}
+          showLineNumbers={false}
+          wrapLongLines={false}
         >
           {codeString}
         </SyntaxHighlighter>
       )
     }
+
     
     return (
       <code className={className} {...props}>
