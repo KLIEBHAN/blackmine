@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { AlertCircle } from 'lucide-react'
-import { statusLabels, priorityLabels, getFullName } from '@/types'
+import { AlertCircle, Clock } from 'lucide-react'
+import { statusLabels, priorityLabels, getFullName, isDueSoon } from '@/types'
 import type { SerializedIssue } from './issue-detail'
 
 interface IssueSidebarProps {
@@ -17,6 +17,7 @@ interface IssueSidebarProps {
 export function IssueSidebar({ issue, overdue }: IssueSidebarProps) {
   const status = issue.status as keyof typeof statusLabels
   const priority = issue.priority as keyof typeof priorityLabels
+  const dueSoon = !overdue && isDueSoon(issue)
 
   return (
     <div className="space-y-6">
@@ -108,10 +109,12 @@ export function IssueSidebar({ issue, overdue }: IssueSidebarProps) {
             {issue.dueDate ? (
               <div className="flex items-center gap-1.5">
                 {overdue && <AlertCircle className="size-3.5 text-red-500" />}
+                {dueSoon && <Clock className="size-3.5 text-amber-500" />}
                 <span
                   className={cn(
                     'font-mono text-sm',
-                    overdue && 'font-medium text-red-600'
+                    overdue && 'font-medium text-red-600',
+                    dueSoon && 'font-medium text-amber-600'
                   )}
                 >
                   {formatDate(issue.dueDate, 'long')}

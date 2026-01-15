@@ -10,9 +10,10 @@
     - Prüft ob Issue heute oder morgen fällig ist (nicht überfällig, nicht completed)
     - Nutzt `completedStatuses` für Konsistenz mit `isOverdue()` und `isDueThisWeek()`
     - Amber/Orange Warnung (Clock-Icon + amber-colored text) für Due-Soon Issues
-  - UI-Änderungen in 2 Dateien:
+  - UI-Änderungen in 3 Dateien:
     - `src/app/(app)/issues/issues-list.tsx`: Mobile + Desktop Ansicht
     - `src/components/dashboard/issues-table.tsx`: Mobile + Desktop Ansicht
+    - `src/app/(app)/issues/[id]/issue-sidebar.tsx`: Issue Detail Sidebar
   - 9 neue Tests in `src/types/index.test.ts`
   - **232 Tests grün, Lint clean, Build erfolgreich**
 
