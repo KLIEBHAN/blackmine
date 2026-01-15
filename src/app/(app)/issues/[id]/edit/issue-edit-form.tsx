@@ -23,7 +23,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
-import { usePdfPreview } from '@/hooks/use-pdf-preview'
+import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
 import {
@@ -54,6 +54,21 @@ const MarkdownEditor = dynamic(
     ssr: false,
   }
 )
+
+/** Image MIME types that browsers can display natively */
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif']
+
+function isPdf(attachment: { contentType: string; filename: string }): boolean {
+  return attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
+}
+
+function isImage(attachment: { contentType: string }): boolean {
+  return IMAGE_TYPES.includes(attachment.contentType)
+}
+
+function hasPreview(attachment: { contentType: string; filename: string }): boolean {
+  return isPdf(attachment) || isImage(attachment)
+}
 
 type FormData = {
   projectId: string
@@ -135,7 +150,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
   const [isDragging, setIsDragging] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
-  const { previewAttachmentId, togglePreview } = usePdfPreview()
+  const { previewAttachmentId, togglePreview } = useAttachmentPreview()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const updateField = useFormField(setFormData, errors, setErrors)
@@ -491,14 +506,14 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                               </div>
                             </div>
                             <div className="flex items-center gap-1 sm:gap-2">
-                              {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
+                              {hasPreview(attachment) && (
                                 <Button
                                   type="button"
                                   variant="ghost"
                                   size="icon"
                                   className="size-8 sm:size-9"
                                   onClick={() => togglePreview(attachment.id)}
-                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
+                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview"}
                                 >
                                   {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </Button>
@@ -525,8 +540,19 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                             </div>
                           </div>
                           {previewAttachmentId === attachment.id && (
-                            <div className="h-[400px] sm:h-[600px] w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                              <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
+                            <div className={cn(
+                              'w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2',
+                              isPdf(attachment) ? 'h-[400px] sm:h-[600px]' : 'max-h-[600px]'
+                            )}>
+                              {isPdf(attachment) ? (
+                                <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
+                              ) : (
+                                <img
+                                  src={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  alt={attachment.filename}
+                                  className="w-full h-auto object-contain"
+                                />
+                              )}
                             </div>
                           )}
                         </div>

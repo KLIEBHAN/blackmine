@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dialog'
 import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
 import { deleteAttachment } from '@/app/actions/attachments'
-import { usePdfPreview } from '@/hooks/use-pdf-preview'
+import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
 import { useSession } from '@/contexts/session-context'
 
@@ -34,8 +34,20 @@ const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
 const FONT_SIZES = Object.keys(FONT_SIZE_CONFIG) as FontSize[]
 const ATTACHMENT_BUTTON_CLASS = 'size-8 sm:size-9'
 
+/** Image MIME types that browsers can display natively */
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif']
+
 function isPdf(attachment: { contentType: string; filename: string }): boolean {
   return attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
+}
+
+function isImage(attachment: { contentType: string }): boolean {
+  return IMAGE_TYPES.includes(attachment.contentType)
+}
+
+/** Check if attachment has a previewable type (PDF or image) */
+function hasPreview(attachment: { contentType: string; filename: string }): boolean {
+  return isPdf(attachment) || isImage(attachment)
 }
 
 function isValidFontSize(value: string | null): value is FontSize {
@@ -149,7 +161,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [isConverting, setIsConverting] = useState(false)
   const [attachments, setAttachments] = useState(issue.attachments)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
-  const { previewAttachmentId, togglePreview } = usePdfPreview()
+  const { previewAttachmentId, togglePreview } = useAttachmentPreview()
   const [fontSize, setFontSize] = useFontSizeStorage()
   const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
@@ -443,13 +455,13 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                               </div>
                             </div>
                             <div className="flex items-center gap-1 sm:gap-2">
-                              {isPdf(attachment) && (
+                              {hasPreview(attachment) && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   className={ATTACHMENT_BUTTON_CLASS}
                                   onClick={() => togglePreview(attachment.id)}
-                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
+                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview"}
                                 >
                                   {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </Button>
@@ -477,8 +489,19 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                             </div>
                           </div>
                           {previewAttachmentId === attachment.id && (
-                            <div className="h-[400px] sm:h-[600px] w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                              <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
+                            <div className={cn(
+                              'w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2',
+                              isPdf(attachment) ? 'h-[400px] sm:h-[600px]' : 'max-h-[600px]'
+                            )}>
+                              {isPdf(attachment) ? (
+                                <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
+                              ) : (
+                                <img
+                                  src={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  alt={attachment.filename}
+                                  className="w-full h-auto object-contain"
+                                />
+                              )}
                             </div>
                           )}
                         </div>
