@@ -45,6 +45,7 @@ next-env.d.ts
 # database
 *.db
 *.db-journal
+/data/
 
 # playwright
 .playwright-mcp/

@@ -13,7 +13,8 @@ A modern project management application inspired by Redmine, built with Next.js 
 - **Dashboard** - Overview of recent activity and project statistics
 - **Font Size Control** - Adjustable text size in issue detail view (persisted in browser)
 - **Markdown Support** - Full Markdown in descriptions and comments with syntax highlighting for code blocks
-- **Markdown Editor** - CodeMirror-based editor with toolbar for formatting (Bold, Italic, Code, Links, Lists)
+- **Markdown Editor** - CodeMirror-based editor with toolbar for formatting (Headings, Lists, Quote, Code, Links, Images, Tasks)
+- **Attachments** - Upload files to issues (drag & drop, multi-file) with inline PDF previews
 
 ## Tech Stack
 
@@ -63,6 +64,8 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 | `npm run test:run` | Run unit tests once |
 | `npm run test:e2e` | Run Playwright E2E tests |
 | `npm run db:seed` | Seed database with demo data |
+| `npm run db:backfill:format` | Tag legacy Markdown/Textile formats |
+| `npm run db:health` | Check DB schema and format counts |
 | `npm run db:reset` | Reset and reseed database |
 
 ## Project Structure
@@ -97,6 +100,13 @@ src/
 | `Ctrl+I` | Italic |
 | `Ctrl+E` | Inline Code |
 | `Ctrl+K` | Insert Link |
+
+### Attachments
+
+- Upload files from the issue edit view (drag & drop or click)
+- Multiple files per upload
+- Inline PDF preview in issue detail and edit views
+- Storage location: `/app/data/uploads` (Docker)
 
 ## Accessibility
 
@@ -189,6 +199,9 @@ App available at [http://localhost:41314](http://localhost:41314).
 ```bash
 # Apply migrations manually
 docker compose exec app npx prisma migrate deploy
+
+# Backfill Markdown/Textile format tags
+docker compose exec app npm run db:backfill:format
 
 # Seed demo data (requires running container with tsx)
 docker compose exec app npx tsx prisma/seed.ts
