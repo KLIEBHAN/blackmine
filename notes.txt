@@ -2,6 +2,19 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: cursor-pointer zu allen klickbaren Elementen hinzugefügt**
+  - Problem: HTML `<button>` Elemente haben standardmäßig `cursor: default`, nicht `cursor: pointer`
+  - User erwarten bei klickbaren Elementen einen Zeiger-Cursor - das ist Standard-UX
+  - Lösung: `cursor-pointer` an 3 Stellen hinzugefügt:
+    - `src/components/ui/button.tsx` - Button-Komponente Basis-Styles (betrifft alle ~50+ Button-Nutzungen)
+    - `src/components/ui/sortable-table-header.tsx` - Sortierbare Tabellen-Header
+    - `src/components/dashboard/issue-search.tsx` - Suchergebnis-Buttons
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: Header-Buttons mit Tooltips versehen**
   - Problem: Theme-Toggle und Logout-Button im Header hatten nur Icons ohne visuelle Erklärung
   - User mussten raten, was die Buttons tun - schlechte UX für Icon-only Buttons

@@ -128,7 +128,7 @@ export function IssueSearch() {
               key={issue.id}
               onClick={() => navigateTo(issue.id)}
               className={cn(
-                'flex w-full items-start gap-3 px-3 py-2 text-left text-sm hover:bg-sidebar-accent',
+                'flex w-full items-start gap-3 px-3 py-2 text-left text-sm hover:bg-sidebar-accent cursor-pointer',
                 selectedIndex === index && 'bg-sidebar-accent'
               )}
             >

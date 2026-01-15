@@ -27,7 +27,7 @@ export function SortableTableHeader<T extends string>({
     <button
       onClick={() => onSort(field)}
       className={cn(
-        'flex items-center gap-1.5 hover:text-primary transition-colors',
+        'flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer',
         align === 'right' && 'ml-auto justify-end',
         className
       )}
