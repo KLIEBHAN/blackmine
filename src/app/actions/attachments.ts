@@ -16,6 +16,19 @@ export type AttachmentFormErrors = {
   general?: string
 }
 
+async function ensureIssueExists(issueId: string) {
+  const issue = await prisma.issue.findUnique({
+    where: { id: issueId },
+    select: { id: true },
+  })
+
+  if (!issue) {
+    return { success: false, error: 'Issue not found.' }
+  }
+
+  return { success: true }
+}
+
 export async function uploadAttachment(issueId: string, formData: FormData) {
   const session = await requireAuth()
 
@@ -39,13 +52,9 @@ export async function uploadAttachment(issueId: string, formData: FormData) {
     }
   }
 
-  const issue = await prisma.issue.findUnique({
-    where: { id: issueId },
-    select: { id: true },
-  })
-
-  if (!issue) {
-    return { success: false, errors: { general: 'Issue not found.' } }
+  const issueCheck = await ensureIssueExists(issueId)
+  if (!issueCheck.success) {
+    return { success: false, errors: { general: issueCheck.error } }
   }
 
   try {
@@ -81,6 +90,11 @@ export async function deleteAttachment(attachmentId: string) {
 
   if (!attachment) {
     return { success: false, error: 'Attachment not found.' }
+  }
+
+  const issueCheck = await ensureIssueExists(attachment.issueId)
+  if (!issueCheck.success) {
+    return { success: false, error: issueCheck.error }
   }
 
   try {
