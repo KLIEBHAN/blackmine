@@ -104,15 +104,20 @@ export async function uploadAttachment(issueId: string, formData: FormData) {
 }
 
 export async function deleteAttachment(attachmentId: string) {
-  await requireAuth()
+  const session = await requireAuth()
 
   const attachment = await prisma.attachment.findUnique({
     where: { id: attachmentId },
-    include: { issue: true },
+    select: { id: true, authorId: true, issueId: true, storagePath: true },
   })
 
   if (!attachment) {
     return { success: false, error: 'Attachment not found.' }
+  }
+
+  // Verify ownership or admin
+  if (attachment.authorId !== session.id && session.role !== 'admin') {
+    return { success: false, error: 'You can only delete your own attachments.' }
   }
 
   const issueCheck = await ensureIssueExists(attachment.issueId)

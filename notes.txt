@@ -2,6 +2,26 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **Security/UX: Attachment Delete Ownership Check**
+  - Problem 1: `deleteAttachment` Server Action erlaubte JEDEM eingeloggten User das Löschen jedes Attachments
+  - Problem 2: Delete-Button war für alle User sichtbar, nicht nur für Autor/Admin
+  - Das war inkonsistent mit `deleteComment`, das bereits einen Ownership-Check hatte
+  - Lösung:
+    - Server Action: Ownership-Check hinzugefügt (analog zu `deleteComment`)
+      - User kann nur eigene Attachments löschen ODER
+      - User ist Admin
+    - UI: Delete-Button nur noch für Autor oder Admins sichtbar
+      - `useSession()` Hook importiert für `isAdmin` Check
+      - Bedingung geändert von `currentUserId && ...` zu `(currentUserId === attachment.author.id || isAdmin) && ...`
+  - Dateien geändert:
+    - `src/app/actions/attachments.ts`: Ownership-Check in `deleteAttachment()`
+    - `src/app/(app)/issues/[id]/issue-detail.tsx`: UI-Visibility basierend auf Ownership
+  - **223 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: Accessibility und Empty-State Verbesserungen**
   - Problem 1: Delete-Button in User-Liste hatte kein `aria-label` für Screen Reader
   - Problem 2: Leere Listen zeigten "No X found" + "Clear filters" Button, aber User verstanden nicht, warum keine Ergebnisse angezeigt wurden

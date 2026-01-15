@@ -27,6 +27,7 @@ import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/is
 import { deleteAttachment } from '@/app/actions/attachments'
 import { usePdfPreview } from '@/hooks/use-pdf-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
+import { useSession } from '@/contexts/session-context'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
@@ -137,6 +138,7 @@ interface IssueDetailProps {
 
 export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps) {
   const router = useRouter()
+  const { isAdmin } = useSession()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
@@ -449,7 +451,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                   <Download className="size-4" />
                                 </Link>
                               </Button>
-                              {currentUserId && (
+                              {(currentUserId === attachment.author.id || isAdmin) && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
