@@ -34,7 +34,7 @@ import {
 import { FilterDropdown } from '@/components/ui/filter-dropdown'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
-import { isOverdue, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
+import { isOverdue, isDueThisWeek, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
 import { filterIssues, sortIssues, type IssueSort, type IssueFilters } from '@/lib/issues'
 import { bulkUpdateIssues, type BulkUpdateData } from '@/app/actions/issues'
 import { toast } from 'sonner'
@@ -109,21 +109,25 @@ type SerializedUser = {
   lastName: string
 }
 
+type DueFilter = 'this_week' | undefined
+
 type Props = {
   issues: IssueWithRelations[]
   totalCount: number
   hideHeader?: boolean
   users?: SerializedUser[]
   initialStatuses?: IssueStatus[]
+  initialDueFilter?: DueFilter
 }
 
-export function IssuesList({ issues, totalCount, hideHeader = false, users = [], initialStatuses }: Props) {
+export function IssuesList({ issues, totalCount, hideHeader = false, users = [], initialStatuses, initialDueFilter }: Props) {
   const [search, setSearch] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<IssueStatus[]>(
     initialStatuses ?? ['new', 'in_progress']
   )
   const [selectedTrackers, setSelectedTrackers] = useState<IssueTracker[]>([])
   const [selectedPriorities, setSelectedPriorities] = useState<IssuePriority[]>([])
+  const [dueFilter, setDueFilter] = useState<DueFilter>(initialDueFilter)
   const [sort, setSort] = useState<IssueSort>({ field: 'dueDate', direction: 'asc' })
 
   // Selection state for bulk editing
@@ -145,13 +149,19 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
   
   // Filter and sort (recalculates on filter/sort changes, but not on conversion)
   const filteredIssues = useMemo(() => {
-    const filtered = filterIssues(issueObjects, filters)
+    let filtered = filterIssues(issueObjects, filters)
+
+    // Apply due date filter
+    if (dueFilter === 'this_week') {
+      filtered = filtered.filter(isDueThisWeek)
+    }
+
     const sorted = sortIssues(filtered, sort)
     // Map back to original issues with relations
     return sorted.map(fi => issues.find(i => i.id === fi.id)!)
-  }, [issues, issueObjects, filters, sort])
+  }, [issues, issueObjects, filters, sort, dueFilter])
 
-  const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length
+  const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length + (dueFilter ? 1 : 0)
 
   // Generic toggle for multi-select filters
   const toggle = <T,>(value: T, setter: React.Dispatch<React.SetStateAction<T[]>>) => {
@@ -162,6 +172,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
     setSelectedStatuses([])
     setSelectedTrackers([])
     setSelectedPriorities([])
+    setDueFilter(undefined)
     setSearch('')
   }
 
@@ -309,6 +320,19 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                 onToggle={(p) => toggle(p, setSelectedPriorities)}
                 width="w-44"
               />
+
+              {/* Due This Week Filter Badge */}
+              {dueFilter === 'this_week' && (
+                <Badge
+                  variant="secondary"
+                  className="gap-1.5 px-2 py-1 cursor-pointer hover:bg-destructive/10"
+                  onClick={() => setDueFilter(undefined)}
+                >
+                  <AlertCircle className="size-3" />
+                  Due This Week
+                  <X className="size-3" />
+                </Badge>
+              )}
 
               {/* Clear Filters */}
               {activeFilterCount > 0 && (

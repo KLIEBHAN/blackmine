@@ -148,6 +148,17 @@ export function isOverdue(issue: { status: string; dueDate: Date | string | null
   return new Date(issue.dueDate) < new Date()
 }
 
+export function isDueThisWeek(issue: { status: string; dueDate: Date | string | null }): boolean {
+  if (!issue.dueDate || completedStatuses.includes(issue.status)) {
+    return false
+  }
+  const dueDate = new Date(issue.dueDate)
+  const now = new Date()
+  const weekFromNow = new Date()
+  weekFromNow.setDate(weekFromNow.getDate() + 7)
+  return dueDate >= now && dueDate <= weekFromNow
+}
+
 export function getPriorityOrder(priority: IssuePriority): number {
   const order: Record<IssuePriority, number> = {
     immediate: 5,

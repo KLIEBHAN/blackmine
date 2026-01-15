@@ -2,15 +2,32 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: "Due This Week" Filter für Issues-Liste implementiert**
+  - Problem: Dashboard StatCard "Due This Week" zeigte korrekte Anzahl (z.B. "2"), aber der Link führte nur zu `/issues` ohne Filter
+  - User klickte auf "Due This Week: 2" und sah alle 5 offenen Issues statt nur die 2 fälligen
+  - Lösung:
+    - Neue zentrale `isDueThisWeek()` Funktion in `src/types/index.ts` (analog zu `isOverdue()`)
+    - Nutzt `completedStatuses` - schließt resolved/closed/rejected Issues aus (konsistent mit Dashboard)
+    - Neuer URL-Parameter `due=this_week` für Issues-Seite
+    - `src/app/(app)/issues/page.tsx`: Akzeptiert `due` Parameter
+    - `src/app/(app)/issues/issues-list.tsx`: Neuer `dueFilter` State, nutzt `isDueThisWeek()`
+    - `src/app/(app)/page.tsx`: Dashboard nutzt jetzt `isDueThisWeek()` (DRY)
+    - Visueller Badge "Due This Week" mit X-Button zum Entfernen des Filters
+    - Dashboard StatCard Link aktualisiert: `/issues` → `/issues?due=this_week`
+  - Generisches Design: `due` Parameter erlaubt zukünftige Erweiterungen (z.B. `due=overdue`, `due=today`)
+  - 10 neue Tests für `isDueThisWeek()` in `src/types/index.test.ts`
+  - **223 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: Technische User-ID aus Admin Users-Tabelle entfernt**
   - Problem: In der User-Verwaltung wurde unter jedem Namen die komplette CUID angezeigt (z.B. `cmkcybla5000113ynm943eyb5`)
   - Das ist unnötige technische Information für Admins und reduziert die Lesbarkeit
   - Lösung: Die ID-Zeile unter dem Namen entfernt in `src/app/(app)/admin/users/users-list.tsx`
   - User werden bereits durch Name + Email + Rolle eindeutig identifiziert
   - **213 Tests grün, Lint clean, Build erfolgreich**
-
-  **Nächste Schritte:**
-  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
 
 ## Vorherige Iteration (2026-01-15)
 - **UX: cursor-pointer zu allen klickbaren Elementen hinzugefügt**

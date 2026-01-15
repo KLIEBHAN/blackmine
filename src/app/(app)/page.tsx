@@ -3,6 +3,7 @@ import { IssuesTable, QuickActions } from '@/components/dashboard'
 import { StatCard } from '@/components/ui/stat-card'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
+import { isDueThisWeek } from '@/types'
 import type { SerializedIssue } from '@/components/dashboard/issues-table'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
@@ -20,14 +21,7 @@ export default async function DashboardPage() {
     (i) => i.status === 'new' || i.status === 'in_progress'
   ).length
   const inProgress = issues.filter((i) => i.status === 'in_progress').length
-  const dueSoon = issues.filter((i) => {
-    if (!i.dueDate || i.status === 'closed' || i.status === 'rejected') return false
-    const dueDate = new Date(i.dueDate)
-    const now = new Date()
-    const weekFromNow = new Date()
-    weekFromNow.setDate(weekFromNow.getDate() + 7)
-    return dueDate >= now && dueDate <= weekFromNow
-  }).length
+  const dueSoon = issues.filter(isDueThisWeek).length
   const activeProjects = projects.filter((p) => p.status === 'active').length
 
   // Serialize issues for client component (recent 5)
@@ -90,7 +84,7 @@ export default async function DashboardPage() {
             icon={AlertTriangle}
             variant={dueSoon > 0 ? 'warning' : 'default'}
             delay={3}
-            href="/issues"
+            href="/issues?due=this_week"
           />
           <StatCard
             title="Active Projects"
