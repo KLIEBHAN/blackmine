@@ -3,6 +3,7 @@ import { IssuesTable, QuickActions } from '@/components/dashboard'
 import { StatCard } from '@/components/ui/stat-card'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
+import { getSession } from '@/lib/session'
 import { isDueThisWeek, isOverdue } from '@/types'
 import type { SerializedIssue } from '@/components/dashboard/issues-table'
 
@@ -11,9 +12,10 @@ export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
   // Load data from database
-  const [issues, projects] = await Promise.all([
+  const [issues, projects, session] = await Promise.all([
     getIssues(),
     getProjects(),
+    getSession(),
   ])
 
   // Calculate stats
@@ -25,8 +27,8 @@ export default async function DashboardPage() {
   const dueSoon = issues.filter(isDueThisWeek).length
   const activeProjects = projects.filter((p) => p.status === 'active').length
 
-  // Serialize issues for client component (recent 5)
-  const recentIssues: SerializedIssue[] = issues.slice(0, 5).map((issue) => ({
+  // Helper to serialize an issue for client component
+  const serializeIssue = (issue: typeof issues[0]): SerializedIssue => ({
     id: issue.id,
     subject: issue.subject,
     status: issue.status,
@@ -45,7 +47,18 @@ export default async function DashboardPage() {
           lastName: issue.assignee.lastName,
         }
       : null,
-  }))
+  })
+
+  // Serialize issues for client component (recent 5)
+  const recentIssues: SerializedIssue[] = issues.slice(0, 5).map(serializeIssue)
+
+  // My Issues - issues assigned to current user (open only, max 5)
+  const myIssues: SerializedIssue[] = session
+    ? issues
+        .filter((i) => i.assigneeId === session.id && (i.status === 'new' || i.status === 'in_progress'))
+        .slice(0, 5)
+        .map(serializeIssue)
+    : []
 
   return (
     <div className="grid-pattern min-h-full">
@@ -111,14 +124,21 @@ export default async function DashboardPage() {
 
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Issues Table - takes 2 columns */}
-          <div className="lg:col-span-2">
-            <IssuesTable issues={recentIssues} />
-          </div>
+          {/* My Issues - takes 2 columns */}
+          {myIssues.length > 0 && (
+            <div className="lg:col-span-2">
+              <IssuesTable title="My Issues" issues={myIssues} />
+            </div>
+          )}
 
           {/* Quick Actions - takes 1 column */}
           <div>
             <QuickActions />
+          </div>
+
+          {/* Recent Issues - takes 2 columns (or 3 if no My Issues) */}
+          <div className={myIssues.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
+            <IssuesTable issues={recentIssues} />
           </div>
         </div>
       </div>

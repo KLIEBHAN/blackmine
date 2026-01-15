@@ -2,6 +2,22 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: "My Issues" Sektion auf Dashboard**
+  - Problem: Dashboard zeigte nur "Recent Issues" (neueste 5), aber nicht die dem User zugewiesenen Issues
+  - User mussten zur Issues-Seite navigieren und filtern, um ihre eigene Arbeit zu sehen
+  - Lösung:
+    - Dashboard lädt jetzt Session parallel zu Issues und Projects
+    - Neue "My Issues" Sektion zeigt offene Issues, die dem User zugewiesen sind (max 5)
+    - Nutzt bestehende `IssuesTable` Komponente mit eigenem Titel
+    - Layout passt sich automatisch an: "My Issues" + "Recent Issues" oder nur "Recent Issues"
+  - Dateien geändert:
+    - `src/app/(app)/page.tsx`: Session laden, myIssues berechnen, serializeIssue Helper extrahiert
+  - **232 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: "Due Soon" Warnung für Issues (heute/morgen fällig)**
   - Problem: Issues die bald fällig sind (heute oder morgen) hatten keine visuelle Hervorhebung
   - Überfällige Issues wurden bereits rot markiert, aber "bald fällig" fehlte
