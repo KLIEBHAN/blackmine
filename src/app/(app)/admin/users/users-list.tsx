@@ -348,12 +348,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                               {getInitials(fullName)}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex flex-col">
-                            <span className="font-medium">{fullName}</span>
-                            <span className="text-xs text-muted-foreground font-mono">
-                              {user.id}
-                            </span>
-                          </div>
+                          <span className="font-medium">{fullName}</span>
                         </div>
                       </TableCell>
 

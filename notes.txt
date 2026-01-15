@@ -2,6 +2,17 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: Technische User-ID aus Admin Users-Tabelle entfernt**
+  - Problem: In der User-Verwaltung wurde unter jedem Namen die komplette CUID angezeigt (z.B. `cmkcybla5000113ynm943eyb5`)
+  - Das ist unnötige technische Information für Admins und reduziert die Lesbarkeit
+  - Lösung: Die ID-Zeile unter dem Namen entfernt in `src/app/(app)/admin/users/users-list.tsx`
+  - User werden bereits durch Name + Email + Rolle eindeutig identifiziert
+  - **213 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: cursor-pointer zu allen klickbaren Elementen hinzugefügt**
   - Problem: HTML `<button>` Elemente haben standardmäßig `cursor: default`, nicht `cursor: pointer`
   - User erwarten bei klickbaren Elementen einen Zeiger-Cursor - das ist Standard-UX
