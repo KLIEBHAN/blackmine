@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/table'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority } from '@/types'
-import { statusLabels, trackerLabels, priorityLabels, getFullName, isOverdue } from '@/types'
-import { AlertCircle, ArrowUpRight, CircleDot } from 'lucide-react'
+import { statusLabels, trackerLabels, priorityLabels, getFullName, isOverdue, isDueSoon } from '@/types'
+import { AlertCircle, ArrowUpRight, CircleDot, Clock } from 'lucide-react'
 import Link from 'next/link'
 
 // Serialized types for client component (dates as strings)
@@ -80,6 +80,7 @@ export function IssuesTable({
       <CardContent className="p-3 space-y-3 md:hidden">
         {issues.map((issue) => {
           const overdue = isOverdue(issue)
+          const dueSoon = !overdue && isDueSoon(issue)
           const assigneeName = issue.assignee ? getFullName(issue.assignee) : null
 
           return (
@@ -121,8 +122,13 @@ export function IssuesTable({
                   {issue.dueDate && (
                     <>
                       <span>•</span>
-                      <span className={cn('font-mono', overdue && 'text-red-600 font-medium')}>
+                      <span className={cn(
+                        'font-mono',
+                        overdue && 'text-red-600 font-medium',
+                        dueSoon && 'text-amber-600 font-medium'
+                      )}>
                         {overdue && <AlertCircle className="inline size-3 mr-0.5" />}
+                        {dueSoon && <Clock className="inline size-3 mr-0.5" />}
                         {formatDate(issue.dueDate, 'short')}
                       </span>
                     </>
@@ -159,6 +165,7 @@ export function IssuesTable({
           <TableBody>
             {issues.map((issue) => {
               const overdue = isOverdue(issue)
+              const dueSoon = !overdue && isDueSoon(issue)
               const assigneeName = issue.assignee ? getFullName(issue.assignee) : null
 
               return (
@@ -246,10 +253,14 @@ export function IssuesTable({
                         {overdue && (
                           <AlertCircle className="size-3.5 text-red-500" />
                         )}
+                        {dueSoon && (
+                          <Clock className="size-3.5 text-amber-500" />
+                        )}
                         <span
                           className={cn(
                             'font-mono text-sm',
-                            overdue && 'font-medium text-red-600'
+                            overdue && 'font-medium text-red-600',
+                            dueSoon && 'font-medium text-amber-600'
                           )}
                         >
                           {formatDate(issue.dueDate, 'short')}

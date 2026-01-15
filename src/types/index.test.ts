@@ -3,6 +3,7 @@ import {
   getFullName,
   isOverdue,
   isDueThisWeek,
+  isDueSoon,
   getPriorityOrder,
   type User,
   type Issue,
@@ -148,6 +149,55 @@ describe('isDueThisWeek', () => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
     expect(isDueThisWeek({ status: 'in_progress', dueDate: tomorrow.toISOString() })).toBe(true)
+  })
+})
+
+describe('isDueSoon', () => {
+  it('returns false when dueDate is null', () => {
+    expect(isDueSoon({ status: 'new', dueDate: null })).toBe(false)
+  })
+
+  it('returns false when status is closed', () => {
+    const today = new Date()
+    expect(isDueSoon({ status: 'closed', dueDate: today })).toBe(false)
+  })
+
+  it('returns false when status is rejected', () => {
+    const today = new Date()
+    expect(isDueSoon({ status: 'rejected', dueDate: today })).toBe(false)
+  })
+
+  it('returns false when status is resolved', () => {
+    const today = new Date()
+    expect(isDueSoon({ status: 'resolved', dueDate: today })).toBe(false)
+  })
+
+  it('returns true when dueDate is today', () => {
+    const today = new Date()
+    expect(isDueSoon({ status: 'in_progress', dueDate: today })).toBe(true)
+  })
+
+  it('returns true when dueDate is tomorrow', () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    expect(isDueSoon({ status: 'new', dueDate: tomorrow })).toBe(true)
+  })
+
+  it('returns false when dueDate is 2 days away', () => {
+    const in2Days = new Date()
+    in2Days.setDate(in2Days.getDate() + 2)
+    expect(isDueSoon({ status: 'new', dueDate: in2Days })).toBe(false)
+  })
+
+  it('returns false when dueDate is in the past (overdue)', () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(isDueSoon({ status: 'new', dueDate: yesterday })).toBe(false)
+  })
+
+  it('handles string dueDate (serialized from JSON)', () => {
+    const today = new Date()
+    expect(isDueSoon({ status: 'in_progress', dueDate: today.toISOString() })).toBe(true)
   })
 })
 

@@ -2,6 +2,24 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: "Due Soon" Warnung für Issues (heute/morgen fällig)**
+  - Problem: Issues die bald fällig sind (heute oder morgen) hatten keine visuelle Hervorhebung
+  - Überfällige Issues wurden bereits rot markiert, aber "bald fällig" fehlte
+  - Lösung:
+    - Neue `isDueSoon()` Funktion in `src/types/index.ts`
+    - Prüft ob Issue heute oder morgen fällig ist (nicht überfällig, nicht completed)
+    - Nutzt `completedStatuses` für Konsistenz mit `isOverdue()` und `isDueThisWeek()`
+    - Amber/Orange Warnung (Clock-Icon + amber-colored text) für Due-Soon Issues
+  - UI-Änderungen in 2 Dateien:
+    - `src/app/(app)/issues/issues-list.tsx`: Mobile + Desktop Ansicht
+    - `src/components/dashboard/issues-table.tsx`: Mobile + Desktop Ansicht
+  - 9 neue Tests in `src/types/index.test.ts`
+  - **232 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: Sidebar Navigation Badge für offene Issues**
   - Problem: Sidebar Navigation zeigte keine visuelle Indikation für offene/überfällige Issues
   - User mussten zur Issues-Seite navigieren um den aktuellen Stand zu sehen

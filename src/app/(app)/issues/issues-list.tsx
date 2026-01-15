@@ -34,12 +34,13 @@ import {
 import { FilterDropdown } from '@/components/ui/filter-dropdown'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { IssueStatus, IssueTracker, IssuePriority, Issue } from '@/types'
-import { isOverdue, isDueThisWeek, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
+import { isOverdue, isDueThisWeek, isDueSoon, statusLabels, trackerLabels, priorityLabels, allIssueStatuses, allIssueTrackers, allIssuePriorities, getFullName } from '@/types'
 import { filterIssues, sortIssues, type IssueSort, type IssueFilters } from '@/lib/issues'
 import { bulkUpdateIssues, type BulkUpdateData } from '@/app/actions/issues'
 import { toast } from 'sonner'
 import {
   AlertCircle,
+  Clock,
   Search,
   Plus,
   X,
@@ -433,6 +434,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
               {filteredIssues.map((issue, index) => {
                 const assigneeName = issue.assignee ? getFullName(issue.assignee) : null
                 const overdue = isOverdue(issue)
+                const dueSoon = !overdue && isDueSoon(issue)
                 return (
                   <Card
                     key={issue.id}
@@ -493,7 +495,12 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                             {issue.dueDate && (
                               <div className="flex items-center gap-1">
                                 {overdue && <AlertCircle className="size-3 text-red-500" />}
-                                <span className={cn('font-mono text-xs', overdue && 'text-red-600 font-medium')}>
+                                {dueSoon && <Clock className="size-3 text-amber-500" />}
+                                <span className={cn(
+                                  'font-mono text-xs',
+                                  overdue && 'text-red-600 font-medium',
+                                  dueSoon && 'text-amber-600 font-medium'
+                                )}>
                                   {formatDate(issue.dueDate, 'short')}
                                 </span>
                               </div>
@@ -570,6 +577,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                       ? getFullName(issue.assignee)
                       : null
                     const overdue = isOverdue(issue)
+                    const dueSoon = !overdue && isDueSoon(issue)
 
                     return (
                       <TableRow
@@ -682,10 +690,14 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                               {overdue && (
                                 <AlertCircle className="size-3.5 text-red-500" />
                               )}
+                              {dueSoon && (
+                                <Clock className="size-3.5 text-amber-500" />
+                              )}
                               <span
                                 className={cn(
                                   'font-mono text-sm',
-                                  overdue && 'font-medium text-red-600'
+                                  overdue && 'font-medium text-red-600',
+                                  dueSoon && 'font-medium text-amber-600'
                                 )}
                               >
                                 {formatDate(issue.dueDate, 'short')}
