@@ -755,7 +755,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
 
       {/* Bulk Edit Modal */}
       <Dialog open={bulkEditOpen} onOpenChange={setBulkEditOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] flex flex-col">
           <DialogHeader>
             <DialogTitle>Edit {selectedIds.size} issue{selectedIds.size > 1 ? 's' : ''}</DialogTitle>
             <DialogDescription>
@@ -763,7 +763,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4 py-4 overflow-y-auto flex-1 -mx-4 px-4 sm:-mx-6 sm:px-6">
             {/* Status */}
             <div className="grid gap-2">
               <Label htmlFor="bulk-status">Status</Label>
