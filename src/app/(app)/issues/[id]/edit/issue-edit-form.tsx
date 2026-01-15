@@ -1,16 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import { cn, formatDate, formatFileSize } from '@/lib/utils'
 import { textileToMarkdown } from '@/lib/textile'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
@@ -21,8 +22,9 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
+import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
-import { ArrowLeft, Save, Loader2 } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Paperclip, Upload, Download, Trash2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
@@ -76,6 +78,18 @@ type SerializedIssue = {
   assigneeId: string | null
   dueDate: string | null
   estimatedHours: number | null
+  attachments: {
+    id: string
+    filename: string
+    contentType: string
+    size: number
+    createdAt: string
+    author: {
+      id: string
+      firstName: string
+      lastName: string
+    }
+  }[]
 }
 
 type Props = {
@@ -104,6 +118,11 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     dueDate: issue.dueDate,
     estimatedHours: issue.estimatedHours,
   })
+  const [attachments, setAttachments] = useState(issue.attachments)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const updateField = useFormField(setFormData, errors, setErrors)
 
@@ -137,6 +156,63 @@ export function IssueEditForm({ issue, users, projects }: Props) {
       description: 'Your changes have been saved.',
     })
     router.push(`/issues/${issue.id}`)
+  }
+
+  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setUploadError(null)
+
+    const file = fileInputRef.current?.files?.[0]
+    if (!file) {
+      setUploadError('Please choose a file to upload.')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    setIsUploading(true)
+    const result = await uploadAttachment(issue.id, formData)
+
+    if (result.success && result.attachment) {
+      setAttachments((prev) => [
+        {
+          id: result.attachment.id,
+          filename: result.attachment.filename,
+          contentType: result.attachment.contentType,
+          size: result.attachment.size,
+          createdAt: result.attachment.createdAt.toISOString(),
+          author: {
+            id: result.attachment.author.id,
+            firstName: result.attachment.author.firstName,
+            lastName: result.attachment.author.lastName,
+          },
+        },
+        ...prev,
+      ])
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    } else if (result.errors) {
+      setUploadError(result.errors.file || result.errors.general || 'Upload failed.')
+    } else {
+      setUploadError('Upload failed.')
+    }
+
+    setIsUploading(false)
+  }
+
+  const handleDeleteAttachment = async (attachmentId: string) => {
+    setDeletingAttachmentId(attachmentId)
+    const result = await deleteAttachment(attachmentId)
+
+    if (result.success) {
+      setAttachments((prev) => prev.filter((attachment) => attachment.id !== attachmentId))
+    } else {
+      toast.error('error' in result ? result.error : 'Failed to delete attachment')
+    }
+
+    setDeletingAttachmentId(null)
   }
 
   const hasError = (field: keyof IssueFormErrors) => !!errors[field]
@@ -348,6 +424,92 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                     className="font-mono"
                   />
                 </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Paperclip className="size-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold">Attachments</h3>
+                  <Badge variant="secondary" className="text-xs">
+                    {attachments.length}
+                  </Badge>
+                </div>
+
+                {attachments.length === 0 ? (
+                  <div className="text-sm text-muted-foreground italic">No attachments yet.</div>
+                ) : (
+                  <div className="space-y-3">
+                    {attachments.map((attachment, index) => (
+                      <div key={attachment.id}>
+                        {index > 0 && <Separator className="my-3" />}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <Button
+                              variant="link"
+                              asChild
+                              className="h-auto p-0 text-sm font-medium"
+                            >
+                              <Link
+                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                aria-label={`Download ${attachment.filename}`}
+                              >
+                                {attachment.filename}
+                              </Link>
+                            </Button>
+                            <div className="text-xs text-muted-foreground">
+                              {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
+                              {attachment.author.firstName} {attachment.author.lastName} ·{' '}
+                              {formatDate(attachment.createdAt, 'datetime')}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon" asChild>
+                              <Link
+                                href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                aria-label={`Download ${attachment.filename}`}
+                              >
+                                <Download className="size-4" />
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteAttachment(attachment.id)}
+                              disabled={deletingAttachmentId === attachment.id}
+                              aria-label={`Delete ${attachment.filename}`}
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Separator />
+                <form onSubmit={handleUpload} className="grid w-full max-w-lg gap-2">
+                  <Label
+                    htmlFor="attachment-upload"
+                    className="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+                  >
+                    Upload File
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Input
+                      id="attachment-upload"
+                      ref={fileInputRef}
+                      type="file"
+                      className="text-sm cursor-pointer file:cursor-pointer"
+                    />
+                    <Button type="submit" size="sm" className="gap-2" disabled={isUploading}>
+                      <Upload className="size-3.5" />
+                      {isUploading ? 'Uploading...' : 'Upload'}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Max file size 100 MB.</p>
+                  {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+                </form>
               </div>
             </CardContent>
           </Card>

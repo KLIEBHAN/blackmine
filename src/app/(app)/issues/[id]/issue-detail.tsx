@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useSyncExternalStore, useCallback, useRef } from 'react'
+import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Upload, Download } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
@@ -13,8 +13,6 @@ import { cn, formatDate, formatFileSize, formatShortId } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
@@ -26,7 +24,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
-import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
+import { deleteAttachment } from '@/app/actions/attachments'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
@@ -141,10 +139,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
   const [isDeleting, setIsDeleting] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
   const [attachments, setAttachments] = useState(issue.attachments)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
   const [deletingAttachmentId, setDeletingAttachmentId] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fontSize, setFontSize] = useFontSizeStorage()
   const [sidebarVisible, toggleSidebar] = useSidebarVisibility()
 
@@ -184,50 +179,6 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
       toast.error('error' in result ? result.error : 'Failed to convert description')
     }
     setIsConverting(false)
-  }
-
-  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setUploadError(null)
-
-    const file = fileInputRef.current?.files?.[0]
-    if (!file) {
-      setUploadError('Please choose a file to upload.')
-      return
-    }
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    setIsUploading(true)
-    const result = await uploadAttachment(issue.id, formData)
-
-    if (result.success && result.attachment) {
-      setAttachments((prev) => [
-        {
-          id: result.attachment.id,
-          filename: result.attachment.filename,
-          contentType: result.attachment.contentType,
-          size: result.attachment.size,
-          createdAt: result.attachment.createdAt.toISOString(),
-          author: {
-            id: result.attachment.author.id,
-            firstName: result.attachment.author.firstName,
-            lastName: result.attachment.author.lastName,
-          },
-        },
-        ...prev,
-      ])
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''
-      }
-    } else if (result.errors) {
-      setUploadError(result.errors.file || result.errors.general || 'Upload failed.')
-    } else {
-      setUploadError('Upload failed.')
-    }
-
-    setIsUploading(false)
   }
 
   const handleDeleteAttachment = async (attachmentId: string) => {
@@ -502,33 +453,6 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                   </div>
                 )}
 
-                {currentUserId && (
-                  <>
-                    <Separator />
-                    <form onSubmit={handleUpload} className="grid w-full max-w-lg gap-2">
-                      <Label
-                        htmlFor="attachment-upload"
-                        className="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
-                      >
-                        Upload File
-                      </Label>
-                      <div className="flex flex-wrap gap-2">
-                        <Input
-                          id="attachment-upload"
-                          ref={fileInputRef}
-                          type="file"
-                          className="text-sm cursor-pointer file:cursor-pointer"
-                        />
-                        <Button type="submit" size="sm" className="gap-2" disabled={isUploading}>
-                          <Upload className="size-3.5" />
-                          {isUploading ? 'Uploading...' : 'Upload'}
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Max file size 100 MB.</p>
-                      {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
-                    </form>
-                  </>
-                )}
               </CardContent>
             </Card>
 

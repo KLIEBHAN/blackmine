@@ -37,6 +37,18 @@ export default async function EditIssuePage({ params }: Props) {
     assigneeId: issue.assigneeId,
     dueDate: issue.dueDate ? issue.dueDate.toISOString().split('T')[0] : null,
     estimatedHours: issue.estimatedHours,
+    attachments: issue.attachments.map((attachment) => ({
+      id: attachment.id,
+      filename: attachment.filename,
+      contentType: attachment.contentType,
+      size: attachment.size,
+      createdAt: attachment.createdAt.toISOString(),
+      author: {
+        id: attachment.author.id,
+        firstName: attachment.author.firstName,
+        lastName: attachment.author.lastName,
+      },
+    })),
   }
 
   const serializedUsers = users.map((u) => ({
