@@ -109,7 +109,7 @@ type SerializedUser = {
   lastName: string
 }
 
-type DueFilter = 'this_week' | undefined
+type DueFilter = 'this_week' | 'overdue' | undefined
 
 type Props = {
   issues: IssueWithRelations[]
@@ -154,6 +154,8 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
     // Apply due date filter
     if (dueFilter === 'this_week') {
       filtered = filtered.filter(isDueThisWeek)
+    } else if (dueFilter === 'overdue') {
+      filtered = filtered.filter(isOverdue)
     }
 
     const sorted = sortIssues(filtered, sort)
@@ -321,7 +323,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                 width="w-44"
               />
 
-              {/* Due This Week Filter Badge */}
+              {/* Due Filter Badge */}
               {dueFilter === 'this_week' && (
                 <Badge
                   variant="secondary"
@@ -330,6 +332,17 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                 >
                   <AlertCircle className="size-3" />
                   Due This Week
+                  <X className="size-3" />
+                </Badge>
+              )}
+              {dueFilter === 'overdue' && (
+                <Badge
+                  variant="destructive"
+                  className="gap-1.5 px-2 py-1 cursor-pointer"
+                  onClick={() => setDueFilter(undefined)}
+                >
+                  <AlertCircle className="size-3" />
+                  Overdue
                   <X className="size-3" />
                 </Badge>
               )}

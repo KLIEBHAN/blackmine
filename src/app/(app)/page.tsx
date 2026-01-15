@@ -1,9 +1,9 @@
-import { CircleDot, FolderKanban, Clock, AlertTriangle } from 'lucide-react'
+import { CircleDot, FolderKanban, Clock, AlertTriangle, AlertOctagon } from 'lucide-react'
 import { IssuesTable, QuickActions } from '@/components/dashboard'
 import { StatCard } from '@/components/ui/stat-card'
 import { getIssues } from '@/app/actions/issues'
 import { getProjects } from '@/app/actions/projects'
-import { isDueThisWeek } from '@/types'
+import { isDueThisWeek, isOverdue } from '@/types'
 import type { SerializedIssue } from '@/components/dashboard/issues-table'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
     (i) => i.status === 'new' || i.status === 'in_progress'
   ).length
   const inProgress = issues.filter((i) => i.status === 'in_progress').length
+  const overdueCount = issues.filter(isOverdue).length
   const dueSoon = issues.filter(isDueThisWeek).length
   const activeProjects = projects.filter((p) => p.status === 'active').length
 
@@ -59,15 +60,27 @@ export default async function DashboardPage() {
 
         {/* Stats Grid */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title="Open Issues"
-            value={openIssues}
-            subtitle="Requiring attention"
-            icon={CircleDot}
-            variant="default"
-            delay={1}
-            href="/issues"
-          />
+          {overdueCount > 0 ? (
+            <StatCard
+              title="Overdue"
+              value={overdueCount}
+              subtitle="Needs immediate attention"
+              icon={AlertOctagon}
+              variant="danger"
+              delay={1}
+              href="/issues?due=overdue"
+            />
+          ) : (
+            <StatCard
+              title="Open Issues"
+              value={openIssues}
+              subtitle="Requiring attention"
+              icon={CircleDot}
+              variant="default"
+              delay={1}
+              href="/issues"
+            />
+          )}
           <StatCard
             title="In Progress"
             value={inProgress}

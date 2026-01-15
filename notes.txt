@@ -2,6 +2,26 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: "Overdue" Filter und Dashboard-Anzeige hinzugefügt**
+  - Problem: Dashboard zeigte nur "Due This Week", aber keine explizite "Overdue" Warnung
+  - Überfällige Issues sind kritischer und verdienen prominente Anzeige
+  - Lösung:
+    - Neuer URL-Parameter `due=overdue` für Issues-Seite
+    - `DueFilter` Type erweitert: `'this_week' | 'overdue' | undefined`
+    - Filter-Logik nutzt bestehende `isOverdue()` Funktion
+    - Roter "Overdue" Badge mit X-Button in Issues-Liste
+    - Dashboard: "Overdue" StatCard ersetzt "Open Issues" wenn überfällige Issues existieren
+    - `variant="danger"` für rote Hervorhebung mit AlertOctagon Icon
+  - Dateien geändert:
+    - `src/app/(app)/issues/page.tsx`: `due=overdue` Parameter Support
+    - `src/app/(app)/issues/issues-list.tsx`: DueFilter erweitert, Badge hinzugefügt
+    - `src/app/(app)/page.tsx`: Bedingte "Overdue" StatCard
+  - **223 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: "Due This Week" Filter für Issues-Liste implementiert**
   - Problem: Dashboard StatCard "Due This Week" zeigte korrekte Anzahl (z.B. "2"), aber der Link führte nur zu `/issues` ohne Filter
   - User klickte auf "Due This Week: 2" und sah alle 5 offenen Issues statt nur die 2 fälligen

@@ -53,7 +53,7 @@ export default async function IssuesPage({ searchParams }: Props) {
     : undefined
 
   // Parse due param for date-based filtering
-  const initialDueFilter = due === 'this_week' ? 'this_week' : undefined
+  const initialDueFilter = due === 'this_week' ? 'this_week' : due === 'overdue' ? 'overdue' : undefined
 
   return (
     <IssuesList
