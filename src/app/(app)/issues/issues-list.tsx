@@ -47,6 +47,7 @@ import {
   ListFilter,
   Filter,
   SlidersHorizontal,
+  FolderOpen,
   Edit2,
   Loader2,
 } from 'lucide-react'
@@ -128,8 +129,20 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
   )
   const [selectedTrackers, setSelectedTrackers] = useState<IssueTracker[]>([])
   const [selectedPriorities, setSelectedPriorities] = useState<IssuePriority[]>([])
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([])
   const [dueFilter, setDueFilter] = useState<DueFilter>(initialDueFilter)
   const [sort, setSort] = useState<IssueSort>({ field: 'dueDate', direction: 'asc' })
+
+  // Extract unique projects from issues for filter dropdown
+  const projectOptions = useMemo(() => {
+    const projectMap = new Map<string, { id: string; name: string }>()
+    issues.forEach(issue => {
+      if (!projectMap.has(issue.project.id)) {
+        projectMap.set(issue.project.id, { id: issue.project.id, name: issue.project.name })
+      }
+    })
+    return Array.from(projectMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+  }, [issues])
 
   // Selection state for bulk editing
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -142,8 +155,9 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
     status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
     tracker: selectedTrackers.length > 0 ? selectedTrackers : undefined,
     priority: selectedPriorities.length > 0 ? selectedPriorities : undefined,
+    projectId: selectedProjects.length > 0 ? selectedProjects : undefined,
     search: search || undefined,
-  }), [search, selectedStatuses, selectedTrackers, selectedPriorities])
+  }), [search, selectedStatuses, selectedTrackers, selectedPriorities, selectedProjects])
 
   // Memoize conversion separately - only recalculates when issues prop changes
   const issueObjects = useMemo(() => issues.map(toIssue), [issues])
@@ -164,7 +178,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
     return sorted.map(fi => issues.find(i => i.id === fi.id)!)
   }, [issues, issueObjects, filters, sort, dueFilter])
 
-  const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length + (dueFilter ? 1 : 0)
+  const activeFilterCount = selectedStatuses.length + selectedTrackers.length + selectedPriorities.length + selectedProjects.length + (dueFilter ? 1 : 0)
 
   // Generic toggle for multi-select filters
   const toggle = <T,>(value: T, setter: React.Dispatch<React.SetStateAction<T[]>>) => {
@@ -175,6 +189,7 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
     setSelectedStatuses([])
     setSelectedTrackers([])
     setSelectedPriorities([])
+    setSelectedProjects([])
     setDueFilter(undefined)
     setSearch('')
   }
@@ -323,6 +338,22 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
                 onToggle={(p) => toggle(p, setSelectedPriorities)}
                 width="w-44"
               />
+
+              {/* Project Filter */}
+              {projectOptions.length > 1 && (
+                <FilterDropdown<string>
+                  label="Project"
+                  menuLabel="Filter by Project"
+                  icon={FolderOpen}
+                  options={projectOptions.map((p) => ({
+                    value: p.id,
+                    label: p.name,
+                  }))}
+                  selected={selectedProjects}
+                  onToggle={(id) => toggle(id, setSelectedProjects)}
+                  width="w-52"
+                />
+              )}
 
               {/* Due Filter Badge */}
               {dueFilter === 'this_week' && (

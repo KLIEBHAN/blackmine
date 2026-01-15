@@ -7,7 +7,7 @@ export interface IssueFilters {
   status?: IssueStatus | IssueStatus[]
   priority?: IssuePriority | IssuePriority[]
   tracker?: IssueTracker | IssueTracker[]
-  projectId?: string
+  projectId?: string | string[]
   assigneeId?: string | null // null = unassigned
   search?: string
 }
@@ -43,8 +43,9 @@ export function filterIssues(issues: Issue[], filters: IssueFilters): Issue[] {
     }
 
     // Project filter
-    if (filters.projectId && issue.projectId !== filters.projectId) {
-      return false
+    if (filters.projectId) {
+      const projectIds = Array.isArray(filters.projectId) ? filters.projectId : [filters.projectId]
+      if (!projectIds.includes(issue.projectId)) return false
     }
 
     // Assignee filter (null means unassigned)

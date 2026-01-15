@@ -2,6 +2,24 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: Project-Filter für Issues-Liste**
+  - Problem: Issues-Liste hatte Filter für Status, Tracker und Priority, aber keinen Project-Filter
+  - User konnten nicht nach Projekt filtern, obwohl die Daten vorhanden waren
+  - Lösung:
+    - `IssueFilters.projectId` erweitert von `string` auf `string | string[]` (Multi-Select Support)
+    - `filterIssues()` in `src/lib/issues.ts` aktualisiert für Array-Support
+    - Neuer `FilterDropdown` für Projects in `issues-list.tsx`
+    - Projekte werden automatisch aus den Issues extrahiert (keine zusätzliche API-Anfrage)
+    - Filter nur sichtbar wenn mehr als 1 Projekt vorhanden
+  - Dateien geändert:
+    - `src/lib/issues.ts`: Multi-Project Filter Support
+    - `src/app/(app)/issues/issues-list.tsx`: Project-Filter UI hinzugefügt
+  - **232 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: "My Issues" Sektion auf Dashboard**
   - Problem: Dashboard zeigte nur "Recent Issues" (neueste 5), aber nicht die dem User zugewiesenen Issues
   - User mussten zur Issues-Seite navigieren und filtern, um ihre eigene Arbeit zu sehen
