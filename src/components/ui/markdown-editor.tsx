@@ -19,6 +19,12 @@ import {
   ListOrdered,
   FileCode,
   Quote,
+  Heading1,
+  Heading2,
+  Heading3,
+  Minus,
+  CheckSquare,
+  Image,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -163,6 +169,80 @@ function toggleBlockquote(
   return { text: newText, cursorPos }
 }
 
+function insertHeading(
+  text: string,
+  start: number,
+  end: number,
+  level: 1 | 2 | 3
+): { text: string; cursorPos: number } {
+  const before = text.slice(0, start)
+  const selected = text.slice(start, end)
+  const after = text.slice(end)
+
+  const prefix = `${'#'.repeat(level)} `
+  const needsNewline = before.length > 0 && !before.endsWith('\n')
+  const content = selected || 'Heading'
+  const newText = `${before}${needsNewline ? '\n' : ''}${prefix}${content}${after}`
+
+  const cursorPos = before.length + (needsNewline ? 1 : 0) + prefix.length + content.length
+  return { text: newText, cursorPos }
+}
+
+function insertHorizontalRule(
+  text: string,
+  start: number,
+  end: number
+): { text: string; cursorPos: number } {
+  const before = text.slice(0, start)
+  const after = text.slice(end)
+
+  const needsNewlineBefore = before.length > 0 && !before.endsWith('\n')
+  const needsNewlineAfter = after.length > 0 && !after.startsWith('\n')
+
+  const block = `${needsNewlineBefore ? '\n' : ''}---${needsNewlineAfter ? '\n' : ''}`
+  const newText = `${before}${block}${after}`
+  const cursorPos = before.length + (needsNewlineBefore ? 1 : 0) + 3
+
+  return { text: newText, cursorPos }
+}
+
+function insertTaskList(
+  text: string,
+  start: number,
+  end: number
+): { text: string; cursorPos: number } {
+  const before = text.slice(0, start)
+  const selected = text.slice(start, end)
+  const after = text.slice(end)
+
+  const needsNewline = before.length > 0 && !before.endsWith('\n')
+
+  if (selected) {
+    const lines = selected.split('\n')
+    const formatted = lines.map((line) => `- [ ] ${line}`).join('\n')
+    const newText = `${before}${needsNewline ? '\n' : ''}${formatted}${after}`
+    return { text: newText, cursorPos: start + (needsNewline ? 1 : 0) + formatted.length }
+  }
+
+  const insert = `${needsNewline ? '\n' : ''}- [ ] `
+  const newText = `${before}${insert}${after}`
+  return { text: newText, cursorPos: start + insert.length }
+}
+
+function insertImage(
+  text: string,
+  start: number,
+  end: number
+): { text: string; cursorPos: number } {
+  const before = text.slice(0, start)
+  const selected = text.slice(start, end)
+  const after = text.slice(end)
+
+  const altText = selected || 'alt text'
+  const newText = `${before}![${altText}](url)${after}`
+  return { text: newText, cursorPos: start + 2 }
+}
+
 function applyActionToView(view: EditorView, action: TextAction): boolean {
   const text = view.state.doc.toString()
   const { from, to } = view.state.selection.main
@@ -180,6 +260,12 @@ const italicAction: TextAction = (text, start, end) => wrapSelection(text, start
 const codeAction: TextAction = (text, start, end) => wrapSelection(text, start, end, '`')
 const linkAction: TextAction = insertLink
 const blockquoteAction: TextAction = toggleBlockquote
+const heading1Action: TextAction = (text, start, end) => insertHeading(text, start, end, 1)
+const heading2Action: TextAction = (text, start, end) => insertHeading(text, start, end, 2)
+const heading3Action: TextAction = (text, start, end) => insertHeading(text, start, end, 3)
+const horizontalRuleAction: TextAction = insertHorizontalRule
+const taskListAction: TextAction = insertTaskList
+const imageAction: TextAction = insertImage
 
 const markdownKeymap = keymap.of([
   { key: 'Mod-b', run: (view) => applyActionToView(view, boldAction) },
@@ -220,6 +306,48 @@ const toolbarActions: ToolbarAction[] = [
     fullOnly: true,
   },
   {
+    icon: <Quote className="size-4" />,
+    label: 'Block Quote',
+    action: blockquoteAction,
+    fullOnly: true,
+  },
+  {
+    icon: <Heading1 className="size-4" />,
+    label: 'Heading 1',
+    action: heading1Action,
+    fullOnly: true,
+  },
+  {
+    icon: <Heading2 className="size-4" />,
+    label: 'Heading 2',
+    action: heading2Action,
+    fullOnly: true,
+  },
+  {
+    icon: <Heading3 className="size-4" />,
+    label: 'Heading 3',
+    action: heading3Action,
+    fullOnly: true,
+  },
+  {
+    icon: <Minus className="size-4" />,
+    label: 'Horizontal Rule',
+    action: horizontalRuleAction,
+    fullOnly: true,
+  },
+  {
+    icon: <CheckSquare className="size-4" />,
+    label: 'Task List',
+    action: taskListAction,
+    fullOnly: true,
+  },
+  {
+    icon: <Image className="size-4" />,
+    label: 'Image',
+    action: imageAction,
+    fullOnly: true,
+  },
+  {
     icon: <Link className="size-4" />,
     label: 'Link',
     shortcut: 'Ctrl+K',
@@ -237,13 +365,8 @@ const toolbarActions: ToolbarAction[] = [
     action: (text, start, end) => insertList(text, start, end, true),
     fullOnly: true,
   },
-  {
-    icon: <Quote className="size-4" />,
-    label: 'Block Quote',
-    action: blockquoteAction,
-    fullOnly: true,
-  },
 ]
+
 
 export function MarkdownEditor({
   value,
