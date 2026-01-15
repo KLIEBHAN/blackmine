@@ -2,6 +2,21 @@
 
 
 ## Letzte Iteration (2026-01-15)
+- **UX: Accessibility und Empty-State Verbesserungen**
+  - Problem 1: Delete-Button in User-Liste hatte kein `aria-label` für Screen Reader
+  - Problem 2: Leere Listen zeigten "No X found" + "Clear filters" Button, aber User verstanden nicht, warum keine Ergebnisse angezeigt wurden
+  - Lösung:
+    - `aria-label="Delete user"` zum Delete-Button in `users-list.tsx` hinzugefügt
+    - Erklärender Hinweis "Try adjusting your X active filter(s)" in 3 Dateien:
+      - `src/app/(app)/issues/issues-list.tsx` - zeigt Anzahl aktiver Filter
+      - `src/app/(app)/projects/projects-list.tsx` - erwähnt auch "search term" wenn relevant
+      - `src/app/(app)/admin/users/users-list.tsx` - erwähnt auch "search term" wenn relevant
+  - **223 Tests grün, Lint clean, Build erfolgreich**
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
+## Vorherige Iteration (2026-01-15)
 - **UX: "Overdue" Filter und Dashboard-Anzeige hinzugefügt**
   - Problem: Dashboard zeigte nur "Due This Week", aber keine explizite "Overdue" Warnung
   - Überfällige Issues sind kritischer und verdienen prominente Anzeige

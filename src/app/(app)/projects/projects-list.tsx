@@ -167,9 +167,14 @@ export function ProjectsList({ projects, issues, totalCount }: Props) {
               <FolderKanban className="size-12 text-muted-foreground/50 mb-4" />
               <p className="text-muted-foreground">No projects found</p>
               {(activeFilterCount > 0 || search) && (
-                <Button variant="link" size="sm" onClick={clearFilters} className="mt-2" aria-label="Clear all filters">
-                  Clear filters
-                </Button>
+                <>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Try adjusting your filters{search ? ' or search term' : ''}
+                  </p>
+                  <Button variant="link" size="sm" onClick={clearFilters} className="mt-1" aria-label="Clear all filters">
+                    Clear filters
+                  </Button>
+                </>
               )}
             </CardContent>
           </Card>

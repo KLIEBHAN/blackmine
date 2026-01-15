@@ -402,9 +402,14 @@ export function IssuesList({ issues, totalCount, hideHeader = false, users = [],
               <Search className="size-8 opacity-50 text-muted-foreground mb-2" />
               <p className="text-muted-foreground">No issues found</p>
               {activeFilterCount > 0 && (
-                <Button variant="link" size="sm" onClick={clearFilters}>
-                  Clear filters
-                </Button>
+                <>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Try adjusting your {activeFilterCount} active filter{activeFilterCount > 1 ? 's' : ''}
+                  </p>
+                  <Button variant="link" size="sm" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                </>
               )}
             </CardContent>
           </Card>

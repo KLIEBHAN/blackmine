@@ -311,9 +311,14 @@ export function UsersList({ initialUsers }: UsersListProps) {
                       <Users className="size-8 opacity-50" />
                       <p>No users found</p>
                       {hasFilters && (
-                        <Button variant="link" size="sm" onClick={clearFilters}>
-                          Clear filters
-                        </Button>
+                        <>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Try adjusting your filters{search ? ' or search term' : ''}
+                          </p>
+                          <Button variant="link" size="sm" onClick={clearFilters}>
+                            Clear filters
+                          </Button>
+                        </>
                       )}
                     </div>
                   </TableCell>
@@ -385,6 +390,7 @@ export function UsersList({ initialUsers }: UsersListProps) {
                             size="sm"
                             className="text-destructive hover:text-destructive"
                             onClick={() => setUserToDelete(user)}
+                            aria-label="Delete user"
                           >
                             <Trash2 className="size-3.5" />
                           </Button>
