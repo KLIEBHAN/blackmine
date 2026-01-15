@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -11,6 +12,21 @@ import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Markdown, type FontSize } from '@/components/ui/markdown'
 import { getInitials, formatDate } from '@/lib/utils'
 import { getFullName } from '@/types'
+
+const MarkdownEditor = dynamic(
+  () => import('@/components/ui/markdown-editor').then((m) => m.MarkdownEditor),
+  {
+    loading: () => (
+      <Textarea
+        placeholder="Loading editor..."
+        disabled
+        rows={3}
+        className="animate-pulse resize-none"
+      />
+    ),
+    ssr: false,
+  }
+)
 
 export type SerializedComment = {
   id: string
@@ -163,13 +179,14 @@ export function Comments({ issueId, comments: initialComments, currentUserId, fo
         {/* Add Comment Form */}
         <Separator className="my-4" />
         <form onSubmit={handleSubmit} className="space-y-3">
-          <Textarea
-            placeholder="Write a comment..."
+          <MarkdownEditor
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            rows={3}
+            onChange={setNewComment}
+            placeholder="Write a comment..."
             disabled={isSubmitting}
-            className="resize-none"
+            toolbarVariant="compact"
+            minHeight="80px"
+            maxHeight="200px"
           />
           {error && (
             <p className="text-sm text-destructive">{error}</p>

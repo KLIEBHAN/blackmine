@@ -1,6 +1,5 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -9,27 +8,10 @@ import {
   TriangleAlertIcon,
 } from "lucide-react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-
-function getThemeSnapshot(): "light" | "dark" {
-  return document.documentElement.classList.contains("dark") ? "dark" : "light"
-}
-
-function getServerSnapshot(): "light" | "dark" {
-  return "light"
-}
-
-function subscribeToTheme(callback: () => void): () => void {
-  const observer = new MutationObserver(callback)
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
-  return () => observer.disconnect()
-}
-
-function useThemeFromDOM(): "light" | "dark" {
-  return useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerSnapshot)
-}
+import { useTheme } from "@/hooks"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const theme = useThemeFromDOM()
+  const theme = useTheme()
 
   return (
     <Sonner

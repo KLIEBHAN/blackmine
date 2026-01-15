@@ -13,6 +13,7 @@ A modern project management application inspired by Redmine, built with Next.js 
 - **Dashboard** - Overview of recent activity and project statistics
 - **Font Size Control** - Adjustable text size in issue detail view (persisted in browser)
 - **Markdown Support** - Full Markdown in descriptions and comments with syntax highlighting for code blocks
+- **Markdown Editor** - CodeMirror-based editor with toolbar for formatting (Bold, Italic, Code, Links, Lists)
 
 ## Tech Stack
 
@@ -87,6 +88,15 @@ src/
 | `↑` `↓` | Navigate search results |
 | `Enter` | Open selected issue |
 | `Escape` | Close search dropdown |
+
+### Markdown Editor Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+B` | Bold |
+| `Ctrl+I` | Italic |
+| `Ctrl+E` | Inline Code |
+| `Ctrl+K` | Insert Link |
 
 ## Accessibility
 

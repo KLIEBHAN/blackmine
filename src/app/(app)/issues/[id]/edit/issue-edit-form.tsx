@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -23,6 +24,21 @@ import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-err
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
+
+const MarkdownEditor = dynamic(
+  () => import('@/components/ui/markdown-editor').then((m) => m.MarkdownEditor),
+  {
+    loading: () => (
+      <Textarea
+        placeholder="Loading editor..."
+        disabled
+        rows={5}
+        className="max-h-80 animate-pulse"
+      />
+    ),
+    ssr: false,
+  }
+)
 
 type FormData = {
   projectId: string
@@ -233,13 +249,10 @@ export function IssueEditForm({ issue, users, projects }: Props) {
               {/* Description */}
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Detailed description of the issue..."
-                  rows={5}
-                  className="max-h-80 overflow-y-auto"
+                <MarkdownEditor
                   value={formData.description}
-                  onChange={(e) => updateField('description', e.target.value)}
+                  onChange={(value) => updateField('description', value)}
+                  placeholder="Detailed description of the issue..."
                 />
               </div>
 
