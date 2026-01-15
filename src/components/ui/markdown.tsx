@@ -8,10 +8,30 @@ import remarkBreaks from 'remark-breaks'
 import { cn } from '@/lib/utils'
 
 /**
+ * Detects if text contains Textile-specific markup patterns.
+ * Used to decide whether to apply Textile-to-Markdown conversion.
+ */
+function containsTextileMarkup(text: string): boolean {
+  const textilePatterns = [
+    /^h[1-6]\.\s/m,           // Textile headings: h1. h2. etc.
+    /^bq\.\s/m,               // Textile blockquote: bq.
+    /"[^"]+":https?:\/\//,    // Textile links: "text":url
+    /@[^@]+@/,                // Textile inline code: @code@ or @inline code@
+    /<pre>/i,                 // HTML pre tags (common in Textile)
+    /<blockquote>/i,          // HTML blockquotes
+  ]
+  return textilePatterns.some(pattern => pattern.test(text))
+}
+
+/**
  * Converts Textile markup (used by Redmine) to Markdown.
- * Handles the most common patterns.
+ * Only applies conversion if Textile-specific patterns are detected.
  */
 function textileToMarkdown(text: string): string {
+  if (!containsTextileMarkup(text)) {
+    return text
+  }
+
   let result = text
 
   // Headings: h1. -> #, h2. -> ##, etc.
@@ -20,7 +40,6 @@ function textileToMarkdown(text: string): string {
   )
 
   // Bold: *text* -> **text** (Textile uses single asterisks)
-  // Negative lookbehind/ahead to avoid matching ** or list items
   result = result.replace(/(?<!\*)\*([^\s*][^*]*[^\s*])\*(?!\*)/g, '**$1**')
   result = result.replace(/(?<!\*)\*([^\s*])\*(?!\*)/g, '**$1**')
 
@@ -28,13 +47,13 @@ function textileToMarkdown(text: string): string {
   result = result.replace(/(?<![a-zA-Z0-9])_([^_\s][^_]*[^_\s])_(?![a-zA-Z0-9])/g, '*$1*')
   result = result.replace(/(?<![a-zA-Z0-9])_([^_\s])_(?![a-zA-Z0-9])/g, '*$1*')
 
-  // Strikethrough: -text- -> ~~text~~ (skip hyphenated words like "up-to-date")
+  // Strikethrough: -text- -> ~~text~~ (skip hyphenated words)
   result = result.replace(/(?<!\w)-([^\s-][^-]*[^\s-])-(?!\w)/g, '~~$1~~')
 
   // Links: "text":url -> [text](url)
   result = result.replace(/"([^"]+)":(\S+)/g, '[$1]($2)')
 
-  // Images: !path/to/image.ext! -> ![](path) - only match paths with file extensions
+  // Images: !path/to/image.ext! -> ![](path)
   result = result.replace(/!([^\s!]+\.(png|jpe?g|gif|svg|webp|bmp|ico))!/gi, '![]($1)')
 
   // Inline code: @code@ -> `code`
