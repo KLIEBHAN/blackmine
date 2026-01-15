@@ -159,6 +159,8 @@ export function isDueThisWeek(issue: { status: string; dueDate: Date | string | 
   return dueDate >= now && dueDate <= weekFromNow
 }
 
+const MS_PER_DAY = 1000 * 60 * 60 * 24
+
 // Check if issue is due soon (today or tomorrow) but not overdue
 export function isDueSoon(issue: { status: string; dueDate: Date | string | null }): boolean {
   if (!issue.dueDate || completedStatuses.includes(issue.status)) {
@@ -166,11 +168,10 @@ export function isDueSoon(issue: { status: string; dueDate: Date | string | null
   }
   const dueDate = new Date(issue.dueDate)
   const now = new Date()
-  // Set to start of day for accurate comparison
+  // Normalize to start of day for accurate day comparison
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const dueDateDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate())
-  // Check if due date is today or tomorrow (not in the past)
-  const diffDays = Math.ceil((dueDateDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  const diffDays = (dueDateDay.getTime() - today.getTime()) / MS_PER_DAY
   return diffDays >= 0 && diffDays <= 1
 }
 
