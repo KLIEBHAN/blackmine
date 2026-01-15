@@ -25,6 +25,7 @@ import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
 import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
+import { isPdf, hasPreview } from '@/lib/attachment-preview'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
 import {
   ArrowLeft,
@@ -54,21 +55,6 @@ const MarkdownEditor = dynamic(
     ssr: false,
   }
 )
-
-/** Image MIME types that browsers can display natively */
-const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif']
-
-function isPdf(attachment: { contentType: string; filename: string }): boolean {
-  return attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
-}
-
-function isImage(attachment: { contentType: string }): boolean {
-  return IMAGE_TYPES.includes(attachment.contentType)
-}
-
-function hasPreview(attachment: { contentType: string; filename: string }): boolean {
-  return isPdf(attachment) || isImage(attachment)
-}
 
 type FormData = {
   projectId: string

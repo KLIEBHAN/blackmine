@@ -28,27 +28,12 @@ import { deleteAttachment } from '@/app/actions/attachments'
 import { useAttachmentPreview } from '@/hooks/use-pdf-preview'
 import { PdfPreview } from '@/components/ui/pdf-preview'
 import { useSession } from '@/contexts/session-context'
+import { isPdf, hasPreview } from '@/lib/attachment-preview'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
 const FONT_SIZES = Object.keys(FONT_SIZE_CONFIG) as FontSize[]
 const ATTACHMENT_BUTTON_CLASS = 'size-8 sm:size-9'
-
-/** Image MIME types that browsers can display natively */
-const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif']
-
-function isPdf(attachment: { contentType: string; filename: string }): boolean {
-  return attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
-}
-
-function isImage(attachment: { contentType: string }): boolean {
-  return IMAGE_TYPES.includes(attachment.contentType)
-}
-
-/** Check if attachment has a previewable type (PDF or image) */
-function hasPreview(attachment: { contentType: string; filename: string }): boolean {
-  return isPdf(attachment) || isImage(attachment)
-}
 
 function isValidFontSize(value: string | null): value is FontSize {
   return value !== null && FONT_SIZES.includes(value as FontSize)
