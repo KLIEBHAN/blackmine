@@ -32,6 +32,11 @@ import { useSession } from '@/contexts/session-context'
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
 const FONT_SIZES = Object.keys(FONT_SIZE_CONFIG) as FontSize[]
+const ATTACHMENT_BUTTON_CLASS = 'size-8 sm:size-9'
+
+function isPdf(attachment: { contentType: string; filename: string }): boolean {
+  return attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')
+}
 
 function isValidFontSize(value: string | null): value is FontSize {
   return value !== null && FONT_SIZES.includes(value as FontSize)
@@ -324,7 +329,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
           <div className="space-y-6">
             {/* Description Card */}
             <Card className="opacity-0 animate-card-in delay-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between space-y-0">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-lg">Description</CardTitle>
                   {issue.descriptionFormat === 'textile' && (
@@ -333,15 +338,16 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {issue.descriptionFormat === 'textile' && (
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleConvertDescription}
                       disabled={isConverting}
+                      className="text-xs sm:text-sm"
                     >
-                      {isConverting ? 'Converting...' : 'Convert to Markdown'}
+                      {isConverting ? 'Converting...' : 'Convert'}
                     </Button>
                   )}
                   <div className="flex items-center gap-1">
@@ -360,7 +366,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                       </TooltipTrigger>
                       <TooltipContent>Decrease font size</TooltipContent>
                     </Tooltip>
-                    <span className="text-xs text-muted-foreground w-12 text-center">
+                    <span className="text-xs text-muted-foreground w-8 sm:w-12 text-center">
                       {FONT_SIZE_CONFIG[fontSize].label}
                     </span>
                     <Tooltip>
@@ -412,12 +418,12 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                       <div key={attachment.id}>
                         {index > 0 && <Separator className="my-3" />}
                         <div className="flex flex-col gap-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                            <div className="min-w-0 flex-1">
                               <Button
                                 variant="link"
                                 asChild
-                                className="h-auto p-0 text-sm font-medium"
+                                className="h-auto p-0 text-sm font-medium break-all"
                               >
                                 <Link
                                   href={`/issues/${issue.id}/attachments/${attachment.id}`}
@@ -426,24 +432,29 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                   {attachment.filename}
                                 </Link>
                               </Button>
-                              <div className="text-xs text-muted-foreground">
-                                {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
-                                {attachment.author.firstName} {attachment.author.lastName} ·{' '}
-                                {formatDate(attachment.createdAt, 'datetime')}
+                              <div className="mt-1 flex flex-wrap gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground">
+                                <span>{formatFileSize(attachment.size)}</span>
+                                <span>·</span>
+                                <span className="truncate max-w-[120px] sm:max-w-none">{attachment.contentType}</span>
+                                <span className="hidden sm:inline">·</span>
+                                <span className="hidden sm:inline">{attachment.author.firstName} {attachment.author.lastName}</span>
+                                <span className="hidden sm:inline">·</span>
+                                <span className="hidden sm:inline">{formatDate(attachment.createdAt, 'datetime')}</span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              {isPdf(attachment) && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
+                                  className={ATTACHMENT_BUTTON_CLASS}
                                   onClick={() => togglePreview(attachment.id)}
                                   aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
                                 >
                                   {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </Button>
                               )}
-                              <Button variant="ghost" size="icon" asChild>
+                              <Button variant="ghost" size="icon" className={ATTACHMENT_BUTTON_CLASS} asChild>
                                 <Link
                                   href={`/issues/${issue.id}/attachments/${attachment.id}`}
                                   aria-label={`Download ${attachment.filename}`}
@@ -455,6 +466,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                 <Button
                                   variant="ghost"
                                   size="icon"
+                                  className={ATTACHMENT_BUTTON_CLASS}
                                   onClick={() => handleDeleteAttachment(attachment.id)}
                                   disabled={deletingAttachmentId === attachment.id}
                                   aria-label={`Delete ${attachment.filename}`}
@@ -465,7 +477,7 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                             </div>
                           </div>
                           {previewAttachmentId === attachment.id && (
-                            <div className="w-full h-[600px] rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                            <div className="h-[400px] sm:h-[600px] w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
                               <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
                             </div>
                           )}
