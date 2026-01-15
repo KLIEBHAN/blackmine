@@ -34,6 +34,7 @@ interface IssuesTableProps {
   issues: SerializedIssue[]
   showProject?: boolean
   className?: string
+  viewAllHref?: string
 }
 
 export function IssuesTable({
@@ -41,6 +42,7 @@ export function IssuesTable({
   issues,
   showProject = true,
   className,
+  viewAllHref = '/issues',
 }: IssuesTableProps) {
   if (issues.length === 0) {
     return (
@@ -48,7 +50,7 @@ export function IssuesTable({
         <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
           <CardTitle className="text-base font-semibold">{title}</CardTitle>
           <Link
-            href="/issues"
+            href={viewAllHref}
             className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
           >
             View all
@@ -68,7 +70,7 @@ export function IssuesTable({
       <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
         <CardTitle className="text-base font-semibold">{title}</CardTitle>
         <Link
-          href="/issues"
+          href={viewAllHref}
           className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
           View all
