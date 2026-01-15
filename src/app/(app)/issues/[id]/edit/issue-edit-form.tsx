@@ -465,72 +465,78 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                     {attachments.map((attachment, index) => (
                       <div key={attachment.id}>
                         {index > 0 && <Separator className="my-3" />}
-                          <div className="flex flex-col gap-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <Button
-                                  variant="link"
-                                  asChild
-                                  className="h-auto p-0 text-sm font-medium"
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                            <div className="min-w-0 flex-1">
+                              <Button
+                                variant="link"
+                                asChild
+                                className="h-auto p-0 text-sm font-medium break-all"
+                              >
+                                <Link
+                                  href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  aria-label={`Download ${attachment.filename}`}
                                 >
-                                  <Link
-                                    href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                    aria-label={`Download ${attachment.filename}`}
-                                  >
-                                    {attachment.filename}
-                                  </Link>
-                                </Button>
-                                <div className="text-xs text-muted-foreground">
-                                  {formatFileSize(attachment.size)} · {attachment.contentType} ·{' '}
-                                  {attachment.author.firstName} {attachment.author.lastName} ·{' '}
-                                  {formatDate(attachment.createdAt, 'datetime')}
-                                </div>
+                                  {attachment.filename}
+                                </Link>
+                              </Button>
+                              <div className="mt-1 flex flex-wrap gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground">
+                                <span>{formatFileSize(attachment.size)}</span>
+                                <span>·</span>
+                                <span className="truncate max-w-[120px] sm:max-w-none">{attachment.contentType}</span>
+                                <span className="hidden sm:inline">·</span>
+                                <span className="hidden sm:inline">{attachment.author.firstName} {attachment.author.lastName}</span>
+                                <span className="hidden sm:inline">·</span>
+                                <span className="hidden sm:inline">{formatDate(attachment.createdAt, 'datetime')}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => togglePreview(attachment.id)}
-                                    aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
-                                  >
-                                    {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                                  </Button>
-                                )}
-                                <Button variant="ghost" size="icon" asChild>
-                                  <Link
-                                    href={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                    aria-label={`Download ${attachment.filename}`}
-                                  >
-                                    <Download className="size-4" />
-                                  </Link>
-                                </Button>
+                            </div>
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              {(attachment.contentType === 'application/pdf' || attachment.filename.toLowerCase().endsWith('.pdf')) && (
                                 <Button
                                   type="button"
                                   variant="ghost"
                                   size="icon"
-                                  onClick={() => handleDeleteAttachment(attachment.id)}
-                                  disabled={deletingAttachmentId === attachment.id}
-                                  aria-label={`Delete ${attachment.filename}`}
+                                  className="size-8 sm:size-9"
+                                  onClick={() => togglePreview(attachment.id)}
+                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview PDF"}
                                 >
-                                  <Trash2 className="size-4" />
+                                  {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </Button>
-                              </div>
+                              )}
+                              <Button variant="ghost" size="icon" className="size-8 sm:size-9" asChild>
+                                <Link
+                                  href={`/issues/${issue.id}/attachments/${attachment.id}`}
+                                  aria-label={`Download ${attachment.filename}`}
+                                >
+                                  <Download className="size-4" />
+                                </Link>
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 sm:size-9"
+                                onClick={() => handleDeleteAttachment(attachment.id)}
+                                disabled={deletingAttachmentId === attachment.id}
+                                aria-label={`Delete ${attachment.filename}`}
+                              >
+                                <Trash2 className="size-4" />
+                              </Button>
                             </div>
-                            {previewAttachmentId === attachment.id && (
-                              <div className="w-full h-[600px] rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                                <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
-                              </div>
-                            )}
                           </div>
+                          {previewAttachmentId === attachment.id && (
+                            <div className="h-[400px] sm:h-[600px] w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                              <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
 
                 <Separator />
-                <div className="w-full max-w-lg">
+                <div className="w-full sm:max-w-lg">
                   <div
                     onDragOver={(e) => {
                       e.preventDefault()
@@ -548,7 +554,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                       }
                     }}
                     className={cn(
-                      'group relative grid gap-5 rounded-xl border-2 border-dashed p-6 transition-all duration-200 ease-in-out',
+                      'group relative grid gap-4 rounded-xl border-2 border-dashed p-4 sm:gap-5 sm:p-6 transition-all duration-200',
                       isDragging
                         ? 'border-primary bg-primary/5 scale-[1.01]'
                         : 'border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-muted/20'
@@ -557,26 +563,27 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                     <div className="flex flex-col items-center justify-center gap-2 text-center">
                       <div
                         className={cn(
-                          'flex size-12 items-center justify-center rounded-full transition-colors',
+                          'flex size-10 sm:size-12 items-center justify-center rounded-full transition-colors',
                           isDragging
                             ? 'bg-primary/10 text-primary'
                             : 'bg-muted text-muted-foreground group-hover:bg-background group-hover:shadow-sm'
                         )}
                       >
-                        <Upload className="size-6" />
+                        <Upload className="size-5 sm:size-6" />
                       </div>
                       <div className="space-y-1">
                         <Label
                           htmlFor="attachment-upload"
                           className="cursor-pointer text-sm font-medium hover:underline"
                         >
-                          Drag files here or click to upload
+                          <span className="hidden sm:inline">Drag files here or click to upload</span>
+                          <span className="sm:hidden">Tap to upload files</span>
                         </Label>
                         <p className="text-xs text-muted-foreground">Max file size 100 MB</p>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                       <Input
                         id="attachment-upload"
                         ref={fileInputRef}
@@ -588,7 +595,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                       <Button
                         type="button"
                         size="sm"
-                        className="gap-2 shadow-none"
+                        className="gap-2 shadow-none w-full sm:w-auto"
                         disabled={isUploading}
                         onClick={handleUploadClick}
                       >
