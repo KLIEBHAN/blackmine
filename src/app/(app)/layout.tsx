@@ -8,6 +8,7 @@ import { SessionProvider, type ClientSession } from '@/contexts/session-context'
 import type { UserRole } from '@/types'
 import { isOverdue } from '@/types'
 import { getIssues } from '@/app/actions/issues'
+import { getAppSettings } from '@/app/actions/settings'
 
 export default async function AppLayout({
   children,
@@ -21,7 +22,10 @@ export default async function AppLayout({
   }
 
   // Load issues only after session is confirmed
-  const issues = await getIssues()
+  const [issues, settings] = await Promise.all([
+    getIssues(),
+    getAppSettings(),
+  ])
 
   // Calculate sidebar counts
   const sidebarCounts: SidebarCounts = {
@@ -37,7 +41,7 @@ export default async function AppLayout({
   return (
     <SessionProvider session={clientSession}>
       <SidebarProvider defaultOpen={false}>
-        <AppSidebar counts={sidebarCounts} />
+        <AppSidebar counts={sidebarCounts} instanceName={settings.instanceName} />
         <SidebarInset>
           <DashboardHeader />
           <main className="flex-1 overflow-auto pb-20 md:pb-0">{children}</main>

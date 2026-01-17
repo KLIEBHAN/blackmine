@@ -1,5 +1,33 @@
 # Redmine Clone - Status Notes
 
+## Letzte Iteration (2026-01-17)
+- **Administration: Settings implementiert**
+  - Neue AppSettings-Tabelle inkl. Migration + server actions fuer Lesen/Aktualisieren
+  - Admin-UI `/admin/settings` + Links in Sidebar/Admin-Overview
+  - Instanzname in Sidebar/Login/Admin-Header; Default Tracker/Priority in Issue-Form
+  - DB Export/Import erweitert um Settings + Revalidation
+  - Tests in `src/lib/settings.test.ts`
+  - Dateien geaendert:
+    - `prisma/schema.prisma`
+    - `prisma/migrations/20260117150110_add_app_settings/migration.sql`
+    - `src/app/actions/settings.ts`
+    - `src/app/actions/database.ts`
+    - `src/app/(app)/admin/page.tsx`
+    - `src/app/(app)/admin/settings/page.tsx`
+    - `src/app/(app)/admin/settings/settings-form.tsx`
+    - `src/components/dashboard/app-sidebar.tsx`
+    - `src/app/(app)/layout.tsx`
+    - `src/app/(auth)/login/page.tsx`
+    - `src/app/(auth)/login/login-form.tsx`
+    - `src/app/(app)/issues/new/page.tsx`
+    - `src/app/(app)/issues/new/issue-form.tsx`
+    - `src/lib/settings.ts`
+    - `src/lib/settings.test.ts`
+    - `plans/prd.md`
+  - **Tests:** `npm run lint` (2 bestehende `<img>` warnings), `npm test -- --run`, `npm run build` (Warnung zu mehreren lockfiles + edge runtime)
+
+  **Naechste Schritte:**
+  - Routine-Checks in PRD pflegen / neue offene Features definieren
 
 ## Letzte Iteration (2026-01-17)
 - **UX: Issue-Suche ignoriert Leerzeichen**

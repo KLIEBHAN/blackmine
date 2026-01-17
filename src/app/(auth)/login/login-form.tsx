@@ -11,7 +11,11 @@ import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-err
 import { login, type LoginFormErrors } from '@/app/actions/auth'
 import { Loader2, LogIn } from 'lucide-react'
 
-export function LoginForm() {
+type LoginFormProps = {
+  instanceName: string
+}
+
+export function LoginForm({ instanceName }: LoginFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<LoginFormErrors>({})
   const [email, setEmail] = useState('')
@@ -42,7 +46,7 @@ export function LoginForm() {
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10">
             <LogIn className="size-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Sign in to Blackmine</CardTitle>
+          <CardTitle className="text-2xl">Sign in to {instanceName}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -1,13 +1,17 @@
 import Link from 'next/link'
-import { Users, Database, FolderKanban, TicketCheck, Clock } from 'lucide-react'
+import { Users, Database, Settings, FolderKanban, TicketCheck, Clock } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getDatabaseStats } from '@/app/actions/database'
+import { getAppSettings } from '@/app/actions/settings'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
-  const stats = await getDatabaseStats()
+  const [stats, settings] = await Promise.all([
+    getDatabaseStats(),
+    getAppSettings(),
+  ])
 
   const adminSections = [
     {
@@ -17,6 +21,14 @@ export default async function AdminPage() {
       icon: Users,
       stat: stats.users,
       statLabel: 'users',
+    },
+    {
+      title: 'Settings',
+      description: 'Configure global defaults and branding',
+      href: '/admin/settings',
+      icon: Settings,
+      stat: null,
+      statLabel: null,
     },
     {
       title: 'Database',
@@ -39,7 +51,7 @@ export default async function AdminPage() {
       <div className="p-6 lg:p-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold tracking-tight">Administration</h1>
-          <p className="text-muted-foreground">Manage your Blackmine instance</p>
+          <p className="text-muted-foreground">Manage your {settings.instanceName} instance</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 mb-8">

@@ -17,13 +17,17 @@
 
 ## Offen
 
-### Administration (Settings) Implementieren
-
-- Globale Einstellungen verwalten
-
 ---
 
 ## Erledigt
+
+### Administration: Settings ✅ (2026-01-17)
+
+- Globale Einstellungen (Instanzname, Default Tracker/Priority) persistiert
+- Admin-UI unter `/admin/settings` + Admin-Übersicht/Sidebar verlinkt
+- Instanzname in Login/Sidebar/Admin-Header, Defaults für neue Issues genutzt
+- DB Export/Import um Settings erweitert
+- Tests ergänzt in `src/lib/settings.test.ts`
 
 ### UX: Issue-Suche ignoriert Leerzeichen ✅ (2026-01-17)
 

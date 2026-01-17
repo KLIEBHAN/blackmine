@@ -8,6 +8,7 @@ import {
   Users,
   Plus,
   Database,
+  Settings,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -60,9 +61,10 @@ function isActiveRoute(pathname: string, href: string): boolean {
 
 type AppSidebarProps = {
   counts?: SidebarCounts
+  instanceName?: string
 }
 
-export function AppSidebar({ counts }: AppSidebarProps) {
+export function AppSidebar({ counts, instanceName }: AppSidebarProps) {
   const pathname = usePathname()
   const { session, isAdmin } = useSession()
 
@@ -75,7 +77,7 @@ export function AppSidebar({ counts }: AppSidebarProps) {
             <CircleDot className="size-5 text-sidebar-primary-foreground" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold tracking-tight">Blackmine</span>
+            <span className="text-sm font-semibold tracking-tight">{instanceName ?? 'Blackmine'}</span>
             <span className="text-xs text-sidebar-foreground/60 font-mono">v4.0.0</span>
           </div>
         </div>
@@ -151,6 +153,14 @@ export function AppSidebar({ counts }: AppSidebarProps) {
                     <Link href="/admin/users">
                       <Users className="size-4" />
                       <span>Users</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActiveRoute(pathname, '/admin/settings')} tooltip="Settings">
+                    <Link href="/admin/settings">
+                      <Settings className="size-4" />
+                      <span>Settings</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

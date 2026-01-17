@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { getUsers } from '@/app/actions/users'
 import { getProjects } from '@/app/actions/projects'
 import { IssueForm } from './issue-form'
+import { getAppSettings } from '@/app/actions/settings'
 
 // Force dynamic rendering - data comes from runtime database, not build-time
 export const dynamic = 'force-dynamic'
@@ -12,9 +13,10 @@ type Props = {
 
 export default async function NewIssuePage({ searchParams }: Props) {
   const params = await searchParams
-  const [users, projects] = await Promise.all([
+  const [users, projects, settings] = await Promise.all([
     getUsers(),
     getProjects(),
+    getAppSettings(),
   ])
 
   const serializedUsers = users.map((u) => ({
@@ -35,6 +37,8 @@ export default async function NewIssuePage({ searchParams }: Props) {
         users={serializedUsers}
         projects={serializedProjects}
         defaultProjectId={params.project}
+        defaultTracker={settings.defaultIssueTracker}
+        defaultPriority={settings.defaultIssuePriority}
       />
     </Suspense>
   )

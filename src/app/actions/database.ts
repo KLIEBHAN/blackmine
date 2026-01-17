@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { requireRole } from '@/lib/session'
+import { validateAppSettings } from '@/lib/settings'
+import type { IssuePriority, IssueTracker } from '@/types'
 
 function log(...args: unknown[]) {
   console.log('[DB]', ...args)
@@ -16,6 +18,11 @@ export interface DatabaseExport {
   version: number
   exportedAt: string
   data: {
+    settings?: {
+      instanceName: string
+      defaultIssueTracker: string
+      defaultIssuePriority: string
+    } | null
     users: Array<{
       id: string
       email: string
@@ -93,6 +100,31 @@ function validateExportData(data: unknown): { valid: boolean; error?: string } {
     }
   }
 
+  if (dataObj.settings !== undefined && dataObj.settings !== null) {
+    if (!dataObj.settings || typeof dataObj.settings !== 'object' || Array.isArray(dataObj.settings)) {
+      return { valid: false, error: 'Invalid settings format' }
+    }
+
+    const settings = dataObj.settings as Record<string, unknown>
+    if (
+      typeof settings.instanceName !== 'string' ||
+      typeof settings.defaultIssueTracker !== 'string' ||
+      typeof settings.defaultIssuePriority !== 'string'
+    ) {
+      return { valid: false, error: 'Invalid settings data: missing required fields' }
+    }
+
+    const settingsErrors = validateAppSettings({
+      instanceName: settings.instanceName,
+      defaultIssueTracker: settings.defaultIssueTracker as IssueTracker,
+      defaultIssuePriority: settings.defaultIssuePriority as IssuePriority,
+    })
+    const firstError = Object.values(settingsErrors).find(Boolean)
+    if (firstError) {
+      return { valid: false, error: `Invalid settings data: ${firstError}` }
+    }
+  }
+
   const users = dataObj.users as Array<Record<string, unknown>>
   for (const user of users) {
     if (!user.id || !user.email || !user.firstName || !user.lastName) {
@@ -158,18 +190,26 @@ function validateExportData(data: unknown): { valid: boolean; error?: string } {
 }
 
 export async function exportDatabase(): Promise<DatabaseExport> {
-  const [users, projects, issues, timeEntries, comments] = await Promise.all([
+  const [users, projects, issues, timeEntries, comments, settings] = await Promise.all([
     prisma.user.findMany(),
     prisma.project.findMany(),
     prisma.issue.findMany(),
     prisma.timeEntry.findMany(),
     prisma.comment.findMany(),
+    prisma.appSettings.findUnique({ where: { id: 'global' } }),
   ])
 
   return {
     version: 1,
     exportedAt: new Date().toISOString(),
     data: {
+      settings: settings
+        ? {
+            instanceName: settings.instanceName,
+            defaultIssueTracker: settings.defaultIssueTracker,
+            defaultIssuePriority: settings.defaultIssuePriority,
+          }
+        : null,
       users: users.map((u) => ({ ...u, createdAt: u.createdAt.toISOString() })),
       projects: projects.map((p) => ({
         ...p,
@@ -227,6 +267,19 @@ export async function importDatabase(
       await tx.issue.deleteMany()
       await tx.project.deleteMany()
       await tx.user.deleteMany()
+      await tx.appSettings.deleteMany()
+
+      if (data.data.settings) {
+        log('Inserting settings...')
+        await tx.appSettings.create({
+          data: {
+            id: 'global',
+            instanceName: data.data.settings.instanceName,
+            defaultIssueTracker: data.data.settings.defaultIssueTracker,
+            defaultIssuePriority: data.data.settings.defaultIssuePriority,
+          },
+        })
+      }
 
       log('Inserting users...')
       for (const user of data.data.users) {
@@ -315,11 +368,14 @@ export async function importDatabase(
     // Revalidate all affected pages
     log('Revalidating cached pages...')
     revalidatePath('/', 'layout')
+    revalidatePath('/admin')
     revalidatePath('/admin/users')
     revalidatePath('/admin/database')
+    revalidatePath('/admin/settings')
     revalidatePath('/projects')
     revalidatePath('/issues')
     revalidatePath('/time')
+    revalidatePath('/login')
 
     return { success: true, counts: finalCounts }
   } catch (error) {
