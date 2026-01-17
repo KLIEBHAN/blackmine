@@ -2,6 +2,20 @@
 
 
 ## Letzte Iteration (2026-01-17)
+- **UX: Issue-Suche ignoriert Leerzeichen**
+  - Problem: Suche mit Fuehrungs/Trailing-Spaces oder nur Whitespace liefert unerwartete Ergebnisse
+  - Loesung: `filterIssues()` trimmt Suchbegriff; Whitespace-only Suche wird ignoriert
+  - Tests in `src/lib/issues.test.ts` ergaenzt
+  - Dateien geaendert:
+    - `src/lib/issues.ts`: Suchbegriff trimmen
+    - `src/lib/issues.test.ts`: Tests fuer Trim + Whitespace
+    - `plans/prd.md`: Feature dokumentiert
+  - **Tests:** `npm run lint` (2 bestehende warnings zu `<img>`), `npm test -- --run`, `npm run build` (Next.js Warnung zu mehreren lockfiles + edge runtime)
+
+  **Naechste Schritte:**
+  - PRD-Task: Administration (Settings) implementieren
+
+## Letzte Iteration (2026-01-17)
 - **UX: Issue-Suche nach ID**
   - Problem: Suche berücksichtigt nur Subject/Description, Issue-ID nicht
   - Lösung: `filterIssues()` prüft jetzt zusätzlich `issue.id`

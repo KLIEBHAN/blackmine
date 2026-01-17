@@ -85,6 +85,16 @@ describe('filterIssues', () => {
     expect(result).toHaveLength(1)
   })
 
+  it('trims search input before matching', () => {
+    const result = filterIssues(testIssues, { search: '  bug  ' })
+    expect(result).toHaveLength(1)
+  })
+
+  it('ignores whitespace-only search', () => {
+    const result = filterIssues(testIssues, { search: '   ' })
+    expect(result).toHaveLength(5)
+  })
+
   it('filters by search in id', () => {
     const issue = createIssue({ id: 'issue-abc123', subject: 'No match', description: 'No match' })
     const result = filterIssues([issue], { search: 'abc123' })

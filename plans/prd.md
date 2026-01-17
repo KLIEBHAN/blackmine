@@ -17,10 +17,6 @@
 
 ## Offen
 
-### UX verbessern
-
-- Weitere UX-Verbesserungen identifizieren und umsetzen
-
 ### Administration (Settings) Implementieren
 
 - Globale Einstellungen verwalten
@@ -28,6 +24,12 @@
 ---
 
 ## Erledigt
+
+### UX: Issue-Suche ignoriert Leerzeichen ✅ (2026-01-17)
+
+- `filterIssues` trimmt den Suchbegriff vor dem Matching
+- Whitespace-only Suche filtert nicht mehr alles weg
+- Tests ergänzt in `src/lib/issues.test.ts`
 
 ### UX: Issue-Suche findet IDs ✅ (2026-01-17)
 
