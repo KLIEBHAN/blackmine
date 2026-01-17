@@ -1,6 +1,20 @@
 # Redmine Clone - Status Notes
 
 
+## Letzte Iteration (2026-01-17)
+- **UX: Issue-Suche nach ID**
+  - Problem: Suche berücksichtigt nur Subject/Description, Issue-ID nicht
+  - Lösung: `filterIssues()` prüft jetzt zusätzlich `issue.id`
+  - Test ergänzt in `src/lib/issues.test.ts`
+  - Dateien geändert:
+    - `src/lib/issues.ts`: ID-Search Support
+    - `src/lib/issues.test.ts`: Test für ID-Suche
+    - `plans/prd.md`: Feature dokumentiert
+  - **Tests:** `npm run lint` (2 bestehende warnings zu `<img>`), `npm test`, `npm run build` (Next.js Warnung zu mehreren lockfiles + edge runtime)
+
+  **Nächste Schritte:**
+  - PRD-Task: Weitere UX-Verbesserungen oder Administration (Settings)
+
 ## Letzte Iteration (2026-01-15)
 - **UX: Project-Filter für Issues-Liste**
   - Problem: Issues-Liste hatte Filter für Status, Tracker und Priority, aber keinen Project-Filter

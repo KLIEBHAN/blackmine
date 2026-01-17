@@ -29,6 +29,11 @@
 
 ## Erledigt
 
+### UX: Issue-Suche findet IDs ✅ (2026-01-17)
+
+- `filterIssues` berücksichtigt jetzt Issue-ID beim Suchen
+- Test ergänzt für ID-Suche
+
 ### Auth: UI Rollen-Berechtigungen ✅ (2026-01-13)
 
 - **SessionContext:** `SessionProvider` + `useSession()` Hook für Client-Komponenten

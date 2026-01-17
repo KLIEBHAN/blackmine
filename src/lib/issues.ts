@@ -54,12 +54,13 @@ export function filterIssues(issues: Issue[], filters: IssueFilters): Issue[] {
       if (filters.assigneeId !== null && issue.assigneeId !== filters.assigneeId) return false
     }
 
-    // Search filter (searches subject and description)
+    // Search filter (searches subject, description, and id)
     if (filters.search) {
       const searchLower = filters.search.toLowerCase()
       const matchesSubject = issue.subject.toLowerCase().includes(searchLower)
       const matchesDescription = issue.description.toLowerCase().includes(searchLower)
-      if (!matchesSubject && !matchesDescription) return false
+      const matchesId = issue.id.toLowerCase().includes(searchLower)
+      if (!matchesSubject && !matchesDescription && !matchesId) return false
     }
 
     return true
