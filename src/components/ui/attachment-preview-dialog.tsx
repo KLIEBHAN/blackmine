@@ -46,15 +46,18 @@ export function AttachmentPreviewDialog({
   const [zoom, setZoom] = useState(1.0)
   const [zoomMode, setZoomMode] = useState<ZoomMode>('fitPage')
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [attachmentKey, setAttachmentKey] = useState(attachment.id)
 
   const contentRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  // Reset state when attachment changes (via key change pattern)
+  if (attachment.id !== attachmentKey) {
+    setAttachmentKey(attachment.id)
     setPage(1)
     setTotalPages(null)
     setZoom(1.0)
     setZoomMode('fitPage')
-  }, [attachment.id])
+  }
 
   useEffect(() => {
     function syncFullscreenState() {
@@ -107,7 +110,7 @@ export function AttachmentPreviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-none w-[calc(100vw-2rem)] h-[calc(100vh-2rem)] p-0 gap-0 flex flex-col bg-zinc-950 border-zinc-800 overflow-hidden"
+        className="max-w-none w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] p-0 gap-0 flex flex-col bg-zinc-950 border-zinc-800 overflow-hidden"
       >
         <div ref={contentRef} className="flex flex-col h-full w-full bg-zinc-950">
           <DialogHeader className="flex-row items-center gap-2 px-4 h-14 bg-zinc-900 border-b border-zinc-800 shrink-0 space-y-0">
@@ -247,18 +250,14 @@ export function AttachmentPreviewDialog({
             </div>
           </DialogHeader>
 
-          <div className="flex-1 min-h-0 w-full overflow-hidden bg-zinc-950 relative">
+          <div className="flex-1 min-h-0 w-full overflow-hidden bg-zinc-950">
             {isPdfFile ? (
               <PdfPreview 
                 url={attachmentUrl} 
-                showToolbar={false}
                 currentPage={page}
-                onPageChange={setPage}
-                onTotalPages={(n) => setTotalPages(n)}
+                onTotalPages={setTotalPages}
                 zoom={zoom}
-                onZoomChange={setZoom}
                 zoomMode={zoomMode}
-                onZoomModeChange={setZoomMode}
               />
             ) : (
               <div className="flex items-center justify-center h-full p-4">
