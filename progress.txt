@@ -125,3 +125,25 @@ Component tests were not added because:
 1. Project uses Vitest for unit tests of business logic (actions, utils, forms)
 2. No component testing infrastructure exists (@testing-library/react not set up)
 3. StatusSelect is a pure composition of already-tested primitives with no business logic
+
+## 2026-01-19: Add Status Validation to bulkUpdateIssues
+
+### Completed
+- Added status validation to `bulkUpdateIssues` Action in `src/app/actions/issues.ts`
+  - Validates `data.status` against `allIssueStatuses` before updating
+  - Returns error `{ success: false, error: "Invalid status: ..." }` for invalid status
+  - Consistent with validation in `updateIssue` and `updateIssueStatus`
+
+- Added unit tests for `bulkUpdateIssues` status validation in `src/app/actions/issues.test.ts`
+  - Tests successful bulk update with valid status
+  - Tests rejection of invalid status values
+  - Tests all 5 valid status values using parameterized tests
+
+### Test Results
+- 261 tests passing (22 in issues.test.ts, +7 new tests)
+- Lint: 0 errors (2 pre-existing warnings unrelated to this change)
+
+### Files Changed
+- src/app/actions/issues.ts (added status validation to bulkUpdateIssues)
+- src/app/actions/issues.test.ts (added bulkUpdateIssues tests, updated mocks)
+- PRD.md (marked Codeoptimierung task 2 complete)

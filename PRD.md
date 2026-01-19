@@ -35,7 +35,7 @@ Benutzer sollen den Status eines Issues direkt in der Issue-Detail-Ansicht ände
 
 - [x] Extrahiere eine wiederverwendbare `StatusSelect`-Komponente aus der Issue-Sidebar nach `src/components/ui/status-select.tsx`. Die Komponente soll den aktuellen Status, einen onChange-Handler und optional einen disabled-State akzeptieren. Nutze sie dann sowohl in der Sidebar als auch im Edit-Formular, um Code-Duplikation zu vermeiden.
 
-- [ ] Prüfe die `bulkUpdateIssues` Action in `src/app/actions/issues.ts` – sie validiert den Status aktuell NICHT gegen `allIssueStatuses`. Füge die gleiche Validierung hinzu wie in `updateIssue` und `updateIssueStatus`.
+- [x] Prüfe die `bulkUpdateIssues` Action in `src/app/actions/issues.ts` – sie validiert den Status aktuell NICHT gegen `allIssueStatuses`. Füge die gleiche Validierung hinzu wie in `updateIssue` und `updateIssueStatus`.
 
 ## Dokumentation
 

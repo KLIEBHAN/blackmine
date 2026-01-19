@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { updateIssueStatus, updateIssue } from './issues'
+import { updateIssueStatus, updateIssue, bulkUpdateIssues } from './issues'
 
 // Mock the database
 vi.mock('@/lib/db', () => ({
   prisma: {
     issue: {
       update: vi.fn(),
+      updateMany: vi.fn(),
     },
   },
 }))
@@ -146,5 +147,51 @@ describe('updateIssue with status', () => {
     const result = await updateIssue('issue-1', { status })
 
     expect(result.success).toBe(true)
+  })
+})
+
+describe('bulkUpdateIssues status validation', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('successfully bulk updates with valid status', async () => {
+    vi.mocked(prisma.issue.updateMany).mockResolvedValue({ count: 3 })
+
+    const result = await bulkUpdateIssues(['issue-1', 'issue-2', 'issue-3'], {
+      status: 'closed',
+    })
+
+    expect(result.success).toBe(true)
+    expect(result.updatedCount).toBe(3)
+    expect(prisma.issue.updateMany).toHaveBeenCalledWith({
+      where: { id: { in: ['issue-1', 'issue-2', 'issue-3'] } },
+      data: { status: 'closed' },
+    })
+  })
+
+  it('rejects invalid status in bulk update', async () => {
+    const result = await bulkUpdateIssues(['issue-1', 'issue-2'], {
+      status: 'invalid_status',
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.error).toBe('Invalid status: invalid_status')
+    expect(prisma.issue.updateMany).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    'new',
+    'in_progress',
+    'resolved',
+    'closed',
+    'rejected',
+  ])('accepts valid status in bulk update: %s', async (status) => {
+    vi.mocked(prisma.issue.updateMany).mockResolvedValue({ count: 2 })
+
+    const result = await bulkUpdateIssues(['issue-1', 'issue-2'], { status })
+
+    expect(result.success).toBe(true)
+    expect(result.updatedCount).toBe(2)
   })
 })

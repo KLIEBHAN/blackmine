@@ -317,6 +317,9 @@ export async function bulkUpdateIssues(
   const updateData: Record<string, unknown> = {}
 
   if (data.status !== undefined) {
+    if (!allIssueStatuses.includes(data.status as IssueStatus)) {
+      return { success: false, error: `Invalid status: ${data.status}` }
+    }
     updateData.status = data.status
   }
   if (data.priority !== undefined) {
