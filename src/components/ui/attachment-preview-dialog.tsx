@@ -110,7 +110,7 @@ export function AttachmentPreviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-none w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] p-0 gap-0 flex flex-col bg-zinc-950 border-zinc-800 overflow-hidden"
+        className="max-w-none w-screen h-screen p-0 gap-0 flex flex-col bg-zinc-950 border-0 rounded-none overflow-hidden"
       >
         <div ref={contentRef} className="flex flex-col h-full w-full bg-zinc-950">
           <DialogHeader className="flex-row items-center gap-2 px-4 h-14 bg-zinc-900 border-b border-zinc-800 shrink-0 space-y-0">
