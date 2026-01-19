@@ -38,7 +38,7 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react'
-import { type IssueTracker, type IssuePriority, trackerOptions, priorityOptions, getFullName } from '@/types'
+import { type IssueTracker, type IssuePriority, type IssueStatus, trackerOptions, priorityOptions, allIssueStatuses, statusLabels, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
 const MarkdownEditor = dynamic(
@@ -59,6 +59,7 @@ const MarkdownEditor = dynamic(
 type FormData = {
   projectId: string
   tracker: IssueTracker
+  status: IssueStatus
   subject: string
   description: string
   priority: IssuePriority
@@ -124,6 +125,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
   const [formData, setFormData] = useState<FormData>({
     projectId: issue.projectId,
     tracker: issue.tracker as IssueTracker,
+    status: issue.status as IssueStatus,
     subject: issue.subject,
     description: initialDescription,
     priority: issue.priority as IssuePriority,
@@ -149,6 +151,7 @@ export function IssueEditForm({ issue, users, projects }: Props) {
     const result = await updateIssue(issue.id, {
       projectId: formData.projectId,
       tracker: formData.tracker,
+      status: formData.status,
       subject: formData.subject,
       description: formData.description,
       priority: formData.priority,
@@ -271,8 +274,8 @@ export function IssueEditForm({ issue, users, projects }: Props) {
               {/* General Error */}
               <GeneralFormError error={errors.general} />
 
-              {/* Project & Tracker Row */}
-              <div className="grid gap-4 sm:grid-cols-2">
+              {/* Project, Tracker & Status Row */}
+              <div className="grid gap-4 sm:grid-cols-3">
                 {/* Project */}
                 <div className="space-y-2">
                   <Label htmlFor="project" className={cn(hasError('projectId') && 'text-destructive')}>
@@ -333,6 +336,26 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                     </SelectContent>
                   </Select>
                   <FormFieldError error={errors.tracker} />
+                </div>
+
+                {/* Status */}
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value) => updateField('status', value as IssueStatus)}
+                  >
+                    <SelectTrigger id="status" className={cn(`status-${formData.status}`)}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allIssueStatuses.map((status) => (
+                        <SelectItem key={status} value={status} className={cn(`status-${status}`)}>
+                          {statusLabels[status]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

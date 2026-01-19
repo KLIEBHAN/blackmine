@@ -58,3 +58,36 @@ The unit tests for `updateIssueStatus` were already implemented in a previous se
 
 ### Status
 All PRD tasks are now complete.
+
+## 2026-01-19: Add Status Field to Issue-Edit-Form
+
+### Completed
+- Added status field to Issue-Edit-Form (`src/app/(app)/issues/[id]/edit/issue-edit-form.tsx`)
+  - Extended `FormData` type to include `status: IssueStatus`
+  - Initialized status from `issue.status`
+  - Added Select dropdown for status (placed after Tracker in a 3-column grid)
+  - Status dropdown shows all 5 status options with appropriate styling
+  - Status is passed to `updateIssue` server action on form submit
+
+- Extended `updateIssue` Server Action in `src/app/actions/issues.ts`
+  - Added `status` field to `IssueFormData` type
+  - Added validation: rejects invalid status values against `allIssueStatuses`
+  - Returns error with `{ errors: { general: "Invalid status: ..." } }` for invalid status
+
+- Added unit tests for `updateIssue` with status in `src/app/actions/issues.test.ts`
+  - Tests successful status update via `updateIssue`
+  - Tests rejection of invalid status values
+  - Tests all 5 valid status values using parameterized tests
+
+### Test Results
+- 254 tests passing (15 in issues.test.ts)
+- Lint: 0 errors (2 pre-existing warnings unrelated to this change)
+
+### Files Changed
+- src/app/(app)/issues/[id]/edit/issue-edit-form.tsx (added status select)
+- src/app/actions/issues.ts (added status to IssueFormData, added validation)
+- src/app/actions/issues.test.ts (added tests for updateIssue with status)
+- PRD.md (marked tasks 4 and 5 complete)
+
+### Status
+All PRD tasks are now complete.

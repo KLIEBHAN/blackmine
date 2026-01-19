@@ -10,6 +10,7 @@ import { allIssueStatuses, type IssueStatus } from '@/types'
 export type IssueFormData = {
   projectId: string
   tracker: string
+  status?: string
   subject: string
   description?: string
   priority: string
@@ -155,7 +156,7 @@ export async function createIssue(data: IssueFormData) {
 }
 
 // Update an existing issue
-export async function updateIssue(id: string, data: Partial<IssueFormData> & { status?: string }) {
+export async function updateIssue(id: string, data: Partial<IssueFormData>) {
   await requireAuth()
   
   const updateData: Record<string, unknown> = {}
@@ -174,6 +175,9 @@ export async function updateIssue(id: string, data: Partial<IssueFormData> & { s
     updateData.tracker = data.tracker
   }
   if (data.status !== undefined) {
+    if (!allIssueStatuses.includes(data.status as IssueStatus)) {
+      return { success: false, errors: { general: `Invalid status: ${data.status}` } }
+    }
     updateData.status = data.status
   }
   if (data.priority !== undefined) {
