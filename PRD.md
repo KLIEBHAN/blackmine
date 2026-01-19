@@ -30,3 +30,19 @@ Benutzer sollen den Status eines Issues direkt in der Issue-Detail-Ansicht ände
 - [x] Status-Feld im Issue-Edit-Formular (`src/app/(app)/issues/[id]/edit/issue-edit-form.tsx`) hinzufügen. Erweitere das `FormData` Type um `status: IssueStatus`. Initialisiere den Status aus `issue.status`. Füge ein Select-Dropdown für den Status hinzu (analog zu Tracker/Priority). Übergib den Status an die `updateIssue` Server Action. Platziere das Status-Select direkt nach dem Tracker-Select im Formular.
 
 - [x] Die `updateIssue` Server Action in `src/app/actions/issues.ts` erweitern, sodass sie auch den `status` akzeptiert und in der Datenbank aktualisiert. Validiere den Status gegen `allIssueStatuses`. Aktualisiere auch den `IssueFormInput` Type entsprechend.
+
+## Codeoptimierung
+
+- [x] Extrahiere eine wiederverwendbare `StatusSelect`-Komponente aus der Issue-Sidebar nach `src/components/ui/status-select.tsx`. Die Komponente soll den aktuellen Status, einen onChange-Handler und optional einen disabled-State akzeptieren. Nutze sie dann sowohl in der Sidebar als auch im Edit-Formular, um Code-Duplikation zu vermeiden.
+
+- [ ] Prüfe die `bulkUpdateIssues` Action in `src/app/actions/issues.ts` – sie validiert den Status aktuell NICHT gegen `allIssueStatuses`. Füge die gleiche Validierung hinzu wie in `updateIssue` und `updateIssueStatus`.
+
+## Dokumentation
+
+- [ ] Ergänze die CLAUDE.md um eine Sektion "Issue-Workflow", die erklärt: (1) welche Status-Werte existieren, (2) wie Status-Übergänge funktionieren (aktuell frei, später ggf. Workflow-Regeln), (3) wo die Status-Logik implementiert ist (types, actions, components).
+
+## Aufräumarbeiten
+
+- [ ] Entferne die `progress.txt` Datei aus dem Repository (wurde von Ralphy erstellt, ist nicht mehr nötig). Füge `progress.txt` zur `.gitignore` hinzu.
+
+- [ ] Prüfe ob die `PRD.md` nach Abschluss aller Tasks ins Repository committed werden soll oder ob sie entfernt/archiviert werden soll. Falls archivieren: verschiebe nach `docs/features/issue-status.md`.

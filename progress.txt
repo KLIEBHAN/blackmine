@@ -91,3 +91,37 @@ All PRD tasks are now complete.
 
 ### Status
 All PRD tasks are now complete.
+
+## 2026-01-19: Extract Reusable StatusSelect Component
+
+### Completed
+- Created `StatusSelect` component in `src/components/ui/status-select.tsx`
+  - Supports two variants: 'default' (form field style) and 'inline' (badge-style for sidebar)
+  - Accepts `value`, `onValueChange`, `disabled`, `variant`, `align`, `id`, and `className` props
+  - Type-safe: `onValueChange` callback receives `IssueStatus` type
+  - Uses existing `allIssueStatuses` and `statusLabels` from types
+
+- Refactored `IssueSidebar` (`src/app/(app)/issues/[id]/issue-sidebar.tsx`)
+  - Replaced inline Select with `StatusSelect` using `variant="inline"`
+  - Updated handler to use `IssueStatus` type instead of `string`
+  - Removed unused Select component imports
+
+- Refactored `IssueEditForm` (`src/app/(app)/issues/[id]/edit/issue-edit-form.tsx`)
+  - Replaced status Select with `StatusSelect` using `variant="default"`
+  - Removed unused `allIssueStatuses` and `statusLabels` imports
+
+### Test Results
+- 254 tests passing
+- Lint: 0 errors (2 pre-existing warnings unrelated to this change)
+
+### Files Changed
+- src/components/ui/status-select.tsx (new file)
+- src/app/(app)/issues/[id]/issue-sidebar.tsx (uses StatusSelect)
+- src/app/(app)/issues/[id]/edit/issue-edit-form.tsx (uses StatusSelect)
+- PRD.md (marked Codeoptimierung task 1 complete)
+
+### Design Notes
+Component tests were not added because:
+1. Project uses Vitest for unit tests of business logic (actions, utils, forms)
+2. No component testing infrastructure exists (@testing-library/react not set up)
+3. StatusSelect is a pure composition of already-tested primitives with no business logic

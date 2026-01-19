@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { StatusSelect } from '@/components/ui/status-select'
 import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
@@ -38,7 +39,7 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react'
-import { type IssueTracker, type IssuePriority, type IssueStatus, trackerOptions, priorityOptions, allIssueStatuses, statusLabels, getFullName } from '@/types'
+import { type IssueTracker, type IssuePriority, type IssueStatus, trackerOptions, priorityOptions, getFullName } from '@/types'
 import { useFormField } from '@/hooks'
 
 const MarkdownEditor = dynamic(
@@ -341,21 +342,11 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                 {/* Status */}
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
-                  <Select
+                  <StatusSelect
+                    id="status"
                     value={formData.status}
-                    onValueChange={(value) => updateField('status', value as IssueStatus)}
-                  >
-                    <SelectTrigger id="status" className={cn(`status-${formData.status}`)}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allIssueStatuses.map((status) => (
-                        <SelectItem key={status} value={status} className={cn(`status-${status}`)}>
-                          {statusLabels[status]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onValueChange={(status) => updateField('status', status)}
+                  />
                 </div>
               </div>
 

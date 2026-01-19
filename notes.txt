@@ -1,6 +1,14 @@
 # Redmine Clone - Status Notes
 
 ## Letzte Iteration (2026-01-17)
+- **Workflow-Check:** `git diff` clean, `git status` clean, PRD "Offen" leer
+- **TODO-Suche:** Keine TODOs im Code gefunden (`rg -n "TODO"`)
+- **Tests:** `npm run test:run` (239 Tests gruen)
+
+**Naechste Schritte:**
+- PRD "Offen" auffuellen, falls neue Features priorisiert werden sollen
+
+## Letzte Iteration (2026-01-17)
 - **Administration: Settings implementiert**
   - Neue AppSettings-Tabelle inkl. Migration + server actions fuer Lesen/Aktualisieren
   - Admin-UI `/admin/settings` + Links in Sidebar/Admin-Overview
