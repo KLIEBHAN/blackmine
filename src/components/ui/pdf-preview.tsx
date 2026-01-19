@@ -21,11 +21,10 @@ interface PdfPreviewProps {
   url: string
 }
 
-/** Determines how the PDF page is sized within the container */
-type ZoomMode = 'scale' | 'fitWidth' | 'fitPage'
+export type ZoomMode = 'scale' | 'fitWidth' | 'fitPage'
 
 /** Predefined zoom levels for consistent stepping (50% to 300%) */
-const ZOOM_LEVELS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0] as const
+export const ZOOM_LEVELS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0] as const
 const INITIAL_ZOOM = 1.0
 
 /** Padding inside the PDF content area (used for size calculations) */
@@ -35,19 +34,75 @@ const CONTENT_PADDING = 32 // 16px on each side
 // Component
 // ============================================================================
 
+interface PdfPreviewProps {
+  /** URL to the PDF file (can be a relative path or absolute URL) */
+  url: string
+  /** Whether to show the internal toolbar. Defaults to true. */
+  showToolbar?: boolean
+  /** Controlled current page number */
+  currentPage?: number
+  /** Callback when page changes */
+  onPageChange?: (page: number) => void
+  /** Controlled zoom level */
+  zoom?: number
+  /** Callback when zoom changes */
+  onZoomChange?: (zoom: number) => void
+  /** Controlled zoom mode */
+  zoomMode?: ZoomMode
+  /** Callback when zoom mode changes */
+  onZoomModeChange?: (mode: ZoomMode) => void
+  /** Callback when total pages are loaded */
+  onTotalPages?: (total: number) => void
+}
+
 /**
  * Renders a PDF with toolbar controls for zoom, fit modes, fullscreen, and pagination.
  * Uses react-pdf (PDF.js) for cross-browser compatibility.
  */
-export function PdfPreview({ url }: PdfPreviewProps) {
+export function PdfPreview({
+  url,
+  showToolbar = true,
+  currentPage: controlledPage,
+  onPageChange,
+  zoom: controlledZoom,
+  onZoomChange,
+  zoomMode: controlledZoomMode,
+  onZoomModeChange,
+  onTotalPages,
+}: PdfPreviewProps) {
   // --- Document State ---
-  const [totalPages, setTotalPages] = useState<number | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [internalTotalPages, setInternalTotalPages] = useState<number | null>(null)
+  const totalPages = internalTotalPages
+
+  const [internalPage, setInternalPage] = useState(1)
+  const currentPage = controlledPage ?? internalPage
+
   const [hasError, setHasError] = useState(false)
 
   // --- Zoom State ---
-  const [manualZoom, setManualZoom] = useState(INITIAL_ZOOM)
-  const [zoomMode, setZoomMode] = useState<ZoomMode>('fitPage')
+  const [internalZoom, setInternalZoom] = useState(INITIAL_ZOOM)
+  const manualZoom = controlledZoom ?? internalZoom
+
+  const [internalZoomMode, setInternalZoomMode] = useState<ZoomMode>('fitPage')
+  const zoomMode = controlledZoomMode ?? internalZoomMode
+
+  // --- Helpers for State Updates ---
+  const setCurrentPage = (page: number | ((prev: number) => number)) => {
+    const newPage = typeof page === 'function' ? page(currentPage) : page
+    setInternalPage(newPage)
+    onPageChange?.(newPage)
+  }
+
+  const setManualZoom = (zoom: number | ((prev: number) => number)) => {
+    const newZoom = typeof zoom === 'function' ? zoom(manualZoom) : zoom
+    setInternalZoom(newZoom)
+    onZoomChange?.(newZoom)
+  }
+
+  const setZoomMode = (mode: ZoomMode) => {
+    setInternalZoomMode(mode)
+    onZoomModeChange?.(mode)
+  }
 
   // --- Layout State ---
   const [contentDimensions, setContentDimensions] = useState<{ width: number; height: number } | null>(null)
@@ -106,7 +161,8 @@ export function PdfPreview({ url }: PdfPreviewProps) {
   // ============================================================================
 
   function handleDocumentLoad({ numPages }: { numPages: number }) {
-    setTotalPages(numPages)
+    setInternalTotalPages(numPages)
+    onTotalPages?.(numPages)
     setHasError(false)
   }
 
@@ -200,7 +256,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
 
   const isMultiPage = totalPages !== null && totalPages > 1
   const isFirstPage = currentPage <= 1
-  const isLastPage = totalPages !== null && currentPage >= totalPages
+  const isLastPage = totalPages !== null && (totalPages ? currentPage >= totalPages : true)
 
   // ============================================================================
   // Render
@@ -220,104 +276,106 @@ export function PdfPreview({ url }: PdfPreviewProps) {
   return (
     <div ref={rootContainerRef} className="flex flex-col h-full bg-background">
       {/* Toolbar */}
-      <div className="flex items-center justify-center gap-1 py-1.5 px-2 border-b bg-muted/30">
-        {/* Zoom Controls */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8" onClick={zoomOut} disabled={!canZoomOut}>
-              <ZoomOut className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Zoom out</TooltipContent>
-        </Tooltip>
+      {showToolbar && (
+        <div className="flex items-center justify-center gap-1 py-1.5 px-2 border-b bg-muted/30">
+          {/* Zoom Controls */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8" onClick={zoomOut} disabled={!canZoomOut}>
+                <ZoomOut className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Zoom out</TooltipContent>
+          </Tooltip>
 
-        <span className="text-xs text-muted-foreground w-12 text-center">
-          {getZoomLabel()}
-        </span>
+          <span className="text-xs text-muted-foreground w-12 text-center">
+            {getZoomLabel()}
+          </span>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8" onClick={zoomIn} disabled={!canZoomIn}>
-              <ZoomIn className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Zoom in</TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8" onClick={zoomIn} disabled={!canZoomIn}>
+                <ZoomIn className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Zoom in</TooltipContent>
+          </Tooltip>
 
-        <ToolbarDivider />
+          <ToolbarDivider />
 
-        {/* Fit Mode Controls */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={zoomMode === 'fitWidth' ? 'secondary' : 'ghost'}
-              size="icon"
-              className="size-8"
-              onClick={setFitToWidth}
-            >
-              <MoveHorizontal className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Fit to width</TooltipContent>
-        </Tooltip>
+          {/* Fit Mode Controls */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={zoomMode === 'fitWidth' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="size-8"
+                onClick={setFitToWidth}
+              >
+                <MoveHorizontal className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Fit to width</TooltipContent>
+          </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={zoomMode === 'fitPage' ? 'secondary' : 'ghost'}
-              size="icon"
-              className="size-8"
-              onClick={setFitToPage}
-            >
-              <Maximize className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Fit to page</TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={zoomMode === 'fitPage' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="size-8"
+                onClick={setFitToPage}
+              >
+                <Maximize className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Fit to page</TooltipContent>
+          </Tooltip>
 
-        <ToolbarDivider />
+          <ToolbarDivider />
 
-        {/* Fullscreen Toggle */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8" onClick={toggleFullscreen}>
-              {isFullscreen ? <Minimize2 className="size-4" /> : <Expand className="size-4" />}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
-        </Tooltip>
+          {/* Fullscreen Toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8" onClick={toggleFullscreen}>
+                {isFullscreen ? <Minimize2 className="size-4" /> : <Expand className="size-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
+          </Tooltip>
 
-        {/* Page Navigation (only shown for multi-page PDFs) */}
-        {isMultiPage && (
-          <>
-            <ToolbarDivider />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              onClick={goToPreviousPage}
-              disabled={isFirstPage}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <span className="text-xs text-muted-foreground">
-              {currentPage} / {totalPages}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              onClick={goToNextPage}
-              disabled={isLastPage}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </>
-        )}
-      </div>
+          {/* Page Navigation (only shown for multi-page PDFs) */}
+          {isMultiPage && (
+            <>
+              <ToolbarDivider />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={goToPreviousPage}
+                disabled={isFirstPage}
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                {currentPage} / {totalPages}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={goToNextPage}
+                disabled={isLastPage}
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* PDF Content */}
-      <div ref={contentContainerRef} className="flex-1 overflow-auto p-4">
+      <div ref={contentContainerRef} className={`flex-1 overflow-auto ${showToolbar ? 'p-4' : 'p-0'}`}>
         <Document
           file={url}
           onLoadSuccess={handleDocumentLoad}
