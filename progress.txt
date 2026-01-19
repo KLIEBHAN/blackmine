@@ -38,3 +38,23 @@
 ### Files Changed
 - src/app/(app)/issues/[id]/issue-sidebar.tsx (replaced Badge with Select)
 - PRD.md (marked second task complete)
+
+## 2026-01-19: Mark Unit Tests Task as Complete
+
+### Summary
+The unit tests for `updateIssueStatus` were already implemented in a previous session but the PRD task was not marked complete. Verified that all required test cases are covered:
+
+1. ✅ Successful status update
+2. ✅ Invalid status rejection
+3. ✅ Non-existent issue error handling
+4. ✅ All 5 valid status values tested via parameterized tests
+
+### Test Results
+- 8 tests passing
+- Lint: 0 errors (2 pre-existing warnings)
+
+### Files Changed
+- PRD.md (marked third task complete)
+
+### Status
+All PRD tasks are now complete.
