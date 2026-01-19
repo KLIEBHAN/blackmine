@@ -18,7 +18,6 @@ export const ZOOM_LEVELS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0] as const
 interface PdfPreviewProps {
   url: string
   currentPage?: number
-  onPageChange?: (page: number) => void
   zoom?: number
   zoomMode?: ZoomMode
   onTotalPages?: (total: number) => void
