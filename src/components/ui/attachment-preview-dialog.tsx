@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { Download } from 'lucide-react'
+import { Download, X } from 'lucide-react'
 
 import { isPdf } from '@/lib/attachment-preview'
 import { Button } from './button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog'
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from './dialog'
 import { PdfPreview } from './pdf-preview'
 
 interface AttachmentPreviewDialogProps {
@@ -29,17 +29,42 @@ export function AttachmentPreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl w-full h-[calc(100vh-4rem)] flex flex-col">
-        <DialogHeader className="flex-row items-center justify-between gap-4 space-y-0">
-          <DialogTitle className="truncate pr-8">{attachment.filename}</DialogTitle>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href={attachmentUrl} aria-label={`Download ${attachment.filename}`}>
-              <Download className="size-4 mr-2" />
-              Download
-            </Link>
-          </Button>
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-none w-[calc(100vw-2rem)] h-[calc(100vh-2rem)] p-0 gap-0 flex flex-col bg-zinc-950 border-zinc-800 overflow-hidden"
+      >
+        <DialogHeader className="flex-row items-center justify-between px-4 h-14 bg-zinc-900 border-b border-zinc-800 shrink-0 space-y-0">
+          <DialogTitle className="truncate text-sm font-medium text-zinc-100 flex-1 pr-4">
+            {attachment.filename}
+          </DialogTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
+              asChild
+            >
+              <Link
+                href={attachmentUrl}
+                aria-label={`Download ${attachment.filename}`}
+              >
+                <Download className="size-4 mr-2" />
+                Download
+              </Link>
+            </Button>
+            <DialogClose asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
+              >
+                <X className="size-4" />
+                <span className="sr-only">Close</span>
+              </Button>
+            </DialogClose>
+          </div>
         </DialogHeader>
-        <div className="flex-1 min-h-0 overflow-hidden rounded-md border bg-muted/30">
+        <div className="flex-1 min-h-0 w-full overflow-hidden bg-zinc-950">
           {isPdf(attachment) ? (
             <PdfPreview url={attachmentUrl} />
           ) : (
