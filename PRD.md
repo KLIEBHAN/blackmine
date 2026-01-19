@@ -43,6 +43,6 @@ Benutzer sollen den Status eines Issues direkt in der Issue-Detail-Ansicht ände
 
 ## Aufräumarbeiten
 
-- [ ] Entferne die `progress.txt` Datei aus dem Repository (wurde von Ralphy erstellt, ist nicht mehr nötig). Füge `progress.txt` zur `.gitignore` hinzu.
+- [x] Entferne die `progress.txt` Datei aus dem Repository (wurde von Ralphy erstellt, ist nicht mehr nötig). Füge `progress.txt` zur `.gitignore` hinzu.
 
 - [ ] Prüfe ob die `PRD.md` nach Abschluss aller Tasks ins Repository committed werden soll oder ob sie entfernt/archiviert werden soll. Falls archivieren: verschiebe nach `docs/features/issue-status.md`.
