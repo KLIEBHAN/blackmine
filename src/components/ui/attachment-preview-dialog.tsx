@@ -29,7 +29,7 @@ export function AttachmentPreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl w-full max-h-[calc(100vh-4rem)] flex flex-col">
+      <DialogContent className="max-w-5xl w-full h-[calc(100vh-4rem)] flex flex-col">
         <DialogHeader className="flex-row items-center justify-between gap-4 space-y-0">
           <DialogTitle className="truncate pr-8">{attachment.filename}</DialogTitle>
           <Button variant="ghost" size="sm" asChild>

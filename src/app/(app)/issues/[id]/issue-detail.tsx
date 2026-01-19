@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download, Eye } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download, Eye, EyeOff } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
@@ -446,9 +446,9 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                   size="icon"
                                   className={ATTACHMENT_BUTTON_CLASS}
                                   onClick={() => togglePreview(attachment.id)}
-                                  aria-label="Preview"
+                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview"}
                                 >
-                                  <Eye className="size-4" />
+                                  {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                                 </Button>
                               )}
                               <Button variant="ghost" size="icon" className={ATTACHMENT_BUTTON_CLASS} asChild>
