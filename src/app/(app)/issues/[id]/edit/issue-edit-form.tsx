@@ -25,8 +25,8 @@ import { Badge } from '@/components/ui/badge'
 import { updateIssue, type IssueFormErrors } from '@/app/actions/issues'
 import { deleteAttachment, uploadAttachment } from '@/app/actions/attachments'
 import { useAttachmentPreview } from '@/hooks/use-attachment-preview'
-import { PdfPreview } from '@/components/ui/pdf-preview'
-import { isPdf, hasPreview } from '@/lib/attachment-preview'
+import { AttachmentPreviewDialog } from '@/components/ui/attachment-preview-dialog'
+import { hasPreview } from '@/lib/attachment-preview'
 import { FormFieldError, GeneralFormError } from '@/components/ui/form-field-error'
 import {
   ArrowLeft,
@@ -540,20 +540,12 @@ export function IssueEditForm({ issue, users, projects }: Props) {
                             </div>
                           </div>
                           {previewAttachmentId === attachment.id && (
-                            <div className={cn(
-                              'w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2',
-                              isPdf(attachment) ? 'h-[400px] sm:h-[600px]' : 'max-h-[600px]'
-                            )}>
-                              {isPdf(attachment) ? (
-                                <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
-                              ) : (
-                                <img
-                                  src={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                  alt={attachment.filename}
-                                  className="w-full h-auto object-contain"
-                                />
-                              )}
-                            </div>
+                            <AttachmentPreviewDialog
+                              attachment={attachment}
+                              issueId={issue.id}
+                              open
+                              onOpenChange={() => togglePreview(attachment.id)}
+                            />
                           )}
                         </div>
                       </div>

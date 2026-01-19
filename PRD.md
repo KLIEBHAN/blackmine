@@ -28,4 +28,4 @@ Attachment-Previews (PDF und Bilder) sollen in einem **Modal-Dialog** geöffnet 
 
 - [x] Refactore `issue-detail.tsx`: Ersetze die Inline-Preview durch den neuen `AttachmentPreviewDialog`. Der Eye-Button soll `previewAttachmentId` setzen, was den Dialog öffnet. Entferne den Inline-Preview-Container (das `div` mit `h-[400px]`). Der Hook `useAttachmentPreview` bleibt unverändert – `previewAttachmentId` steuert jetzt welcher Dialog offen ist.
 
-- [ ] Refactore `issue-edit-form.tsx`: Gleiche Änderung wie in `issue-detail.tsx` – Inline-Preview durch Dialog ersetzen. Nutze ebenfalls `AttachmentPreviewDialog`.
+- [x] Refactore `issue-edit-form.tsx`: Gleiche Änderung wie in `issue-detail.tsx` – Inline-Preview durch Dialog ersetzen. Nutze ebenfalls `AttachmentPreviewDialog`.
