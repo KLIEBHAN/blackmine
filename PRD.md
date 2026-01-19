@@ -26,6 +26,6 @@ Attachment-Previews (PDF und Bilder) sollen in einem **Modal-Dialog** geöffnet 
 
 - [x] Erstelle eine `AttachmentPreviewDialog` Komponente in `src/components/ui/attachment-preview-dialog.tsx`. Die Komponente nimmt `attachment` (mit id, filename, contentType), `issueId`, `open` und `onOpenChange` als Props. Sie rendert einen Dialog (volle Breite/Höhe mit max-w-5xl) der je nach contentType entweder `PdfPreview` oder ein `<img>` anzeigt. Der Dialog-Header zeigt den Dateinamen und einen Download-Link.
 
-- [ ] Refactore `issue-detail.tsx`: Ersetze die Inline-Preview durch den neuen `AttachmentPreviewDialog`. Der Eye-Button soll `previewAttachmentId` setzen, was den Dialog öffnet. Entferne den Inline-Preview-Container (das `div` mit `h-[400px]`). Der Hook `useAttachmentPreview` bleibt unverändert – `previewAttachmentId` steuert jetzt welcher Dialog offen ist.
+- [x] Refactore `issue-detail.tsx`: Ersetze die Inline-Preview durch den neuen `AttachmentPreviewDialog`. Der Eye-Button soll `previewAttachmentId` setzen, was den Dialog öffnet. Entferne den Inline-Preview-Container (das `div` mit `h-[400px]`). Der Hook `useAttachmentPreview` bleibt unverändert – `previewAttachmentId` steuert jetzt welcher Dialog offen ist.
 
 - [ ] Refactore `issue-edit-form.tsx`: Gleiche Änderung wie in `issue-detail.tsx` – Inline-Preview durch Dialog ersetzen. Nutze ebenfalls `AttachmentPreviewDialog`.

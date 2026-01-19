@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Edit, Trash2, Minus, Plus, PanelRightClose, PanelRightOpen, Paperclip, Download, Eye } from 'lucide-react'
 import { Comments, type SerializedComment } from './comments'
 import { Markdown, FONT_SIZE_CONFIG, type FontSize } from '@/components/ui/markdown'
 import { statusLabels, trackerLabels, isOverdue } from '@/types'
@@ -26,9 +26,9 @@ import {
 import { convertIssueDescriptionToMarkdown, deleteIssue } from '@/app/actions/issues'
 import { deleteAttachment } from '@/app/actions/attachments'
 import { useAttachmentPreview } from '@/hooks/use-attachment-preview'
-import { PdfPreview } from '@/components/ui/pdf-preview'
+import { AttachmentPreviewDialog } from '@/components/ui/attachment-preview-dialog'
 import { useSession } from '@/contexts/session-context'
-import { isPdf, hasPreview } from '@/lib/attachment-preview'
+import { hasPreview } from '@/lib/attachment-preview'
 
 const FONT_SIZE_KEY = 'issue-detail-font-size'
 const SIDEBAR_KEY = 'issue-detail-sidebar-visible'
@@ -446,9 +446,9 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                                   size="icon"
                                   className={ATTACHMENT_BUTTON_CLASS}
                                   onClick={() => togglePreview(attachment.id)}
-                                  aria-label={previewAttachmentId === attachment.id ? "Hide preview" : "Preview"}
+                                  aria-label="Preview"
                                 >
-                                  {previewAttachmentId === attachment.id ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                  <Eye className="size-4" />
                                 </Button>
                               )}
                               <Button variant="ghost" size="icon" className={ATTACHMENT_BUTTON_CLASS} asChild>
@@ -474,20 +474,12 @@ export function IssueDetail({ issue, comments, currentUserId }: IssueDetailProps
                             </div>
                           </div>
                           {previewAttachmentId === attachment.id && (
-                            <div className={cn(
-                              'w-full rounded-md border bg-muted/50 overflow-hidden animate-in fade-in slide-in-from-top-2',
-                              isPdf(attachment) ? 'h-[400px] sm:h-[600px]' : 'max-h-[600px]'
-                            )}>
-                              {isPdf(attachment) ? (
-                                <PdfPreview key={attachment.id} url={`/issues/${issue.id}/attachments/${attachment.id}`} />
-                              ) : (
-                                <img
-                                  src={`/issues/${issue.id}/attachments/${attachment.id}`}
-                                  alt={attachment.filename}
-                                  className="w-full h-auto object-contain"
-                                />
-                              )}
-                            </div>
+                            <AttachmentPreviewDialog
+                              attachment={attachment}
+                              issueId={issue.id}
+                              open
+                              onOpenChange={() => togglePreview(attachment.id)}
+                            />
                           )}
                         </div>
                       </div>
