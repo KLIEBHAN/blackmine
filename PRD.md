@@ -39,7 +39,7 @@ Benutzer sollen den Status eines Issues direkt in der Issue-Detail-Ansicht ände
 
 ## Dokumentation
 
-- [ ] Ergänze die CLAUDE.md um eine Sektion "Issue-Workflow", die erklärt: (1) welche Status-Werte existieren, (2) wie Status-Übergänge funktionieren (aktuell frei, später ggf. Workflow-Regeln), (3) wo die Status-Logik implementiert ist (types, actions, components).
+- [x] Ergänze die CLAUDE.md um eine Sektion "Issue-Workflow", die erklärt: (1) welche Status-Werte existieren, (2) wie Status-Übergänge funktionieren (aktuell frei, später ggf. Workflow-Regeln), (3) wo die Status-Logik implementiert ist (types, actions, components).
 
 ## Aufräumarbeiten
 

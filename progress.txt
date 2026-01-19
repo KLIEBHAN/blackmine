@@ -147,3 +147,23 @@ Component tests were not added because:
 - src/app/actions/issues.ts (added status validation to bulkUpdateIssues)
 - src/app/actions/issues.test.ts (added bulkUpdateIssues tests, updated mocks)
 - PRD.md (marked Codeoptimierung task 2 complete)
+
+## 2026-01-19: Add Issue-Workflow Documentation to CLAUDE.md
+
+### Completed
+- Created `CLAUDE.md` project documentation file with:
+  - Tech stack overview (Next.js 16, React 19, Prisma, etc.)
+  - Project structure summary
+  - **Issue-Workflow** section documenting:
+    1. All 5 status values with descriptions (new, in_progress, resolved, closed, rejected)
+    2. Status transition rules (currently unrestricted, noting future workflow rules)
+    3. Implementation locations (types, actions, components)
+    4. Validation behavior
+
+### Test Results
+- 261 tests passing
+- Lint: 0 errors (2 pre-existing warnings unrelated to this change)
+
+### Files Changed
+- CLAUDE.md (new file)
+- PRD.md (marked Dokumentation task complete)
