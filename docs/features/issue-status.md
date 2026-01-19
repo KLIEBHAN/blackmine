@@ -1,5 +1,10 @@
 # Feature: Issue Status ändern
 
+> **Status:** ✅ Completed (2026-01-19)
+>
+> This document is archived from the original PRD.md after all tasks were completed.
+> For current implementation details, see the **Issue-Workflow** section in [CLAUDE.md](/CLAUDE.md).
+
 ## Kontext
 Blackmine ist ein Redmine-Clone. Issues haben bereits ein `status`-Feld im Schema mit den Werten:
 - `new` (Neu)
@@ -44,5 +49,3 @@ Benutzer sollen den Status eines Issues direkt in der Issue-Detail-Ansicht ände
 ## Aufräumarbeiten
 
 - [x] Entferne die `progress.txt` Datei aus dem Repository (wurde von Ralphy erstellt, ist nicht mehr nötig). Füge `progress.txt` zur `.gitignore` hinzu.
-
-- [ ] Prüfe ob die `PRD.md` nach Abschluss aller Tasks ins Repository committed werden soll oder ob sie entfernt/archiviert werden soll. Falls archivieren: verschiebe nach `docs/features/issue-status.md`.
