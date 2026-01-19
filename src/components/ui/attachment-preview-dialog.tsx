@@ -69,6 +69,21 @@ export function AttachmentPreviewDialog({
     return () => document.removeEventListener('fullscreenchange', syncFullscreenState)
   }, [])
 
+  useEffect(() => {
+    if (!open || !isPdfFile) return
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'ArrowLeft') {
+        setPage(p => Math.max(1, p - 1))
+      } else if (e.key === 'ArrowRight' && totalPages) {
+        setPage(p => Math.min(totalPages, p + 1))
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [open, isPdfFile, totalPages])
+
   function zoomIn() {
     setZoomMode('scale')
     setZoom(current => {
