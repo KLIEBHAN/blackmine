@@ -1,0 +1,22 @@
+## 2026-01-19: Implement updateIssueStatus Server Action
+
+### Completed
+- Created `updateIssueStatus` Server Action in `src/app/actions/issues.ts`
+  - Validates status against allowed values: new, in_progress, resolved, closed, rejected
+  - Returns specific error for invalid status
+  - Returns specific error when issue not found (Prisma P2025)
+  - Revalidates issue list and detail pages on success
+
+- Created unit tests in `src/app/actions/issues.test.ts`
+  - Tests successful status update
+  - Tests rejection of invalid status values
+  - Tests error handling for non-existent issues
+  - Tests all valid status values using parameterized tests
+
+### Test Results
+- 8 tests passing
+
+### Files Changed
+- src/app/actions/issues.ts (added updateIssueStatus function)
+- src/app/actions/issues.test.ts (new file)
+- PRD.md (marked first task complete)

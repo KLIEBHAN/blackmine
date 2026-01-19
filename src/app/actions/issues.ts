@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/lib/session'
 import { textileToMarkdown } from '@/lib/textile'
 import { handleActionError } from './utils'
+import { allIssueStatuses, type IssueStatus } from '@/types'
 
 export type IssueFormData = {
   projectId: string
@@ -238,6 +239,41 @@ export async function convertIssueDescriptionToMarkdown(id: string) {
     return { success: true, updated: true }
   } catch (error) {
     return handleActionError(error, 'convert issue description', true)
+  }
+}
+
+// Update issue status
+export async function updateIssueStatus(
+  issueId: string,
+  status: string
+): Promise<{ success: true; issue: Awaited<ReturnType<typeof prisma.issue.update>> } | { success: false; error: string }> {
+  await requireAuth()
+
+  // Validate status against allowed values
+  if (!allIssueStatuses.includes(status as IssueStatus)) {
+    return { success: false, error: `Invalid status: ${status}` }
+  }
+
+  try {
+    const issue = await prisma.issue.update({
+      where: { id: issueId },
+      data: { status },
+      include: { project: true },
+    })
+
+    revalidatePath('/issues')
+    revalidatePath(`/issues/${issueId}`)
+    revalidatePath(`/projects/${issue.project.identifier}`)
+
+    return { success: true, issue }
+  } catch (error) {
+    // Prisma P2025: Record not found
+    const isPrismaNotFound =
+      error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2025'
+    if (isPrismaNotFound) {
+      return { success: false, error: 'Issue not found' }
+    }
+    return handleActionError(error, 'update issue status')
   }
 }
 
