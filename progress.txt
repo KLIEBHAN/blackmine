@@ -20,3 +20,21 @@
 - src/app/actions/issues.ts (added updateIssueStatus function)
 - src/app/actions/issues.test.ts (new file)
 - PRD.md (marked first task complete)
+
+## 2026-01-19: Add Status-Dropdown to Issue-Sidebar
+
+### Completed
+- Replaced static Badge with Select dropdown in `src/app/(app)/issues/[id]/issue-sidebar.tsx`
+  - Uses shadcn/ui Select component from `@/components/ui/select`
+  - Calls `updateIssueStatus` server action on value change
+  - Uses `useTransition` for loading state (disabled during update)
+  - Shows success/error toast via `sonner`
+  - Displays all 5 status options with appropriate styling
+
+### Test Results
+- All 247 tests passing
+- Lint: 0 errors (2 pre-existing warnings unrelated to this change)
+
+### Files Changed
+- src/app/(app)/issues/[id]/issue-sidebar.tsx (replaced Badge with Select)
+- PRD.md (marked second task complete)

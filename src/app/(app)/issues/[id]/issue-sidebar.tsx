@@ -1,12 +1,21 @@
 'use client'
 
+import { useTransition } from 'react'
+import { toast } from 'sonner'
 import { cn, getInitials, formatDate } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { AlertCircle, Clock } from 'lucide-react'
-import { statusLabels, priorityLabels, getFullName, isDueSoon } from '@/types'
+import { statusLabels, priorityLabels, getFullName, isDueSoon, allIssueStatuses, type IssueStatus } from '@/types'
+import { updateIssueStatus } from '@/app/actions/issues'
 import type { SerializedIssue } from './issue-detail'
 
 interface IssueSidebarProps {
@@ -15,9 +24,25 @@ interface IssueSidebarProps {
 }
 
 export function IssueSidebar({ issue, overdue }: IssueSidebarProps) {
-  const status = issue.status as keyof typeof statusLabels
+  const [isPending, startTransition] = useTransition()
+  const status = issue.status as IssueStatus
   const priority = issue.priority as keyof typeof priorityLabels
   const dueSoon = !overdue && isDueSoon(issue)
+
+  const handleStatusChange = (newStatus: string) => {
+    startTransition(async () => {
+      const result = await updateIssueStatus(issue.id, newStatus)
+      if (result.success) {
+        toast.success('Status updated', {
+          description: `Issue status changed to "${statusLabels[newStatus as IssueStatus]}".`,
+        })
+      } else {
+        toast.error('Failed to update status', {
+          description: result.error,
+        })
+      }
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -31,15 +56,24 @@ export function IssueSidebar({ issue, overdue }: IssueSidebarProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Status</span>
-            <Badge
-              variant="secondary"
-              className={cn(
-                'rounded-sm px-2 py-0.5 text-xs font-medium',
-                `status-${status}`
-              )}
-            >
-              {statusLabels[status]}
-            </Badge>
+            <Select value={status} onValueChange={handleStatusChange} disabled={isPending}>
+              <SelectTrigger
+                size="sm"
+                className={cn(
+                  'h-auto w-auto gap-1.5 border-0 bg-transparent px-2 py-0.5 text-xs font-medium shadow-none hover:bg-accent',
+                  `status-${status}`
+                )}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                {allIssueStatuses.map((s) => (
+                  <SelectItem key={s} value={s} className={cn('text-xs', `status-${s}`)}>
+                    {statusLabels[s]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <Separator className="bg-border/50" />
